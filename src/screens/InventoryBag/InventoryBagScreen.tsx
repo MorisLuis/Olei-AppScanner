@@ -34,7 +34,7 @@ export const InventoryBagScreen = () => {
 
     const updateProductBySearch = useCallback(() => {
         const filteredData = bag.filter(product =>
-            product.Descripcion.toLowerCase().includes(searchText.toLowerCase())
+            product?.Descripcion?.toLowerCase().includes(searchText.toLowerCase())
         );
         setFilteredBag(filteredData.slice(0, page * pageSize));
     }, [searchText, bag, page, pageSize]);
@@ -101,7 +101,7 @@ export const InventoryBagScreen = () => {
                             style={InventoryBagScreenStyles(theme, typeTheme).content}
                             data={filteredBag}
                             renderItem={renderItem}
-                            keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca}-${product.Id_Almacen}-${product.key}`}
+                            keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca}-${product.key}`}
                             onEndReached={handleLoadMore}
                             onEndReachedThreshold={0.5}
                         />

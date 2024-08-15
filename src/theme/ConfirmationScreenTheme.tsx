@@ -7,8 +7,7 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => Sty
     ConfirmationScreen: {
         flex: 1,
         backgroundColor: theme.background_color_secondary,
-        height: "100%",
-        padding: 20,
+        height: "100%"
     },
     confirmationHeader: {
         height: hp("20%"),

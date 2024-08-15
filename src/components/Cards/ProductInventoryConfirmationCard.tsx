@@ -1,12 +1,12 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ProductInventoryConfirmationCardTheme } from '../../theme/UI/cardsStyles';
-import ProductInterface from '../../interface/product.js';
+import ProductInterface, { ProductInterfaceBag } from '../../interface/product.js';
 import { useTheme } from '../../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 interface ProductInventoryConfirmationCardInterface {
-    product: ProductInterface;
+    product: ProductInterfaceBag;
     onClick?: () => void;
     disabled: boolean
 }

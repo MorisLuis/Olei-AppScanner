@@ -38,6 +38,11 @@ export const dbAuthReducer = (state: DbAuthState, action: AuthAction): DbAuthSta
             }
 
         case 'logout':
+            return {
+                ...state,
+                status: 'dbNot-authenticated'
+            }
+
         case 'notAuthenticated':
             return {
                 ...state,

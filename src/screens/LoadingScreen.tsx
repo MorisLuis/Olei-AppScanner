@@ -3,16 +3,20 @@ import { ActivityIndicator, Text, View } from 'react-native'
 import { useTheme } from '../context/ThemeContext';
 
 interface LoadingScreenInterface {
-    message?: string
+    message?: string;
+    state?: boolean;
+    loading?: boolean
+
 };
 
 export const LoadingScreen = ({
-    message
+    message,
+    state,
+    loading
 }: LoadingScreenInterface) => {
 
-    const { typeTheme, theme } = useTheme();
-    const iconColor = theme.color_tertiary
-
+    const { theme } = useTheme();
+    const iconColor = theme.color_tertiary;
     return (
         <View style={{
             flex: 1,

@@ -14,9 +14,10 @@ import { useForm } from '../../hooks/useForm';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { InputPassword } from '../../components/Ui/InputPassword';
+import { useProtectPage } from '../../hooks/useProtectPage';
 
 export const LoginScreen = () => {
-    const { signIn, errorMessage, removeError, loggingIn } = useContext(AuthContext);
+    const { signIn, errorMessage, removeError, loggingIn, status } = useContext(AuthContext);
 
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black"
@@ -45,11 +46,15 @@ export const LoginScreen = () => {
             }
         });
     };
+    const { protectThisPage } = useProtectPage({
+        protectionCondition: status === 'authenticated',
+        navigatePage: 'typeOfMovementScreen'
+    })
 
     const keyboardActive = useKeyboardStatus();
-    if (loggingIn) return <LoadingScreen message='Iniciando sesion...'/>;
+    if (loggingIn) return <LoadingScreen message='Iniciando sesion...' state={loggingIn} />;
 
-    return (
+    return !protectThisPage ? (
         <KeyboardAvoidingView
             style={[loginStyles(theme).LoginScreen]}
             behavior={(Platform.OS === 'ios') ? 'padding' : 'height'}
@@ -103,6 +108,8 @@ export const LoginScreen = () => {
                 </TouchableOpacity>
             </SafeAreaView>
         </KeyboardAvoidingView>
-    );
+    )
+        :
+        <LoadingScreen message='Redireccionando...' state={!protectThisPage} />
 };
 

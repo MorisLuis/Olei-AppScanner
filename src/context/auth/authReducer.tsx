@@ -45,6 +45,11 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
             }
 
         case 'logout':
+            return {
+                ...state,
+                status: 'not-authenticated'
+            };
+
         case 'notAuthenticated':
             return {
                 ...state,

@@ -11,11 +11,12 @@ import { AuthContext } from '../../context/auth/AuthContext';
 import DotLoader from '../../components/Ui/DotLaoder';
 import { ProductInterfaceBag } from '../../interface/product';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useProtectPage } from '../../hooks/useProtectPage';
 
 export const ConfirmationScreen = () => {
-    const { typeTheme, theme, toggleTheme } = useTheme();
+    const { typeTheme, theme } = useTheme();
     const { getTypeOfMovementsName, user } = useContext(AuthContext);
-    const { bag, cleanBag, numberOfItems, postInventory, postInventoryDetails } = useContext(InventoryBagContext);
+    const { bag, cleanBag, numberOfItems, postInventory } = useContext(InventoryBagContext);
     const { navigate } = useNavigation<any>();
 
     const iconColor = theme.color_tertiary;
@@ -25,20 +26,19 @@ export const ConfirmationScreen = () => {
     const [pageSize] = useState(5);
 
     const renderItem = useCallback(({ item }: { item: ProductInterfaceBag }) => (
-        <ProductInventoryConfirmationCard product={item} onClick={() => navigate('[Modal] - editProductInBag', { product: item })} disabled={createInventaryLoading}/>
+        <ProductInventoryConfirmationCard product={item} onClick={() => navigate('[Modal] - editProductInBag', { product: item })} disabled={createInventaryLoading} />
     ), [createInventaryLoading]);
 
     const onPostInventary = async () => {
         setCreateInventaryLoading(true);
         await postInventory(bag);
-        //await postInventoryDetails();
-        
+
         setTimeout(() => {
             cleanBag();
             setCreateInventaryLoading(false);
             navigate('BottomNavigation - Scanner');
             navigate('succesMessageScreen');
-        }, 500); // Espera de 500ms antes de navegar
+        }, 500);
     };
 
     const handleLoadMore = () => {
@@ -54,13 +54,20 @@ export const ConfirmationScreen = () => {
         loadMoreData();
     }, [page, loadMoreData]);
 
-    return (
+    const { protectThisPage } = useProtectPage({
+        numberOfItems: numberOfItems,
+        loading: createInventaryLoading,
+        navigatePage: 'BottomNavigation'
+    });
+
+
+    return !protectThisPage ? (
         <SafeAreaView style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen}>
             <View style={{ flex: 1, marginBottom: hp("12.5%") }}>
                 <FlatList
                     data={filteredBag}
                     renderItem={renderItem}
-                    keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca}-${product.Id_Almacen}-${product.key}`}
+                    keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca}-${product.key}`}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
                     ListHeaderComponent={
@@ -96,13 +103,13 @@ export const ConfirmationScreen = () => {
                         {createInventaryLoading ? <DotLoader /> : "Confirmar"}
                     </Text>
                 </TouchableOpacity>
-                {/* <TouchableOpacity
-                    style={[buttonStyles(theme).button, buttonStyles(theme).black]}
-                    onPress={toggleTheme}
-                >
-                    <Text style={buttonStyles(theme).buttonText}>Toggle Theme</Text>
-                </TouchableOpacity> */}
             </View>
         </SafeAreaView>
-    );
+    )
+        :
+        <SafeAreaView style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen}>
+            <View>
+                <Text>Redireccionando...</Text>
+            </View>
+        </SafeAreaView>
 };

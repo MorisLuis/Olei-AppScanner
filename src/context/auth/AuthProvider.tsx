@@ -10,7 +10,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 import { DbAuthContext } from '../dbAuth/DbAuthContext';
-import { useTheme } from '../ThemeContext';
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
@@ -49,7 +48,7 @@ export const AuthProvider = ({ children }: any) => {
     const { status } = useContext(DbAuthContext);
 
     const [currentScreen, setCurrentScreen] = React.useState('');
-    React.useEffect(() => {
+    useEffect(() => {
         const unsubscribe = navigation.addListener('state', () => {
             setCurrentScreen(navigation.getCurrentRoute().name);
         });
@@ -61,12 +60,11 @@ export const AuthProvider = ({ children }: any) => {
         const statusLogin = state.status;
         const statusLoginDatabase = status;
 
-        if (statusLoginDatabase == 'dbChecking' && statusLogin == 'checking') {
+        if (statusLoginDatabase == 'dbChecking' || statusLogin == 'checking') {
             return;
         }
 
         if (statusLoginDatabase == 'dbNot-authenticated' && statusLogin == 'not-authenticated') {
-
             if(currentScreen === 'LoginDatabaseScreen') return;
             
             return navigation.reset({
@@ -75,17 +73,16 @@ export const AuthProvider = ({ children }: any) => {
             })
         }
 
-        if (statusLoginDatabase == 'dbAuthenticated' && statusLogin == 'not-authenticated') {
+        if (statusLoginDatabase == 'dbAuthenticated' && statusLogin == 'authenticated') {
+            return navigation.navigate('typeOfMovementScreen')
+        }
 
+        if (statusLoginDatabase == 'dbAuthenticated' && statusLogin == 'not-authenticated') {
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'LoginPage' }],
             })
             return;
-        }
-
-        if (statusLogin === 'authenticated') {
-            navigation.navigate('typeOfMovementScreen')
         }
 
     }, [state.status, status])
@@ -145,6 +142,7 @@ export const AuthProvider = ({ children }: any) => {
             });
 
             await AsyncStorage.setItem('token', data.token);
+            setLoggingIn(false)
 
         } catch (error: any) {
             console.log({error})

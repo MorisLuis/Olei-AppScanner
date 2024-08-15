@@ -1,13 +1,13 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { styles } from '../../theme/UI/cardsStyles';
-import ProductInterface from '../../interface/product.js';
+import { ProductInterfaceBag } from '../../interface/product.js';
 import { useTheme } from '../../context/ThemeContext';
 
 interface ProductInventoryCardInterface {
-    product: ProductInterface;
+    product: ProductInterfaceBag;
     showDelete?: boolean;
-    onDelete?: (product: ProductInterface) => void;
+    onDelete?: (product: ProductInterfaceBag) => void;
     onClick?: () => void
 }
 
@@ -23,20 +23,6 @@ export const ProductInventoryCard = ({
 
     return (
         <TouchableOpacity style={styles(theme, typeTheme).productInventoryCard} onPress={onClick}>
-            {/* {
-                product?.imagen ? 
-                    <Image
-                        style={styles(theme).productInventoryCard__Image}
-                        source={{
-                            uri: product?.imagen[0]?.url
-                        }}
-                    />
-                    :
-                    <View style={styles(theme).notImage}>
-                        <Icon name={'camera'} size={20} color={typeTheme}/>
-                        <Text style={styles(theme).notImageText} numberOfLines={2}>{user?.Company || "Olei"}</Text>
-                    </View>
-            } */}
             <View style={styles(theme).productInventoryCard__data}>
                 <View style={styles(theme).information}>
                     <View>

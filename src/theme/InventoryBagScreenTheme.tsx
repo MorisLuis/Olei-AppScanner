@@ -1,11 +1,10 @@
 import { StyleSheet } from "react-native";
 import { Theme, globalStyles } from "./appTheme";
-
-
-
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export const InventoryBagScreenStyles = (theme: Theme, typeTheme: string) => StyleSheet.create({
     InventoryBagScreen: {
+        //flex:1,
         backgroundColor: theme.background_color,
         height: "100%",
     },
@@ -30,8 +29,7 @@ export const InventoryBagScreenStyles = (theme: Theme, typeTheme: string) => Sty
     footer: {
         backgroundColor: theme.background_color,
         padding: globalStyles(theme).globalPadding.padding,
-        height: "25%",
-        maxHeight: 150,
+        height: hp("20%"),
         width: "100%",
         position: "absolute",
         bottom: 0,
