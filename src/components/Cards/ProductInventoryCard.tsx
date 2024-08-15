@@ -1,13 +1,13 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { styles } from '../../theme/UI/cardsStyles';
-import PorductInterface from '../../interface/product.js';
+import ProductInterface from '../../interface/product.js';
 import { useTheme } from '../../context/ThemeContext';
 
 interface ProductInventoryCardInterface {
-    product: PorductInterface;
+    product: ProductInterface;
     showDelete?: boolean;
-    onDelete?: (product: PorductInterface) => void;
+    onDelete?: (product: ProductInterface) => void;
     onClick?: () => void
 }
 
@@ -59,7 +59,7 @@ export const ProductInventoryCard = ({
                 </View>
 
                 <View style={styles(theme, typeTheme).stock}>
-                    <Text style={{ color: theme.text_color }}>{product.Piezas || product.Existencia}</Text>
+                    <Text style={{ color: theme.text_color }}>{product.Cantidad || product.Existencia}</Text>
                 </View>
             </View>
         </TouchableOpacity>

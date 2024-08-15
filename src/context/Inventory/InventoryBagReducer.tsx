@@ -1,13 +1,13 @@
-import PorductInterface, { PorductInterfaceBag } from "../../interface/product";
+import ProductInterface, { ProductInterfaceBag } from "../../interface/product";
 import { InventoryBagInterface, inventoryDataInterface } from "./InventoryBagProvider";
 
 
 type InventoryBagActionType =
     | { type: '[InventoryBag] - Post Inventory', payload: inventoryDataInterface | undefined }
-    | { type: '[InventoryBag] - Post Inventory Details', payload: PorductInterface[] }
-    | { type: '[InventoryBag] - Add Product', payload: PorductInterfaceBag }
-    | { type: '[InventoryBag] - Remove Product', payload: PorductInterfaceBag }
-    | { type: '[InventoryBag] - Edit Product', payload: PorductInterfaceBag }
+    | { type: '[InventoryBag] - Post Inventory Details', payload: ProductInterface[] }
+    | { type: '[InventoryBag] - Add Product', payload: ProductInterfaceBag }
+    | { type: '[InventoryBag] - Remove Product', payload: ProductInterfaceBag }
+    | { type: '[InventoryBag] - Edit Product', payload: ProductInterfaceBag }
     | { type: '[InventoryBag] - Clear Bag', payload: [] }
     | {
         type: '[InventoryBag] - Update Summary',
@@ -49,7 +49,7 @@ export const innventoryBagReducer = (state: InventoryBagInterface, action: Inven
                 ...state,
                 bag: state.bag.map(product =>
                     product.key === action.payload.key
-                        ? { ...product, Piezas: action.payload.Piezas }
+                        ? { ...product, Cantidad: action.payload.Cantidad }
                         : product
                 )
             }

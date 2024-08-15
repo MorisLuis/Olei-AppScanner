@@ -6,7 +6,7 @@ import { SettingsContext } from '../../../context/settings/SettingsContext';
 import { buttonStyles } from '../../../theme/UI/buttons';
 import { updateCostos } from '../../../services/costos';
 import { useNavigation } from '@react-navigation/native';
-import PorductInterface from '../../../interface/product';
+import ProductInterface from '../../../interface/product';
 import { Camera } from 'react-native-camera-kit';
 import { getProductByCodeBar } from '../../../services/products';
 import codebartypes from '../../../utils/codebarTypes.json';
@@ -14,7 +14,7 @@ import { CameraModalStyles } from '../../../theme/ModalRenders/CameraModalTheme'
 import { useTheme } from '../../../context/ThemeContext';
 
 interface CameraModalInterface {
-    productDetails: PorductInterface;
+    productDetails: ProductInterface;
     onClose: () => void
 }
 

@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/auth/AuthContext';
 import DotLoader from '../../components/Ui/DotLaoder';
-import { PorductInterfaceBag } from '../../interface/product';
+import { ProductInterfaceBag } from '../../interface/product';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export const ConfirmationScreen = () => {
@@ -19,19 +19,19 @@ export const ConfirmationScreen = () => {
     const { navigate } = useNavigation<any>();
 
     const iconColor = theme.color_tertiary;
-    const [filteredBag, setFilteredBag] = useState<PorductInterfaceBag[]>([]);
+    const [filteredBag, setFilteredBag] = useState<ProductInterfaceBag[]>([]);
     const [createInventaryLoading, setCreateInventaryLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [pageSize] = useState(5);
 
-    const renderItem = useCallback(({ item }: { item: PorductInterfaceBag }) => (
+    const renderItem = useCallback(({ item }: { item: ProductInterfaceBag }) => (
         <ProductInventoryConfirmationCard product={item} onClick={() => navigate('[Modal] - editProductInBag', { product: item })} disabled={createInventaryLoading}/>
     ), [createInventaryLoading]);
 
     const onPostInventary = async () => {
         setCreateInventaryLoading(true);
-        await postInventory();
-        await postInventoryDetails(bag);
+        await postInventory(bag);
+        //await postInventoryDetails();
         
         setTimeout(() => {
             cleanBag();

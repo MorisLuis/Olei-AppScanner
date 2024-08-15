@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import PorductInterface from '../../interface/product';
+import ProductInterface from '../../interface/product';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { customHeaderStyles } from '../../theme/UI/customHeader';
 import { useTheme } from '../../context/ThemeContext';
@@ -15,7 +15,7 @@ interface CustomHeaderInterface {
     secondaryDesign?: boolean;
     route?: {
         params?: {
-            selectedProduct?: PorductInterface
+            selectedProduct?: ProductInterface
             fromModal?: boolean;
         };
     };

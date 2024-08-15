@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useReducer, useRef, useState } from 'react';
-import PorductInterface, { PorductInterfaceBag } from '../../interface/product';
+import ProductInterface, { ProductInterfaceBag } from '../../interface/product';
 import { InventoryBagContext } from './InventoryBagContext';
 import { innventoryBagReducer } from './InventoryBagReducer';
 import { api } from '../../api/api';
@@ -7,15 +7,11 @@ import { AuthContext } from '../auth/AuthContext';
 import Toast from 'react-native-toast-message';
 
 export interface inventoryDataInterface {
-    result: undefined,
-    Id_Almacen: null,
-    Folio: null,
-    Fecha: undefined,
-    Id_TipoMovInv: null
+    Folio: number
 }
 
 export interface InventoryBagInterface {
-    bag: PorductInterfaceBag[];
+    bag: ProductInterfaceBag[];
     numberOfItems: number;
     inventoryData: inventoryDataInterface
 }
@@ -24,11 +20,7 @@ export const InventoryBagInitialState: InventoryBagInterface = {
     bag: [],
     numberOfItems: 0,
     inventoryData: {
-        result: undefined,
-        Id_Almacen: null,
-        Folio: null,
-        Fecha: undefined,
-        Id_TipoMovInv: null
+        Folio: 0,
     }
 }
 
@@ -43,7 +35,7 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
     const [keyNumber, setKeyNumber] = useState(0);
 
 
-    const addProduct = (product: PorductInterface) => {
+    const addProduct = (product: ProductInterfaceBag) => {
         try {
             setKeyNumber(keyNumber + 1)
             const newKey = keyNumber + 1;
@@ -60,15 +52,15 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
         }
     }
 
-    const removeProduct = (product: PorductInterfaceBag) => {
+    const removeProduct = (product: ProductInterfaceBag) => {
         dispatch({ type: '[InventoryBag] - Remove Product', payload: product })
     }
 
-    const editProduct = (product: PorductInterfaceBag) => {
+    const editProduct = (product: ProductInterfaceBag) => {
         dispatch({ type: '[InventoryBag] - Edit Product', payload: product })
         Toast.show({
             type: 'tomatoToast',
-            text1: product.Piezas < 2 ? `Se cambio a ${product.Piezas} pieza.` : `Se cambio a ${product.Piezas} piezas.`
+            text1: product.Cantidad < 2 ? `Se cambio a ${product.Cantidad} pieza.` : `Se cambio a ${product.Cantidad} piezas.`
         })
     }
 
@@ -78,11 +70,11 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
 
 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const postInventory = async (descripcion?: string) => {
+    const postInventory = async (inventoryDetails: ProductInterfaceBag[]) => {
         try {
             const tipoMovInvId = user?.Id_TipoMovInv?.Id_TipoMovInv;
             const inventorybody = {
-                descripcion,
+                inventoryDetails: inventoryDetails,
                 Id_TipoMovInv: tipoMovInvId
             };
             const inventory = await api.post(`/api/inventory`, inventorybody);
@@ -98,7 +90,7 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
         }
     };
 
-    const postInventoryDetails = async (products: PorductInterface[]) => {
+    const postInventoryDetails = async (products: ProductInterface[]) => {
         try {
             const tipoMovInvId = user?.Id_TipoMovInv?.Id_TipoMovInv;
             const inventoryDetailsbody = {

@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
-import PorductInterface from '../../interface/product';
+import ProductInterface, { ProductInterfaceBag } from '../../interface/product';
 import { Counter } from '../../components/Ui/Counter';
 import { useNavigation } from '@react-navigation/native';
 import { buttonStyles } from '../../theme/UI/buttons';
@@ -20,7 +20,7 @@ interface ScannerResultInterface {
     seeProductDetails?: boolean;
     route?: {
         params: {
-            product: PorductInterface;
+            product: ProductInterface;
             fromProductDetails?: boolean
         };
     };
@@ -43,14 +43,24 @@ const ScannerResult = ({
 
     const handleAddToInventory = () => {
         setLoadingAddProduct(true)
-        const inventoryBody = {
-            ...product,
-            Piezas: counterProduct === 0 ? 1 : counterProduct
-        }
-        addProduct(inventoryBody as any)
+        if(!product?.Codigo) return;
+
+        const productData : ProductInterfaceBag = {
+            Codigo: product?.Codigo,
+            Id_Marca: product?.Id_Marca ?? 0, 
+            Existencia: product?.Existencia ?? 0,
+            Id_Ubicacion: 0,
+            Diferencia: 0,
+
+            Descripcion: product?.Descripcion,
+            Marca: product?.Marca,
+            Cantidad: counterProduct === 0 ? 1 : counterProduct
+        };
+
+        addProduct(productData);
         handleCameraAvailable(true)
-        //navigation.goBack()
         setLoadingAddProduct(false)
+        navigation.goBack()
     }
 
     const handleExpandProductDetails = () => {

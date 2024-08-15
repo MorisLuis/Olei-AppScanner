@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import { FlatList, SafeAreaView, Text, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { getSearchProductInStock } from '../services/Search/products';
-import PorductInterface from '../interface/product';
+import ProductInterface from '../interface/product';
 import { ProductItemSearch } from '../components/Cards/ProductItemSearch';
 import { CustomBackButton } from '../components/Ui/CustomHeader';
 import ModalBottom from '../components/Modals/ModalBottom';
@@ -33,7 +33,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
 
 
     const navigation = useNavigation<any>();
-    const [productsInInventory, setProductsInInventory] = useState<PorductInterface[]>([])
+    const [productsInInventory, setProductsInInventory] = useState<ProductInterface[]>([])
     const [currentPage, setCurrentPage] = useState(1);
     const [openModalAdvice, setOpenModalAdvice] = useState(false)
 
@@ -42,7 +42,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
         setProductsInInventory(products);
     }
 
-    const renderItem = ({ item }: { item: PorductInterface }) => {
+    const renderItem = ({ item }: { item: ProductInterface }) => {
         return (
             <ProductItemSearch fromModal={modal ? modal : false} product={item} onClick={() => navigateToProduct(item)} />
         );
@@ -52,7 +52,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
         setCurrentPage(currentPage + 1);
     };
 
-    const navigateToProduct = (selectedProduct: PorductInterface) => {
+    const navigateToProduct = (selectedProduct: ProductInterface) => {
 
         if (modal) {
             if (isModal) {

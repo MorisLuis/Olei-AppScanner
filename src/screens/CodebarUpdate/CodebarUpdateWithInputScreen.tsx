@@ -7,12 +7,12 @@ import { updateCostos } from '../../services/costos';
 import { useNavigation } from '@react-navigation/native';
 import { SettingsContext } from '../../context/settings/SettingsContext';
 import codebartypes from '../../utils/codebarTypes.json';
-import PorductInterface from '../../interface/product';
+import ProductInterface from '../../interface/product';
 import { CodebarUpdateWithInputScreenStyles } from '../../theme/CodebarUpdateWithInputScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 
 interface CodebarUpdateWithInputScreenInterface {
-    productDetails?: PorductInterface
+    productDetails?: ProductInterface
 }
 
 export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWithInputScreenInterface) => {

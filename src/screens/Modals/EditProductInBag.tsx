@@ -4,7 +4,7 @@ import { editProductStyles } from '../../theme/ModalRenders/SearchCodebarWithInp
 import ModalMiddle from '../../components/Modals/ModalMiddle';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../context/ThemeContext';
-import { PorductInterfaceBag } from '../../interface/product';
+import { ProductInterfaceBag } from '../../interface/product';
 import { buttonStyles } from '../../theme/UI/buttons';
 import { globalStyles } from '../../theme/appTheme';
 import { Counter } from '../../components/Ui/Counter';
@@ -13,7 +13,7 @@ import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext
 type EditProductInBagInterface = {
     route?: {
         params: {
-            product: PorductInterfaceBag;
+            product: ProductInterfaceBag;
         };
     };
 };
@@ -38,7 +38,7 @@ export const EditProductInBag = ({ route }: EditProductInBagInterface) => {
         if(piezasCount < 1) {
             removeProduct(product)
         } else {
-            editProduct({ ...product, Piezas: piezasCount });
+            editProduct({ ...product, Cantidad: piezasCount });
         }
 
         handleCloseModal()
@@ -46,7 +46,7 @@ export const EditProductInBag = ({ route }: EditProductInBagInterface) => {
 
     useEffect(() => {
         const handleProductPiezasCount = () => {
-            setPiezasCount(product?.Piezas as number)
+            setPiezasCount(product?.Cantidad as number)
         }
 
         handleProductPiezasCount()

@@ -15,7 +15,6 @@ import Banner from "../../assets/OLEIAPP.svg";
 import Logo from "../../assets/Logo.svg";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useTheme } from '../../context/ThemeContext';
-import { Button } from 'react-native';
 import { InputPassword } from '../../components/Ui/InputPassword';
 
 

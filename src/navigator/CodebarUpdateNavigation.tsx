@@ -5,13 +5,13 @@ import { CodebarUpdateWithInputScreen } from '../screens/CodebarUpdate/CodebarUp
 import { createStackNavigator } from '@react-navigation/stack';
 import { CustomHeader } from '../components/Ui/CustomHeader';
 import { globalStyles } from '../theme/appTheme';
-import PorductInterface from '../interface/product';
+import ProductInterface from '../interface/product';
 import { useTheme } from '../context/ThemeContext';
 
 type CodebarUpdateNavigationInterface = {
     route?: {
         params: {
-            productDetails: PorductInterface;
+            productDetails: ProductInterface;
             selectedProduct: { Codigo: string; Marca: string };
         };
     };
@@ -19,7 +19,7 @@ type CodebarUpdateNavigationInterface = {
 
 
 export type InventoryNavigationStackParamList = {
-    "[CodebarUpdateNavigation] - UpdateCodeBarScreen": { product: PorductInterface };
+    "[CodebarUpdateNavigation] - UpdateCodeBarScreen": { product: ProductInterface };
     "[CodebarUpdateNavigation] - UpdateCodeBarWithInput": undefined
 };
 

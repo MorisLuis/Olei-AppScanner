@@ -3,7 +3,7 @@ import { FlatList, SafeAreaView, Text, View } from 'react-native'
 
 import { getProductsByStock, getTotalProductsByStock } from '../../services/products';
 import { ProductInventoryCard } from '../../components/Cards/ProductInventoryCard';
-import PorductInterface from '../../interface/product';
+import ProductInterface from '../../interface/product';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ProductInventoryCardSkeleton } from '../../components/Skeletons/ProductInventoryCardSkeleton';
@@ -20,7 +20,7 @@ export const Inventory = () => {
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black"
 
-    const [productsInInventory, setProductsInInventory] = useState<PorductInterface[]>([]);
+    const [productsInInventory, setProductsInInventory] = useState<ProductInterface[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalProducts, setTotalProducts] = useState(0);
@@ -50,17 +50,17 @@ export const Inventory = () => {
     };
 
     const loadMoreItem = () => {
+        setCurrentPage(currentPage + 1);
         if (productsInInventory.length < totalProducts) {
-            setCurrentPage(currentPage + 1);
         }
     };
 
-    const handlePressProduct = (selectedProduct: PorductInterface) => {
+    const handlePressProduct = (selectedProduct: ProductInterface) => {
         handleCodebarScannedProcces(false);
         navigate('[ProductDetailsPage] - inventoryDetailsScreen', { selectedProduct });
     };
 
-    const renderItem = ({ item }: { item: PorductInterface }) => {
+    const renderItem = ({ item }: { item: ProductInterface }) => {
         return <ProductInventoryCard product={item} onClick={() => handlePressProduct(item)} />;
     };
 

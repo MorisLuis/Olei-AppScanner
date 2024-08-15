@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { Text, TouchableOpacity, View } from 'react-native';
-import PorductInterface from '../../interface/product';
+import ProductInterface from '../../interface/product';
 import { ProductItemSearchStyles } from '../../theme/UI/cardsStyles';
 import { useTheme } from '../../context/ThemeContext';
 
 interface ProductItemSearchInterface {
-    product: PorductInterface;
+    product: ProductInterface;
     showDelete?: boolean;
-    onDelete?: (product: PorductInterface) => void;
+    onDelete?: (product: ProductInterface) => void;
     onClick?: () => void;
     fromModal?: boolean
 }

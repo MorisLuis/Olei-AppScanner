@@ -8,7 +8,7 @@ import { LoadingScreen } from '../LoadingScreen';
 import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
 import ModalDecision from '../../components/Modals/ModalDecision';
 import { useNavigation } from '@react-navigation/native';
-import { PorductInterfaceBag } from '../../interface/product';
+import { ProductInterfaceBag } from '../../interface/product';
 import { inputStyles } from '../../theme/UI/inputs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../../context/ThemeContext';
@@ -22,7 +22,7 @@ export const InventoryBagScreen = () => {
     const [createInventaryLoading, setCreateInventaryLoading] = useState(false);
     const [openModalDecision, setOpenModalDecision] = useState(false);
     const [searchText, setSearchText] = useState<string>('');
-    const [filteredBag, setFilteredBag] = useState<PorductInterfaceBag[]>([]);
+    const [filteredBag, setFilteredBag] = useState<ProductInterfaceBag[]>([]);
     const [page, setPage] = useState(1);
     const [pageSize] = useState(5);
     const inputRef = useRef<TextInput>(null);
@@ -51,7 +51,7 @@ export const InventoryBagScreen = () => {
         setFilteredBag([]);
     };
 
-    const renderItem = useCallback(({ item }: { item: PorductInterfaceBag }) => (
+    const renderItem = useCallback(({ item }: { item: ProductInterfaceBag }) => (
         <ProductInventoryCard
             product={item}
             onDelete={() => removeProduct(item)}

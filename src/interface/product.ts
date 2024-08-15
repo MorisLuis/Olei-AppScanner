@@ -1,4 +1,4 @@
-export default interface PorductInterface {
+export default interface ProductInterface {
     Descripcion: string;
     Id_Familia: number
     Codigo: string;
@@ -11,7 +11,7 @@ export default interface PorductInterface {
     Marca: string;
     Id_Marca: number;
     Id_ListaPrecios: number;
-    Piezas: number;
+    Cantidad: number;
     Impto: number;
     imagen: [{
         url: string,
@@ -21,6 +21,15 @@ export default interface PorductInterface {
     CodBar?: string
 }
 
-export interface PorductInterfaceBag extends PorductInterface {
-    key: number
+export interface ProductInterfaceBag {
+    Codigo: string;
+    Id_Marca: number;
+    Cantidad: number;
+    Existencia: number;
+
+    Id_Ubicacion?: number;
+    Diferencia?: number;
+    Descripcion?: string;
+    Marca?: string;
+    key?: number
 }

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ProductInventoryConfirmationCardTheme } from '../../theme/UI/cardsStyles';
-import PorductInterface from '../../interface/product.js';
+import ProductInterface from '../../interface/product.js';
 import { useTheme } from '../../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 interface ProductInventoryConfirmationCardInterface {
-    product: PorductInterface;
+    product: ProductInterface;
     onClick?: () => void;
     disabled: boolean
 }
@@ -34,8 +34,8 @@ export const ProductInventoryConfirmationCard = ({
                     </View>
 
                     <View style={ProductInventoryConfirmationCardTheme(theme).dataItem}>
-                        <Text style={ProductInventoryConfirmationCardTheme(theme).label}>Piezas:</Text>
-                        <Text style={ProductInventoryConfirmationCardTheme(theme).dataItemText}>{product?.Piezas}</Text>
+                        <Text style={ProductInventoryConfirmationCardTheme(theme).label}>Cantidad:</Text>
+                        <Text style={ProductInventoryConfirmationCardTheme(theme).dataItemText}>{product?.Cantidad}</Text>
                     </View>
                 </View>
 

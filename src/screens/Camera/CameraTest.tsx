@@ -7,11 +7,12 @@ import { SettingsContext } from '../../context/settings/SettingsContext';
 import { useTheme } from '../../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { BlurView } from '@react-native-community/blur';
-import PorductInterface from '../../interface/product';
+import ProductInterface from '../../interface/product';
 import { cameraStyles } from '../../theme/CameraCustumTheme';
 import { CameraPermission } from '../../components/screens/CameraPermission';
 import { Camera } from 'react-native-camera-kit';
 import { cameraSettings, getTypeOfMovementsName } from './cameraSettings';
+import Diente from "../../assets/diente.svg";
 
 type PermissionStatus = 'unavailable' | 'denied' | 'limited' | 'granted' | 'blocked';
 
@@ -35,11 +36,11 @@ const CameraTest: React.FC = () => {
 
     const [lightOn, setLightOn] = useState(false);
     const [cameraKey, setCameraKey] = useState(0);
-    const [productsScanned, setProductsScanned] = useState<PorductInterface[]>();
+    const [productsScanned, setProductsScanned] = useState<ProductInterface[]>();
     const [cameraPermission, setCameraPermission] = useState<PermissionStatus | null>(null);
 
     // Other functions.
-    const handleOpenProductsFoundByCodebar = (response: PorductInterface[]) => {
+    const handleOpenProductsFoundByCodebar = (response: ProductInterface[]) => {
 
         if (response.length === 1) {
             navigate('[Modal] - scannerResultScreen', { product: response[0] });
@@ -143,9 +144,13 @@ const CameraTest: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
+
+
                 <View style={cameraStyles(theme).cog}>
                     <TouchableOpacity onPress={() => navigate('typeOfMovementScreen')}>
-                        <Icon name={"cog-outline"} size={28} color="white" />
+                        {/* <Icon name={"cog-outline"} size={28} color="white" /> */}
+                        <Diente width={28} height={28} color={"white"} fill={"white"}/>
+
                     </TouchableOpacity>
                 </View>
 
