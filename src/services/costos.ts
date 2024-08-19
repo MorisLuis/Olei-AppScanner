@@ -6,6 +6,7 @@ import CostosInterface from "../interface/costos";
 interface CostosInterfaceExtend extends CostosInterface {
     codeRandom: string
 }
+
 interface updateCostosInterface {
     codigo: string;
     Id_Marca: number;
@@ -13,7 +14,7 @@ interface updateCostosInterface {
 }
 
 
-const updateCostos = async ({
+const updateCodbar = async ({
     codigo,
     Id_Marca,
     body = {}
@@ -31,5 +32,5 @@ const updateCostos = async ({
 }
 
 export {
-    updateCostos
+    updateCodbar
 }

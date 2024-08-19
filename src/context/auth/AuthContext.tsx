@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import { LoginData } from './AuthProvider';
 import UserInterface from '../../interface/user';
+import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
 
 interface ContextProps {
     errorMessage: string;
@@ -11,7 +12,7 @@ interface ContextProps {
     signIn: (loginData: LoginData) => void;
     logOut: () => void;
     removeError: () => void;
-    updateTypeOfMovements: (value: number) => void;
+    updateTypeOfMovements: (value: Id_TipoMovInvInterface) => void;
     getTypeOfMovementsName: () => string;
 }
 

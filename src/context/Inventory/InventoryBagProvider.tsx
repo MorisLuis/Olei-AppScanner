@@ -72,10 +72,10 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
     const postInventory = async (inventoryDetails: ProductInterfaceBag[]) => {
         try {
-            const tipoMovInvId = user?.Id_TipoMovInv?.Id_TipoMovInv;
+            const tipoMovInvId = user?.Id_TipoMovInv;
             const inventorybody = {
                 inventoryDetails: inventoryDetails,
-                Id_TipoMovInv: tipoMovInvId
+                typeOfMovement: tipoMovInvId
             };
             const inventory = await api.post(`/api/inventory`, inventorybody);
             dispatch({ type: '[InventoryBag] - Post Inventory', payload: inventory.data })

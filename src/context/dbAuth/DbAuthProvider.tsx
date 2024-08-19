@@ -95,6 +95,7 @@ export const DbAuthProvider = ({ children }: any) => {
         try {
             state.status = "dbChecking"
             const { data } = await api.post('/api/auth/loginDB', { IdUsuarioOLEI, PasswordOLEI });
+            await AsyncStorage.removeItem('token');
 
             dispatch({
                 type: 'signUp',

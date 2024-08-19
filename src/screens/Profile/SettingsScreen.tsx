@@ -29,9 +29,10 @@ export const SettingsScreen = () => {
 
 
     const onChangetTypeOfMovement = (value: number) => {
-        if (value === undefined || value === null) return
-        setTypeSelected(value)
-        updateTypeOfMovements(value)
+        const type = typeOfMovement.find((item) => item.Id_TipoMovInv == value)
+        if (type === undefined || type === null) return
+        setTypeSelected(type.Accion)
+        updateTypeOfMovements(type)
     }
 
     const onChangeLimitProducts = () => {
@@ -44,7 +45,6 @@ export const SettingsScreen = () => {
     }
 
     useEffect(() => {
-        console.log('Settings Screen effect');
         const handleGetTypeOfMovements = async () => {
             const types = await getTypeOfMovements();
             setTypeOfMovement(types)
@@ -72,7 +72,7 @@ export const SettingsScreen = () => {
                                         'Selecciona una opción...'
                                 }
                                 //Methods
-                                onValueChange={(value) => onChangetTypeOfMovement(value)}
+                                onValueChange={(value: any) => onChangetTypeOfMovement(value)}
                             />
 
                             <View style={SettingsScreenStyles(theme).divider}></View>

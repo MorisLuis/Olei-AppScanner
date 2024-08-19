@@ -4,7 +4,7 @@ import { View, Vibration, Text, TouchableOpacity, ActivityIndicator } from 'reac
 import { globalStyles } from '../../../theme/appTheme';
 import { SettingsContext } from '../../../context/settings/SettingsContext';
 import { buttonStyles } from '../../../theme/UI/buttons';
-import { updateCostos } from '../../../services/costos';
+import { updateCodbar } from '../../../services/costos';
 import { useNavigation } from '@react-navigation/native';
 import ProductInterface from '../../../interface/product';
 import { Camera } from 'react-native-camera-kit';
@@ -73,7 +73,7 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
     const hanldeUpdateCodebar = async () => {
         if (!productDetails) return;
 
-        await updateCostos({
+        await updateCodbar({
             codigo: productDetails?.Codigo,
             Id_Marca: productDetails?.Id_Marca,
             body: {

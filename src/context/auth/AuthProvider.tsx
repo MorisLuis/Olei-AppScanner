@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 import { DbAuthContext } from '../dbAuth/DbAuthContext';
+import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
@@ -65,8 +66,8 @@ export const AuthProvider = ({ children }: any) => {
         }
 
         if (statusLoginDatabase == 'dbNot-authenticated' && statusLogin == 'not-authenticated') {
-            if(currentScreen === 'LoginDatabaseScreen') return;
-            
+            if (currentScreen === 'LoginDatabaseScreen') return;
+
             return navigation.reset({
                 index: 0,
                 routes: [{ name: 'LoginDatabaseScreen' }],
@@ -145,7 +146,7 @@ export const AuthProvider = ({ children }: any) => {
             setLoggingIn(false)
 
         } catch (error: any) {
-            console.log({error})
+            console.log({ error })
             setLoggingIn(false)
 
             dispatch({
@@ -166,15 +167,23 @@ export const AuthProvider = ({ children }: any) => {
     };
 
 
-    const updateTypeOfMovements = async (value: number) => {
+    const updateTypeOfMovements = async (value: Id_TipoMovInvInterface) => {
         try {
-            const getTypeOfMovements = await api.put(`/api/typeofmovements`, { Id_TipoMovInv: value });
-            const typeOfMov = getTypeOfMovements.data;
-            dispatch({ type: '[Settings] - typeOfMovement', user: { ...state.user as UserInterface, Id_TipoMovInv: typeOfMov.user.Id_TipoMovInv} });
-            Toast.show({
-                type: 'tomatoToast',
-                text1: 'Se cambio el tipo de movimiento!'
-            })
+            dispatch({
+                type: '[Auth] - typeOfMovement',
+                payload: {
+                    user: {
+                        ...state.user!,
+                        Id_TipoMovInv: {
+                            Id_TipoMovInv: value.Id_TipoMovInv,
+                            Accion: value.Accion,
+                            Descripcion: value.Descripcion,
+                            Id_AlmDest: value.Id_AlmDest
+                        }
+                    }
+                }
+            });
+
         } catch (error: any) {
             console.log({ error: error })
         }
@@ -203,9 +212,9 @@ export const AuthProvider = ({ children }: any) => {
             signIn,
             loggingIn,
             logOut,
-            removeError,  
+            removeError,
             updateTypeOfMovements,
-            getTypeOfMovementsName       
+            getTypeOfMovementsName
         }}>
             {children}
         </AuthContext.Provider>

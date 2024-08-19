@@ -5,7 +5,7 @@ import { productDetailsStyles } from '../../theme/productDetailsTheme';
 import { buttonStyles } from '../../theme/UI/buttons';
 import { globalStyles } from '../../theme/appTheme';
 import { useNavigation } from '@react-navigation/native';
-import { updateCostos } from '../../services/costos';
+import { updateCodbar } from '../../services/costos';
 import ModalBottom from '../../components/Modals/ModalBottom';
 import CameraModal from '../../components/Modals/ModalRenders/CameraModal';
 import { Selector } from '../../components/Ui/Selector';
@@ -57,7 +57,7 @@ export const CodebarUpdateScreen = ({ productDetails }: any) => {
     const hanldeUpdateCodebarWithCodeFound = async () => {
         if (!productDetails) return;
 
-        await updateCostos({
+        await updateCodbar({
             codigo: productDetails?.Codigo,
             Id_Marca: productDetails?.Id_Marca,
             body: {
@@ -70,7 +70,7 @@ export const CodebarUpdateScreen = ({ productDetails }: any) => {
     const hanldeUpdateCodebarWithCodeRandom = async () => {
         if (!productDetails) return;
 
-        await updateCostos({
+        await updateCodbar({
             codigo: productDetails?.Codigo,
             Id_Marca: productDetails?.Id_Marca,
             body: {

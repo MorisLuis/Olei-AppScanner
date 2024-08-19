@@ -3,7 +3,7 @@ import { KeyboardType, Text, TextInput, TouchableOpacity, View } from 'react-nat
 import { buttonStyles } from '../../theme/UI/buttons';
 import { globalStyles } from '../../theme/appTheme';
 import { inputStyles } from '../../theme/UI/inputs';
-import { updateCostos } from '../../services/costos';
+import { updateCodbar } from '../../services/costos';
 import { useNavigation } from '@react-navigation/native';
 import { SettingsContext } from '../../context/settings/SettingsContext';
 import codebartypes from '../../utils/codebarTypes.json';
@@ -30,7 +30,7 @@ export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWi
         if (!productDetails) return;
         if(!regex.test(text)) return;
 
-        await updateCostos({
+        await updateCodbar({
             codigo: productDetails?.Codigo,
             Id_Marca: productDetails?.Id_Marca,
             body: {

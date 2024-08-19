@@ -1,4 +1,5 @@
 import UserInterface from "../../interface/user";
+import { Id_TipoMovInvInterface } from "../../services/typeOfMovement";
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
@@ -14,7 +15,7 @@ type AuthAction =
     | { type: 'removeError' }
     | { type: 'notAuthenticated' }
     | { type: 'logout' }
-    | { type: '[Settings] - typeOfMovement', user: UserInterface }
+    | { type: '[Auth] - typeOfMovement', payload: { user: UserInterface } }
 
 
 export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -58,10 +59,10 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
                 user: null
             }
 
-        case '[Settings] - typeOfMovement':
+        case '[Auth] - typeOfMovement':
             return {
                 ...state,
-                user: { ...action.user }
+                user: action.payload.user
             }
 
         default:

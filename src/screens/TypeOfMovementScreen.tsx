@@ -7,29 +7,28 @@ import { TypeOfMovementSkeleton } from '../components/Skeletons/TypeOfMovementSk
 import { AuthContext } from '../context/auth/AuthContext';
 import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 import { useTheme } from '../context/ThemeContext';
-import DotLoader from '../components/Ui/DotLaoder';
 
 export const TypeOfMovementScreen = () => {
 
-    const { updateTypeOfMovements, logOut } = useContext(AuthContext);
+    const { updateTypeOfMovements } = useContext(AuthContext);
     const { theme, typeTheme } = useTheme();
     const { navigate } = useNavigation<any>();
 
     const [typeOfMovement, setTypeOfMovement] = useState<Id_TipoMovInvInterface[]>([]);
-    const [typeSelected, setTypeSelected] = useState<number>()
+    const [typeSelected, setTypeSelected] = useState<Id_TipoMovInvInterface>()
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleOptionSelect = (option: number) => {
+    const handleOptionSelect = (option: Id_TipoMovInvInterface) => {
         setTypeSelected(option);
     };
 
     const renderOption = ({ item }: { item: Id_TipoMovInvInterface }) => {
-        const isSelected = typeSelected === item.Id_TipoMovInv;
+        const isSelected = typeSelected?.Id_TipoMovInv === item.Id_TipoMovInv;
 
         return (
             <TouchableOpacity
                 style={[TypeOfMovementScreenStyles(theme).optionContainer, isSelected && TypeOfMovementScreenStyles(theme).selectedOption]}
-                onPress={() => handleOptionSelect(item.Id_TipoMovInv)}
+                onPress={() => handleOptionSelect(item)}
             >
                 <Text
                     style={
@@ -74,8 +73,6 @@ export const TypeOfMovementScreen = () => {
         handleGetTypeOfMovements()
     }, []);
 
-
-    const [startAnimation, setStartAnimation] = useState(false)
 
 
     return (
