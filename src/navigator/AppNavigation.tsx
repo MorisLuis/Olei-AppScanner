@@ -26,7 +26,7 @@ import { EditProductInBag } from '../screens/Modals/EditProductInBag';
 export type InventoryNavigationStackParamList = {
     // Navigation
     BottomNavigation: undefined;
-    CodebarUpdateNavigation: { product: ProductInterface, selectedProduct: any },
+    CodebarUpdateNavigation: { productDetails: ProductInterface },
 
     // Login
     LoginPage: undefined;

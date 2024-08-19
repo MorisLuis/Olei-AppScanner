@@ -20,15 +20,16 @@ export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWi
     const [text, setText] = useState('');
     const navigation = useNavigation<any>();
     const { codebarType } = useContext(SettingsContext);
-    const { theme } = useTheme();
+    const { theme, typeTheme } = useTheme();
 
     const currentType = codebartypes.barcodes.find((code: any) => code.id === codebarType)
     const regex = new RegExp(currentType?.regex as string);
 
 
     const hanldeUpdateCodebarWithCodeRandom = async () => {
+
         if (!productDetails) return;
-        if(!regex.test(text)) return;
+        if (!regex.test(text)) return;
 
         await updateCodbar({
             codigo: productDetails?.Codigo,
@@ -48,7 +49,7 @@ export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWi
     return (
         <View style={CodebarUpdateWithInputScreenStyles(theme).CodebarUpdateWithInputScreen}>
 
-            <Text style={CodebarUpdateWithInputScreenStyles(theme).inputLabel}>Escribe el codigo que quieras.</Text>
+            <Text style={CodebarUpdateWithInputScreenStyles(theme, typeTheme).inputLabel}>Escribe el codigo que quieras.</Text>
 
             <TextInput
                 style={[inputStyles(theme).input, globalStyles(theme).globalMarginBottomSmall]}
@@ -56,6 +57,7 @@ export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWi
                 onChangeText={handleTextChange}
                 keyboardType={currentType?.keyboardType as KeyboardType}
                 maxLength={currentType?.maxLength}
+                placeholderTextColor={"gray"}
             />
 
             <Text style={CodebarUpdateWithInputScreenStyles(theme).warningMessage}>{currentType?.errorMessage}</Text>

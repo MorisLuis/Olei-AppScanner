@@ -13,13 +13,19 @@ import codebartypes from '../../utils/codebarTypes.json';
 import { SettingsContext } from '../../context/settings/SettingsContext';
 import { useTheme } from '../../context/ThemeContext';
 import { CodebarUpdateScreenStyles } from '../../theme/CodebarUpdateScreenTheme';
+import { CodebarUpdateOptionCard } from '../../components/Cards/CodebarUpdateOptionCard';
+import ProductInterface from '../../interface/product';
 
 type optionSelectedInterface = {
     screen: string,
     title: string
 }
 
-export const CodebarUpdateScreen = ({ productDetails }: any) => {
+interface CodebarUpdateScreenInterface {
+    productDetails: ProductInterface
+}
+
+export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInterface) => {
 
 
     const navigation = useNavigation<any>();
@@ -33,6 +39,7 @@ export const CodebarUpdateScreen = ({ productDetails }: any) => {
     const [codebartypeSelected, setCodebartypeSelected] = useState<number>()
     const [changeTypeOfCodebar, setChangeTypeOfCodebar] = useState(false)
     const currentType = codebartypes.barcodes.find((code: any) => code.id === codebarType)
+    const [optionSelected, setOptionSelected] = useState<number>(0)
 
     const handleOptionOfUpdateCodeSelect = (option: optionSelectedInterface) => {
         setSelectedOption(option);
@@ -42,7 +49,7 @@ export const CodebarUpdateScreen = ({ productDetails }: any) => {
         handleGetCodebarType(value)
     }
 
-    const handleGoToNextStep = () => {
+    /* const handleGoToNextStep = () => {
         if (selectedOption.screen === "updateWithCode") {
             hanldeUpdateCodebarWithCodeFound()
         } else if (selectedOption.screen === "updateWithRandomCode") {
@@ -52,7 +59,22 @@ export const CodebarUpdateScreen = ({ productDetails }: any) => {
         } else {
             navigation.navigate(selectedOption.screen, { title: selectedOption.title, productDetails });
         }
+    } */
+
+
+    const handleGoToNextStep = () => {
+        if (optionSelected === 1) {
+            hanldeUpdateCodebarWithCodeFound()
+        } else if (optionSelected === 2) {
+            updateBarCode('')
+            setOpenModalCamera(true)
+        } else if (optionSelected === 3) {
+            hanldeUpdateCodebarWithCodeRandom()
+        } else if (optionSelected === 4) {
+            navigation.navigate('[CodebarUpdateNavigation] - UpdateCodeBarWithInput', { title: "Escribir manualmente jeje", productDetails: productDetails });
+        }
     }
+
 
     const hanldeUpdateCodebarWithCodeFound = async () => {
         if (!productDetails) return;
@@ -98,9 +120,7 @@ export const CodebarUpdateScreen = ({ productDetails }: any) => {
                         !changeTypeOfCodebar ?
                             <View style={CodebarUpdateScreenStyles(theme).actualCodebarType}>
                                 <Text style={CodebarUpdateScreenStyles(theme).actualCodebarTypeText}>Actualmente el codigo de barras es tipo {currentType?.type}</Text>
-                                <TouchableOpacity
-                                    onPress={() => setChangeTypeOfCodebar(true)}
-                                >
+                                <TouchableOpacity onPress={() => setChangeTypeOfCodebar(true)}>
                                     <Text style={CodebarUpdateScreenStyles(theme).actualCodebarTypeChange}>Cambiar</Text>
                                 </TouchableOpacity>
                             </View>
@@ -124,65 +144,41 @@ export const CodebarUpdateScreen = ({ productDetails }: any) => {
                             </View>
                     }
 
-                    {
-                        (codeBarStatus) ?
-                            <TouchableOpacity
-                                style={[productDetailsStyles(theme).optionCodebar, selectedOption.screen === 'updateWithCode' && productDetailsStyles(theme).selectedOption]}
-                                onPress={() => handleOptionOfUpdateCodeSelect({ screen: 'updateWithCode', title: 'updateWithCode' })}
-                            >
-                                <Icon name="barcode-outline" size={24} color={selectedOption.screen === 'updateWithCode' ? iconColorActive : iconColor} style={productDetailsStyles(theme).optionCodebar_icon} />
-                                <Text
-                                    style={[selectedOption.screen === 'updateWithCode' ? CodebarUpdateScreenStyles(theme, typeTheme).optionCodebarTextActive : CodebarUpdateScreenStyles(theme, typeTheme).optionCodebarText]}
-                                >
-                                    Actualizar código con: {codeBar}
-                                </Text>
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity
-                                style={[productDetailsStyles(theme).optionCodebar, selectedOption.screen === 'CameraModal' && productDetailsStyles(theme).selectedOption]}
-                                onPress={() => handleOptionOfUpdateCodeSelect({ screen: 'CameraModal', title: 'CameraModal' })}
-                            >
-                                <Icon name="camera-outline" size={24} color={selectedOption.screen === 'CameraModal' ? iconColorActive : iconColor} style={productDetailsStyles(theme).optionCodebar_icon} />
-                                <Text
-                                    style={[selectedOption.screen === 'CameraModal' ? CodebarUpdateScreenStyles(theme, typeTheme).optionCodebarTextActive : CodebarUpdateScreenStyles(theme, typeTheme).optionCodebarText]}
-                                >
-                                    Usar camara para escanear codigo
-                                </Text>
-                            </TouchableOpacity>
-                    }
+                    <CodebarUpdateOptionCard
+                        message={`Actualizar código con: ${codeBar}`}
+                        icon="barcode-outline"
+                        onClick={() => setOptionSelected(1)}
+                        active={optionSelected === 1}
+                        visible={codeBarStatus}
+                    />
 
-                    {
-                        currentType?.type === 'Libre' &&
-                        <TouchableOpacity
-                            style={[productDetailsStyles(theme).optionCodebar, selectedOption.screen === 'updateWithRandomCode' && productDetailsStyles(theme).selectedOption]}
-                            onPress={() => handleOptionOfUpdateCodeSelect({ screen: 'updateWithRandomCode', title: 'updateWithRandomCode' })}
-                        >
-                            <Icon name="shuffle-outline" size={24} color={selectedOption.screen === 'updateWithRandomCode' ? iconColorActive : iconColor} style={productDetailsStyles(theme).optionCodebar_icon} />
-                            <Text
-                                style={[selectedOption.screen === 'updateWithRandomCode' ? CodebarUpdateScreenStyles(theme, typeTheme).optionCodebarTextActive : CodebarUpdateScreenStyles(theme, typeTheme).optionCodebarText]}
-                            >
-                                Actualizar con código aleatorio
-                            </Text>
-                        </TouchableOpacity>
-                    }
+                    <CodebarUpdateOptionCard
+                        message={`Usar camara para escanear codigo`}
+                        icon="camera-outline"
+                        onClick={() => setOptionSelected(2)}
+                        active={optionSelected === 2}
+                    />
 
+                    <CodebarUpdateOptionCard
+                        message={`Actualizar con código aleatorio`}
+                        icon="shuffle-outline"
+                        onClick={() => setOptionSelected(3)}
+                        active={optionSelected === 3}
+                    />
 
-                    <TouchableOpacity
-                        style={[productDetailsStyles(theme).optionCodebar, selectedOption.screen === '[CodebarUpdateNavigation] - UpdateCodeBarWithInput' && productDetailsStyles(theme).selectedOption]}
-                        onPress={() => handleOptionOfUpdateCodeSelect({ screen: '[CodebarUpdateNavigation] - UpdateCodeBarWithInput', title: 'Actualizar Manualmente' })}
-                    >
-                        <Icon name="text-outline" size={24} color={selectedOption.screen === '[CodebarUpdateNavigation] - UpdateCodeBarWithInput' ? iconColorActive : iconColor} style={productDetailsStyles(theme).optionCodebar_icon} />
-                        <Text
-                            style={[selectedOption.screen === '[CodebarUpdateNavigation] - UpdateCodeBarWithInput' ? CodebarUpdateScreenStyles(theme, typeTheme).optionCodebarTextActive : CodebarUpdateScreenStyles(theme, typeTheme).optionCodebarText]}
-                        >
-                            Escribir manualmente
-                        </Text>
-                    </TouchableOpacity>
+                    <CodebarUpdateOptionCard
+                        message='Escribir manualmente'
+                        icon="text-outline"
+                        onClick={() => setOptionSelected(4)}
+                        active={optionSelected === 4}
+                    />
+
                 </View>
 
-                {selectedOption.screen !== "" && (
+                {optionSelected !== 0 && (
                     <TouchableOpacity style={buttonStyles(theme).button} onPress={handleGoToNextStep}>
-                        <Text style={buttonStyles(theme).buttonText}>Avanzar</Text>
+                        <Text style={buttonStyles(theme, typeTheme).buttonText}>Avanzar</Text>
+                        <Icon name="arrow-forward" size={16} color={iconColor} />
                     </TouchableOpacity>
                 )}
             </View>

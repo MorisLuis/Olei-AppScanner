@@ -28,7 +28,6 @@ const CameraTest: React.FC = () => {
 
     const { handleCameraAvailable, limitProductsScanned, cameraAvailable, startScanning } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
-    const iconColor = typeTheme === 'dark' ? "white" : "black"
 
     const { navigate } = useNavigation<any>();
     const isFocused = useIsFocused();
@@ -144,8 +143,6 @@ const CameraTest: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-
-
                 <View style={cameraStyles(theme).cog}>
                     <TouchableOpacity onPress={() => navigate('typeOfMovementScreen')}>
                         {/* <Icon name={"cog-outline"} size={28} color="white" /> */}
@@ -178,29 +175,6 @@ const CameraTest: React.FC = () => {
                     <Text style={cameraStyles(theme, typeTheme).textmessage}>Escaneando...</Text>
                 </View>
             }
-
-
-
-            {/* {
-                Platform.OS === 'android' ?
-                    <TouchableOpacity style={cameraStyles(theme).scannerOptions} onPress={handleOpenInputModal}>
-                        <View style={cameraStyles(theme).optionAndroid}>
-                            <View style={cameraStyles(theme).optionContent}>
-                                <Icon name="barcode-outline" size={hp("3%")} color={iconColor} />
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    :
-                    <View style={cameraStyles(theme, typeTheme).scannerOptions}>
-                        <TouchableOpacity onPress={handleOpenInputModal}>
-                            <BlurView style={cameraStyles(theme, typeTheme).option} blurType="light" blurAmount={20}>
-                                <View style={cameraStyles(theme, typeTheme).optionContent}>
-                                    <Icon name="barcode-outline" size={hp("3%")} color={"black"} />
-                                </View>
-                            </BlurView>
-                        </TouchableOpacity>
-                    </View>
-            } */}
         </View>
     );
 };

@@ -9,7 +9,6 @@ import { ProductDetailsSkeleton } from '../components/Skeletons/ProductDetailsSk
 import { productDetailsStyles } from '../theme/productDetailsTheme';
 import { SettingsContext } from '../context/settings/SettingsContext';
 import { globalStyles } from '../theme/appTheme';
-import { identifyBarcodeType } from '../utils/identifyBarcodeType';
 import { useTheme } from '../context/ThemeContext';
 
 type ProductDetailsPageInterface = {
@@ -32,7 +31,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
     const [productDetailsData, setProductDetailsData] = useState<ProductInterface | null>(null);
 
     const handleOptionsToUpdateCodebar = () => {
-        navigation.navigate('CodebarUpdateNavigation', { selectedProduct });
+        navigation.navigate('CodebarUpdateNavigation', { productDetails: selectedProduct });
     };
 
     const handleGetProductDetails = async () => {
@@ -59,7 +58,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
                     setProductDetailsData(null);
                 }
 
-                if(fromUpdateCodebar){
+                if (fromUpdateCodebar) {
                     shouldCleanUp.current = true;
                 }
             };
@@ -84,15 +83,14 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
 
 interface ProductDetailsContentInterface {
     productDetailsData: ProductInterface,
-    handleOptionsToUpdateCodebar: any,
-    handleAddToInventory: any,
+    handleOptionsToUpdateCodebar: () => void,
+    handleAddToInventory: () => void,
     fromModal?: boolean,
     codeBar?: string,
     fromUpdateCodebar?: boolean
 }
 
 const ProductDetailsContent = React.memo(({ productDetailsData, handleOptionsToUpdateCodebar, handleAddToInventory, fromModal, codeBar, fromUpdateCodebar }: ProductDetailsContentInterface) => {
-    const codebarTypeIndetify = identifyBarcodeType(codeBar as string)
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black"
 
@@ -116,10 +114,6 @@ const ProductDetailsContent = React.memo(({ productDetailsData, handleOptionsToU
                 </View>
                 <View style={productDetailsStyles(theme).header}>
                     <Text style={productDetailsStyles(theme).description}>{productDetailsData.Descripcion}</Text>
-                    {/* <View>
-                        <Text style={productDetailsStyles(theme).price}>Precio</Text>
-                        <Text style={productDetailsStyles(theme).priceValue}>{format(productDetailsData.Precio)}</Text>
-                    </View> */}
                 </View>
 
                 <View style={productDetailsStyles(theme, typeTheme).information}>
@@ -131,13 +125,6 @@ const ProductDetailsContent = React.memo(({ productDetailsData, handleOptionsToU
                         <ProductDetailItem theme={theme} label="Codigo de barras:" value={productDetailsData.CodBar} isLastChild />
                     )}
                 </View>
-
-                {
-                    (codeBar && fromUpdateCodebar) &&
-                    <View style={productDetailsStyles(theme).codebarIdentify}>
-                        <Text style={{ color: theme.text_color }}>El codigo de barras identificado es: {codebarTypeIndetify?.type}</Text>
-                    </View>
-                }
 
                 {(!productDetailsData.CodBar && !fromModal) && (
                     <TouchableOpacity

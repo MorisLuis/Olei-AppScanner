@@ -15,7 +15,9 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) =>  StyleSheet.cr
         color: theme.text_color_secondary,
         display: "flex",
         justifyContent:"center",
-        alignItems:"center"
+        alignItems:"center",
+        flexDirection: "row",
+        gap: globalStyles(theme).globalMarginBottomSmall.marginBottom / 2
     },
 
     button_small: {

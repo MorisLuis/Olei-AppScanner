@@ -63,7 +63,7 @@ export const SearchCodebarWithInput = () => {
             onClose={handleCloseModal}
         >
             <View style={modalRenderstyles(theme).SearchCodebarWithInput}>
-                <Text style={modalRenderstyles(theme).SearchCodebarWithInput_title}>Escribe el {typeOfSearch === 'code' ? 'Codigo' : 'Codigo de barras'}:</Text>
+                <Text style={modalRenderstyles(theme, typeTheme).SearchCodebarWithInput_title}>Escribe el {typeOfSearch === 'code' ? 'Codigo' : 'Codigo de barras'}:</Text>
                 <TextInput
                     style={[inputStyles(theme).input, globalStyles(theme).globalMarginBottomSmall]}
                     onChangeText={onChangeBarcode}

@@ -12,21 +12,20 @@ type CodebarUpdateNavigationInterface = {
     route?: {
         params: {
             productDetails: ProductInterface;
-            selectedProduct: { Codigo: string; Marca: string };
         };
     };
 };
 
 
 export type InventoryNavigationStackParamList = {
-    "[CodebarUpdateNavigation] - UpdateCodeBarScreen": { product: ProductInterface };
-    "[CodebarUpdateNavigation] - UpdateCodeBarWithInput": undefined
+    "[CodebarUpdateNavigation] - UpdateCodeBarScreen": { productDetails: ProductInterface };
+    "[CodebarUpdateNavigation] - UpdateCodeBarWithInput": { productDetails: ProductInterface };
 };
 
 export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterface) => {
 
     const Stack = createStackNavigator<InventoryNavigationStackParamList>();
-    const { productDetails, selectedProduct } = route?.params ?? {};
+    const { productDetails } = route?.params ?? {};
     const { theme } = useTheme();
 
     return (
@@ -41,7 +40,7 @@ export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterf
                         </View>
                 })}
             >
-                {props => <CodebarUpdateScreen {...props} productDetails={selectedProduct} /* selectedProduct={selectedProduct} */ />}
+                {props => <CodebarUpdateScreen {...props} productDetails={productDetails as ProductInterface} />}
             </Stack.Screen>
 
             <Stack.Screen
@@ -53,7 +52,7 @@ export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterf
                         </View>
                 })}
             >
-                {props => <CodebarUpdateWithInputScreen {...props} productDetails={productDetails} />}
+                {props => <CodebarUpdateWithInputScreen productDetails={productDetails} />}
             </Stack.Screen>
         </Stack.Navigator>
     );
