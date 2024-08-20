@@ -26,27 +26,31 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
     const { Codigo, Marca } = selectedProduct ?? {};
     const { handleCameraAvailable, codeBar } = useContext(SettingsContext);
     const shouldCleanUp = useRef(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     const navigation = useNavigation<any>();
     const [productDetailsData, setProductDetailsData] = useState<ProductInterface | null>(null);
 
-    const handleOptionsToUpdateCodebar = () => {
+    const handleOptionsToUpdateCodebar = useCallback(() => {
         navigation.navigate('CodebarUpdateNavigation', { productDetails: selectedProduct });
-    };
+    }, [navigation, selectedProduct]);
 
     const handleGetProductDetails = async () => {
         try {
+            setIsLoading(true);
             const productData = await getProductDetails(Codigo as string, Marca as string);
             setProductDetailsData(productData);
         } catch (error) {
             console.error('Error fetching product details:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const handleAddToInventory = () => {
+    const handleAddToInventory = useCallback(() => {
         shouldCleanUp.current = false;
         navigation.navigate('[Modal] - scannerResultScreen', { product: selectedProduct, fromProductDetails: true });
-    }
+    }, [navigation, selectedProduct]);
 
     useFocusEffect(
         useCallback(() => {
@@ -65,8 +69,15 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
         }, [selectedProduct])
     );
 
-
-    return productDetailsData ? (
+    if (isLoading) {
+        return <ProductDetailsSkeleton />;
+    }
+    
+    if (!productDetailsData) {
+        return <Text>No se encontraron detalles del producto.</Text>;
+    }
+    
+    return (
         <ProductDetailsContent
             productDetailsData={productDetailsData}
             handleOptionsToUpdateCodebar={handleOptionsToUpdateCodebar}
@@ -75,8 +86,6 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
             codeBar={codeBar}
             fromUpdateCodebar={fromUpdateCodebar}
         />
-    ) : (
-        <ProductDetailsSkeleton />
     );
 };
 

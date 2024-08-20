@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState, useEffect } from 'react';
+import React, { useCallback, useContext, useState, useEffect, useMemo } from 'react';
 import { SafeAreaView, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import { ProductInventoryConfirmationCard } from '../../components/Cards/ProductInventoryConfirmationCard';
@@ -20,16 +20,19 @@ export const ConfirmationScreen = () => {
     const { navigate } = useNavigation<any>();
 
     const iconColor = theme.color_tertiary;
-    const [filteredBag, setFilteredBag] = useState<ProductInterfaceBag[]>([]);
     const [createInventaryLoading, setCreateInventaryLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [pageSize] = useState(5);
+
+    const filteredBag = useMemo(() => {
+        return bag.slice(0, page * pageSize);
+    }, [bag, page, pageSize]);
 
     const renderItem = useCallback(({ item }: { item: ProductInterfaceBag }) => (
         <ProductInventoryConfirmationCard product={item} onClick={() => navigate('[Modal] - editProductInBag', { product: item })} disabled={createInventaryLoading} />
     ), [createInventaryLoading]);
 
-    const onPostInventary = async () => {
+    const onPostInventary = useCallback(async () => {
         setCreateInventaryLoading(true);
         await postInventory(bag);
 
@@ -39,27 +42,19 @@ export const ConfirmationScreen = () => {
             navigate('BottomNavigation - Scanner');
             navigate('succesMessageScreen');
         }, 500);
-    };
+    }, [bag, postInventory, cleanBag, navigate]);
+    
 
     const handleLoadMore = () => {
         if (filteredBag.length >= numberOfItems) return;
         setPage(prevPage => prevPage + 1);
     };
 
-    const loadMoreData = useCallback(() => {
-        setFilteredBag(bag.slice(0, page * pageSize));
-    }, [bag, page, pageSize]);
-
-    useEffect(() => {
-        loadMoreData();
-    }, [page, loadMoreData]);
-
     const { protectThisPage } = useProtectPage({
         numberOfItems: numberOfItems,
         loading: createInventaryLoading,
         navigatePage: 'BottomNavigation'
     });
-
 
     return !protectThisPage ? (
         <SafeAreaView style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen}>

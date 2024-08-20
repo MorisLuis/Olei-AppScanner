@@ -69,6 +69,13 @@ const CameraTest: React.FC = () => {
         setCameraPermission
     })
 
+    const handleReadCode = useCallback((event: OnReadCodeData) => {
+        if (!cameraAvailable) return;
+        codeScanned({ codes: event.nativeEvent.codeStringValue });
+    }, [cameraAvailable, codeScanned]);
+
+
+
     useEffect(() => {
         requestCameraPermission();
         return () => {
@@ -128,10 +135,7 @@ const CameraTest: React.FC = () => {
             <Camera
                 key={cameraKey}
                 scanBarcode={true}
-                onReadCode={(event: OnReadCodeData) => {
-                    if (!cameraAvailable) return;
-                    codeScanned({ codes: event.nativeEvent.codeStringValue })
-                }}
+                onReadCode={handleReadCode}
                 style={cameraStyles(theme).camera}
                 torchMode={lightOn ? "on" : "off"}
             />
@@ -145,8 +149,7 @@ const CameraTest: React.FC = () => {
 
                 <View style={cameraStyles(theme).cog}>
                     <TouchableOpacity onPress={() => navigate('typeOfMovementScreen')}>
-                        {/* <Icon name={"cog-outline"} size={28} color="white" /> */}
-                        <Diente width={28} height={28} color={"white"} fill={"white"}/>
+                        <Diente width={28} height={28} color={"white"} fill={"white"} />
 
                     </TouchableOpacity>
                 </View>
@@ -157,23 +160,19 @@ const CameraTest: React.FC = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-
-
-            
-
             {
                 !startScanning ?
-                <View style={cameraStyles(theme).message}>
-                    {onTheLimitProductScanned ? (
-                        <Text style={cameraStyles(theme, typeTheme).textmessage}>Es necesario subir el inventario para seguir escaneando.</Text>
-                    ) : (
-                        <Text style={cameraStyles(theme, typeTheme).textmessage}>Escanea un código de barras para agregarlo {getTypeOfMovementsName()}</Text>
-                    )}
-                </View>
-                :
-                <View style={cameraStyles(theme).message}>
-                    <Text style={cameraStyles(theme, typeTheme).textmessage}>Escaneando...</Text>
-                </View>
+                    <View style={cameraStyles(theme).message}>
+                        {onTheLimitProductScanned ? (
+                            <Text style={cameraStyles(theme, typeTheme).textmessage}>Es necesario subir el inventario para seguir escaneando.</Text>
+                        ) : (
+                            <Text style={cameraStyles(theme, typeTheme).textmessage}>Escanea un código de barras para agregarlo {getTypeOfMovementsName()}</Text>
+                        )}
+                    </View>
+                    :
+                    <View style={cameraStyles(theme).message}>
+                        <Text style={cameraStyles(theme, typeTheme).textmessage}>Escaneando...</Text>
+                    </View>
             }
         </View>
     );

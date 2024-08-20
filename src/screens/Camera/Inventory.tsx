@@ -25,10 +25,10 @@ export const Inventory = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalProducts, setTotalProducts] = useState(0);
 
-    const handleGetProductsByStock = async () => {
+    const handleGetProductsByStock = async (page: number) => {
         setIsLoading(true);
 
-        const products = await getProductsByStock(currentPage);
+        const products = await getProductsByStock(page);
 
         setProductsInInventory((prevProducts) => {
             const newProducts = products.filter(
@@ -43,7 +43,7 @@ export const Inventory = () => {
                     )
             );
 
-            return prevProducts ? [...prevProducts, ...newProducts] : newProducts;
+            return [...prevProducts, ...newProducts];
         });
 
         setIsLoading(false);
@@ -74,10 +74,6 @@ export const Inventory = () => {
         );
     };
 
-    const resetInventory = useCallback(() => {
-        setCurrentPage(1);
-    }, []);
-
     const renderFooter = () => {
         return (
             <View style={InventoryScreenStyles(theme).footerContent}>
@@ -92,7 +88,7 @@ export const Inventory = () => {
     };
 
     useEffect(() => {
-        handleGetProductsByStock();
+        handleGetProductsByStock(currentPage);
     }, [currentPage]);
 
 
@@ -106,8 +102,10 @@ export const Inventory = () => {
 
     useFocusEffect(
         useCallback(() => {
-            resetInventory();
-            handleGetProductsByStock();
+            // Reset the inventory and fetch the first page when the screen is focused
+            setCurrentPage(1);
+            setProductsInInventory([]);
+            handleGetProductsByStock(1);
         }, [])
     );
 
