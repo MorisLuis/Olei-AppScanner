@@ -69,6 +69,7 @@ export const AppNavigation = () => {
                 component={StartupScreen}
                 options={{ headerShown: false }}
             />
+
             <Stack.Screen
                 name="LoginDatabaseScreen"
                 component={LoginDatabaseScreen}
@@ -85,7 +86,6 @@ export const AppNavigation = () => {
     const stackScreens = useMemo(() => (
         <>
             {authScreens}
-
             <Stack.Screen
                 name="BottomNavigation"
                 component={BottomNavigation}

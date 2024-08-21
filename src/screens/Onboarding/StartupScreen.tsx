@@ -27,7 +27,7 @@ export const StartupScreen = () => {
             <View style={StartupScreenTheme(theme).imageContainer}>
                 <Image
                     style={StartupScreenTheme(theme).logo}
-                    source={require('../../assets/logo01.png')}
+                    source={require('../../assets/logoOlei.png')}
                 />
             </View>
         </View>

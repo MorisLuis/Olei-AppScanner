@@ -22,6 +22,7 @@ export const StartupScreenTheme = (theme: Theme) =>  StyleSheet.create({
     },
     logo: {
         objectFit: "scale-down",
-        height: "100%"
+        height: 160,
+        width: 200
     },
 })
