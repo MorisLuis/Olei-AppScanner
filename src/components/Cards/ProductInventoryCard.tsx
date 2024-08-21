@@ -8,18 +8,16 @@ interface ProductInventoryCardInterface {
     product: ProductInterfaceBag;
     showDelete?: boolean;
     onDelete?: (product: ProductInterfaceBag) => void;
-    onClick?: () => void
+    onClick?: () => void;
 }
 
-export const ProductInventoryCard = ({
+const ProductInventoryCardComponent = ({
     product,
     showDelete,
     onDelete,
-    onClick
+    onClick,
 }: ProductInventoryCardInterface) => {
-
     const { theme, typeTheme } = useTheme();
-    const iconColor = typeTheme === 'dark' ? "white" : "black"
 
     return (
         <TouchableOpacity style={styles(theme, typeTheme).productInventoryCard} onPress={onClick}>
@@ -39,9 +37,11 @@ export const ProductInventoryCard = ({
                         <Text style={styles(theme).dataItemText}>{product?.Marca}</Text>
                     </View>
 
-                    {
-                        showDelete && <Text style={styles(theme).delete} onPress={() => onDelete?.(product)}>Eliminar</Text>
-                    }
+                    {showDelete && (
+                        <Text style={styles(theme).delete} onPress={() => onDelete?.(product)}>
+                            Eliminar
+                        </Text>
+                    )}
                 </View>
 
                 <View style={styles(theme, typeTheme).stock}>
@@ -49,5 +49,17 @@ export const ProductInventoryCard = ({
                 </View>
             </View>
         </TouchableOpacity>
-    )
-}
+    );
+};
+
+export const ProductInventoryCard = React.memo(ProductInventoryCardComponent, (prevProps, nextProps) => {
+    // Comparar las propiedades previas y nuevas para evitar renderizados innecesarios
+    return (
+        prevProps.product.Codigo === nextProps.product.Codigo &&
+        prevProps.product.Marca === nextProps.product.Marca &&
+        prevProps.product.Cantidad === nextProps.product.Cantidad &&
+        prevProps.showDelete === nextProps.showDelete &&
+        prevProps.onClick === nextProps.onClick &&
+        prevProps.onDelete === nextProps.onDelete
+    );
+});

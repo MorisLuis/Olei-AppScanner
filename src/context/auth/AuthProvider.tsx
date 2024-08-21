@@ -11,6 +11,7 @@ import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 import { DbAuthContext } from '../dbAuth/DbAuthContext';
 import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
+import { InventoryBagContext } from '../Inventory/InventoryBagContext';
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';

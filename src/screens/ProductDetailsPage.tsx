@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { getProductDetails } from '../services/products';
 import ProductInterface from '../interface/product';
@@ -16,13 +16,13 @@ type ProductDetailsPageInterface = {
         params: {
             selectedProduct: { Codigo: string; Marca: string };
             fromModal?: boolean;
-            fromUpdateCodebar: boolean
+            fromUpdateCodebar: boolean;
         };
     };
 };
 
 export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
-    const { selectedProduct, fromModal, fromUpdateCodebar } = route?.params ?? {};
+    const { selectedProduct, fromModal, fromUpdateCodebar} = route?.params ?? {};
     const { Codigo, Marca } = selectedProduct ?? {};
     const { handleCameraAvailable, codeBar } = useContext(SettingsContext);
     const shouldCleanUp = useRef(true);
@@ -74,7 +74,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
     }
     
     if (!productDetailsData) {
-        return <Text>No se encontraron detalles del producto.</Text>;
+        return <ProductDetailsSkeleton />;
     }
     
     return (

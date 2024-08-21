@@ -5,6 +5,7 @@ import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 import { buttonStyles } from '../../theme/UI/buttons';
 import { PersonalInformationStyles } from '../../theme/PersonalInformationTheme';
 import { useTheme } from '../../context/ThemeContext';
+import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 
 interface PersonalInformationInterface {
     route: {
@@ -19,8 +20,14 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
     const { user: userFromDB, logOut } = useContext(DbAuthContext);
     const { fromLogIn } = route.params || {};
     const { theme, typeTheme } = useTheme();
+    const { cleanBag } = useContext(InventoryBagContext);
 
     const handleLogOut = () => {
+
+        const Accept = async () => {
+            cleanBag();
+            await logOut();
+        }
 
         Alert.alert(
             "Cerrar la base de datos", // Título del cuadro de diálogo
@@ -32,9 +39,7 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
                     style: "cancel"
                 },
                 {
-                    text: "Aceptar", onPress: async () => {
-                        await logOut();
-                    }
+                    text: "Aceptar", onPress: Accept
                 }
             ],
             { cancelable: false } // Puedes ponerlo en true para permitir cerrar el diálogo tocando fuera de él
@@ -42,9 +47,6 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
 
     }
 
-    useEffect(() => {
-        console.log('Personal Information effect');
-    }, []);
 
     return (
         <View style={PersonalInformationStyles(theme).PersonalInformation}>

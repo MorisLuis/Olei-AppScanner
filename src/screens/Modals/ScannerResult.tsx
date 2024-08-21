@@ -43,11 +43,11 @@ const ScannerResult = ({
 
     const handleAddToInventory = () => {
         setLoadingAddProduct(true)
-        if(!product?.Codigo) return;
+        if (!product?.Codigo) return;
 
-        const productData : ProductInterfaceBag = {
+        const productData: ProductInterfaceBag = {
             Codigo: product?.Codigo,
-            Id_Marca: product?.Id_Marca ?? 0, 
+            Id_Marca: product?.Id_Marca ?? 0,
             Existencia: product?.Existencia ?? 0,
             Id_Ubicacion: 0,
             Diferencia: 0,
@@ -80,7 +80,6 @@ const ScannerResult = ({
             navigation.navigate('[Modal] - searchProductModal', { modal: true })
         }, 500);
     }
-    
 
     return (
         <ModalBottom
@@ -96,7 +95,7 @@ const ScannerResult = ({
                                     <Text style={modalRenderstyles(theme).codeLabel}>Codigo: </Text>
                                     <Text style={modalRenderstyles(theme).codeValue}>{product?.Codigo}</Text>
                                     <View style={modalRenderstyles(theme).otherInfo}>
-                                        <Text style={{ color: theme.text_color }}>{product?.CodBar}</Text>
+                                        <Text style={{ color: theme.text_color }}>{product?.CodBar ? product?.CodBar : "Sin Codigo de barras"}</Text>
                                         <Text style={{ color: theme.text_color }}>/</Text>
                                         <Text style={{ color: theme.text_color }}>{product?.Marca}</Text>
                                     </View>
@@ -105,19 +104,19 @@ const ScannerResult = ({
                         </View>
 
                         <View style={modalRenderstyles(theme).counterContainer}>
-                            <View style={{ width: wp("42.5%") }}>
-                                {
-                                    (seeProductDetails && !fromProductDetails) &&
+                            {
+                                (seeProductDetails && !fromProductDetails) &&
+                                <View style={{ width: wp("42.5%") }}>
                                     <TouchableOpacity
                                         onPress={handleExpandProductDetails}
                                         style={[buttonStyles(theme).button_small, buttonStyles(theme).white]}
                                     >
                                         <Text style={buttonStyles(theme, typeTheme).buttonTextTertiary}>Ver producto</Text>
                                     </TouchableOpacity>
+                                </View>
+                            }
 
-                                }
-                            </View>
-                            <View style={{ width: wp("42.5%") }}>
+                            <View style={{ width: fromProductDetails ? "100%" : wp("42.5%") }}>
                                 <Counter counter={counterProduct} setCounter={setCounterProduct} />
                             </View>
                         </View>

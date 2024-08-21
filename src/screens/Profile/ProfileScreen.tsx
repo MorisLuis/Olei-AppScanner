@@ -10,6 +10,7 @@ import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 import { ProfileScreenStyles } from '../../theme/ProfileScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 import DeviceInfo from 'react-native-device-info';
+import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 
 
 export const ProfileScreen = () => {
@@ -20,15 +21,41 @@ export const ProfileScreen = () => {
     const { logOut: logOutDB } = useContext(DbAuthContext);
     const { theme, typeTheme } = useTheme();
     const { navigate } = useNavigation<any>();
+    const { cleanBag } = useContext(InventoryBagContext);
 
     const iconColor = typeTheme === 'dark' ? "white" : "black"
 
+    const logOutSesion = () => {
 
-    useEffect(() => {
-        console.log('Personal Information effect');
-    }, [])
+        const Accept = async () => {
+            cleanBag();
+            await logOut();
+        }
+
+        Alert.alert(
+            "Carrar sesión", // Título del cuadro de diálogo
+            "¿Estás seguro de cerrar sesión?", // Mensaje del cuadro de diálogo
+            [
+                {
+                    text: "Cancelar",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Aceptar", onPress: Accept
+                }
+            ],
+            { cancelable: false } // Puedes ponerlo en true para permitir cerrar el diálogo tocando fuera de él
+        );
+    }
 
     const logOutDataBase = () => {
+
+        const Accept = async () => {
+            cleanBag();
+            await logOutDB();
+            await logOut();
+        }
 
         Alert.alert(
             "Cambiar la base de datos", // Título del cuadro de diálogo
@@ -40,10 +67,7 @@ export const ProfileScreen = () => {
                     style: "cancel"
                 },
                 {
-                    text: "Aceptar", onPress: async () => {
-                        await logOutDB();
-                        await logOut();
-                    }
+                    text: "Aceptar", onPress: Accept
                 }
             ],
             { cancelable: false } // Puedes ponerlo en true para permitir cerrar el diálogo tocando fuera de él
@@ -58,7 +82,7 @@ export const ProfileScreen = () => {
 
                 <TouchableOpacity onPress={() => navigate('[ProfileNavigation] - personalInformationScreen')} style={ProfileScreenStyles(theme).section}>
                     <Text style={{ color: theme.text_color }}>Información Personal</Text>
-                    <Icon name="person-outline" size={22} color={iconColor}/>
+                    <Icon name="person-outline" size={22} color={iconColor} />
                 </TouchableOpacity>
 
                 <View style={ProfileScreenStyles(theme).divider}></View>
@@ -66,7 +90,7 @@ export const ProfileScreen = () => {
 
                 <TouchableOpacity onPress={() => navigate('[ProfileNavigation] - settingsSceen')} style={[ProfileScreenStyles(theme).section]}>
                     <Text style={{ color: theme.text_color }}>Configuración General</Text>
-                    <Icon name="settings-outline" size={22} color={iconColor}/>
+                    <Icon name="settings-outline" size={22} color={iconColor} />
                 </TouchableOpacity>
 
                 <View style={ProfileScreenStyles(theme).divider}></View>
@@ -76,12 +100,12 @@ export const ProfileScreen = () => {
 
                 <TouchableOpacity onPress={() => navigate('[ProfileNavigation] - privacyScreen')} style={[ProfileScreenStyles(theme).section]}>
                     <Text style={{ color: theme.text_color }}>Aviso de privacidad</Text>
-                    <Icon name="book-outline" size={22} color={iconColor}/>
+                    <Icon name="book-outline" size={22} color={iconColor} />
                 </TouchableOpacity>
 
                 <View style={ProfileScreenStyles(theme).divider}></View>
 
-                <TouchableOpacity onPress={logOut} style={[buttonStyles(theme).button, globalStyles(theme).globalMarginBottom, { marginTop: globalStyles(theme).globalMarginBottom.marginBottom * 2 }]}>
+                <TouchableOpacity onPress={logOutSesion} style={[buttonStyles(theme).button, globalStyles(theme).globalMarginBottom, { marginTop: globalStyles(theme).globalMarginBottom.marginBottom * 2 }]}>
                     <Text style={buttonStyles(theme).buttonText}>Cerrar sesión</Text>
                 </TouchableOpacity>
 
