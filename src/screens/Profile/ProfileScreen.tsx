@@ -29,7 +29,7 @@ export const ProfileScreen = () => {
 
         const Accept = async () => {
             cleanBag();
-            await logOut();
+            await logOut(true);
         }
 
         Alert.alert(
@@ -45,7 +45,7 @@ export const ProfileScreen = () => {
                     text: "Aceptar", onPress: Accept
                 }
             ],
-            { cancelable: false } // Puedes ponerlo en true para permitir cerrar el diálogo tocando fuera de él
+            { cancelable: false }
         );
     }
 
@@ -58,8 +58,8 @@ export const ProfileScreen = () => {
         }
 
         Alert.alert(
-            "Cambiar la base de datos", // Título del cuadro de diálogo
-            "¿Estás seguro de que deseas cambiar la base de datos? Se cerrara la actual.", // Mensaje del cuadro de diálogo
+            "Cambiar la base de datos",
+            "¿Estás seguro de que deseas cambiar la base de datos? Se cerrara la actual.",
             [
                 {
                     text: "Cancelar",
@@ -70,7 +70,7 @@ export const ProfileScreen = () => {
                     text: "Aceptar", onPress: Accept
                 }
             ],
-            { cancelable: false } // Puedes ponerlo en true para permitir cerrar el diálogo tocando fuera de él
+            { cancelable: false }
         );
     }
 

@@ -1,54 +1,54 @@
 import UserInterface from "../../interface/user";
-import { DbAuthState, userDB } from "./DbAuthProvider";
+import { DbAuthState } from "./DbAuthProvider";
 
 type AuthAction =
-    | { type: 'signUp', payload: { tokenDB: string, userDB: userDB, user: UserInterface } }
-    | { type: 'addErrorDB', payload: string }
-    | { type: 'removeError' }
-    | { type: 'notAuthenticated' }
-    | { type: 'logout' }
+    | { type: '[DBAuth] - signUp', payload: { tokenDB: string, user: UserInterface } }
+    | { type: '[DBAuth] - addError', payload: string }
+    | { type: '[DBAuth] - removeError' }
+    | { type: '[DBAuth] - notAuthenticated' }
+    | { type: '[DBAuth] - logout' }
 
 
 export const dbAuthReducer = (state: DbAuthState, action: AuthAction): DbAuthState => {
 
     switch (action.type) {
-        case 'addErrorDB':
+        case '[DBAuth] - addError':
             return {
                 ...state,
-                userDB: null,
                 status: 'dbNot-authenticated',
                 tokenDB: null,
                 errorMessage: action.payload
             }
 
-        case 'removeError':
+        case '[DBAuth] - removeError':
             return {
                 ...state,
                 errorMessage: ''
             };
 
-        case 'signUp':
+        case '[DBAuth] - signUp':
             return {
                 ...state,
                 errorMessage: '',
                 status: 'dbAuthenticated',
                 tokenDB: action.payload.tokenDB,
-                userDB: action.payload.userDB,
                 user: action.payload.user
             }
 
-        case 'logout':
-            return {
-                ...state,
-                status: 'dbNot-authenticated'
-            }
-
-        case 'notAuthenticated':
+        case '[DBAuth] - logout':
             return {
                 ...state,
                 status: 'dbNot-authenticated',
                 tokenDB: null,
-                userDB: null
+                user: null,
+                errorMessage: '',
+            };
+
+        case '[DBAuth] - notAuthenticated':
+            return {
+                ...state,
+                status: 'dbNot-authenticated',
+                tokenDB: null
             }
 
         default:

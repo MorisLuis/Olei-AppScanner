@@ -64,7 +64,6 @@ export const TypeOfMovementScreen = () => {
     const handleGetTypeOfMovements = async () => {
         setIsLoading(true);
         const types = await getTypeOfMovements();
-
         setTypeOfMovement(types);
         setIsLoading(false);
     }

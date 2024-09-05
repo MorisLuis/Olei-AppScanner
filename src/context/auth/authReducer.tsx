@@ -10,33 +10,36 @@ export interface AuthState {
 }
 
 type AuthAction =
-    | { type: 'signUp', payload: { token: string, user: UserInterface } }
-    | { type: 'addError', payload: string }
-    | { type: 'removeError' }
-    | { type: 'notAuthenticated' }
-    | { type: 'logout' }
+    | { type: '[Auth] - signUp', payload: { token: string, user: UserInterface } }
+    | { type: '[Auth] - logout' }
+    | { type: '[Auth] - notAuthenticated' }
+    | { type: '[Auth] - addError', payload: string }
+    | { type: '[Auth] - removeError' }
     | { type: '[Auth] - typeOfMovement', payload: { user: UserInterface } }
 
+const clearAuthState = (): AuthState => ({
+    status: 'not-authenticated',
+    token: null,
+    user: null,
+    errorMessage: '',
+    codeBar: ''
+});
 
 export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
-
     switch (action.type) {
-        case 'addError':
+        case '[Auth] - addError':
             return {
-                ...state,
-                user: null,
-                status: 'not-authenticated',
-                token: null,
+                ...clearAuthState(),
                 errorMessage: action.payload
             }
 
-        case 'removeError':
+        case '[Auth] - removeError':
             return {
                 ...state,
                 errorMessage: ''
             };
 
-        case 'signUp':
+        case '[Auth] - signUp':
             return {
                 ...state,
                 errorMessage: '',
@@ -45,18 +48,12 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
                 user: action.payload.user
             }
 
-        case 'logout':
-            return {
-                ...state,
-                status: 'not-authenticated'
-            };
+        case '[Auth] - logout':
+            return clearAuthState();
 
-        case 'notAuthenticated':
+        case '[Auth] - notAuthenticated':
             return {
-                ...state,
-                status: 'not-authenticated',
-                token: null,
-                user: null
+                ...clearAuthState()
             }
 
         case '[Auth] - typeOfMovement':
@@ -68,8 +65,4 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
         default:
             return state;
     }
-
-
 }
-
-

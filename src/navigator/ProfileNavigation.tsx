@@ -4,7 +4,6 @@ import { ProfileScreen } from '../screens/Profile/ProfileScreen';
 import { SettingsScreen } from '../screens/Profile/SettingsScreen';
 import { CustomHeader } from '../components/Ui/CustomHeader';
 import { PrivacyScreen } from '../screens/Profile/PrivacyScreen';
-import { TermsOfUseScreen } from '../screens/Profile/TermsOfUseScreen';
 import { PersonalInformation } from '../screens/Profile/PersonalInformation';
 
 
@@ -13,7 +12,6 @@ export type ProfileNavigationStackParamList = {
     "[ProfileNavigation] - personalInformationScreen": { fromLogIn?: boolean },
     "[ProfileNavigation] - settingsSceen": undefined;
     "[ProfileNavigation] - privacyScreen": undefined;
-    "[ProfileNavigation] - termsOfUseScreen": undefined;
 }
 
 export const ProfileNavigation = () => {
@@ -68,14 +66,6 @@ export const ProfileNavigation = () => {
                 component={PrivacyScreen}
                 options={({ navigation }) => ({
                     header: props => <CustomHeader title="Aviso de privacidad" navigation={navigation} />,
-                })}
-            />
-
-            <ProfileTabs.Screen
-                name="[ProfileNavigation] - termsOfUseScreen"
-                component={TermsOfUseScreen}
-                options={({ navigation }) => ({
-                    header: props => <CustomHeader title="Terminos de uso" navigation={navigation} />,
                 })}
             />
         </ProfileTabs.Navigator>

@@ -11,7 +11,6 @@ export const api = axios.create(
 )
 
 
-
 /* export const api = axios.create(
     {
         baseURL: 'http://10.223.94.163:5001',
@@ -19,8 +18,8 @@ export const api = axios.create(
             'Content-Type': 'application/json',
         }
     }
-)
- */
+) */
+
 
 // Interceptor to add the token to headers
 api.interceptors.request.use(

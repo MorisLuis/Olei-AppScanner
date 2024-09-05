@@ -10,7 +10,7 @@ interface ContextProps {
     status: 'checking' | 'authenticated' | 'not-authenticated';
     loggingIn: boolean;
     signIn: (loginData: LoginData) => void;
-    logOut: () => void;
+    logOut: (findSession?: boolean) => void;
     removeError: () => void;
     updateTypeOfMovements: (value: Id_TipoMovInvInterface) => void;
     getTypeOfMovementsName: () => string;

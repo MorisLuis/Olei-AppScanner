@@ -10,6 +10,7 @@ import { ProductInventoryCardSkeleton } from '../../components/Skeletons/Product
 import { SettingsContext } from '../../context/settings/SettingsContext';
 import { useTheme } from '../../context/ThemeContext';
 import { InventoryScreenStyles } from '../../theme/InventoryScreenTheme';
+import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
 
 export const Inventory = () => {
     const { handleCodebarScannedProcces } = useContext(SettingsContext);
@@ -21,6 +22,9 @@ export const Inventory = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalProducts, setTotalProducts] = useState(0);
+
+    // Lógica mejorada para mostrar el mensaje solo cuando no hay productos y no está cargando
+    const showNoProductsMessage = productsInInventory.length === 0 && !isLoading;
 
     const handleGetProductsByStock = async (page: number) => {
         setIsLoading(true);
@@ -105,28 +109,39 @@ export const Inventory = () => {
             <View style={InventoryScreenStyles(theme).content}>
                 <View style={InventoryScreenStyles(theme).header}>
                     <Text style={InventoryScreenStyles(theme).title}>Inventario</Text>
-                    <View style={InventoryScreenStyles(theme).actions}>
-                        <Icon
-                            name="search-outline"
-                            size={30}
-                            style={InventoryScreenStyles(theme).iconSearch}
-                            onPress={() => navigate('searchProductScreen')}
-                            color={iconColor}
-                        />
-                    </View>
+                    {
+                        (!showNoProductsMessage && !isLoading) &&
+                        <View style={InventoryScreenStyles(theme).actions}>
+                            <Icon
+                                name="search-outline"
+                                size={30}
+                                style={InventoryScreenStyles(theme).iconSearch}
+                                onPress={() => navigate('searchProductScreen')}
+                                color={iconColor}
+                            />
+                        </View>
+                    }
                 </View>
 
-                <VirtualizedList
-                    data={productsInInventory}
-                    initialNumToRender={5}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => getKey(item)}
-                    getItem={getItem}
-                    getItemCount={getItemCount}
-                    ListFooterComponent={renderFooter}
-                    onEndReached={loadMoreItem}
-                    onEndReachedThreshold={0.1}
-                />
+                {/* Mostrar mensaje si no hay productos y no se está cargando */}
+                {showNoProductsMessage ? (
+                    <EmptyMessageCard
+                        title='No hay productos'
+                        message='Hablar con el administrador.'
+                    />
+                ) : (
+                    <VirtualizedList
+                        data={productsInInventory}
+                        initialNumToRender={5}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => getKey(item)}
+                        getItem={getItem}
+                        getItemCount={getItemCount}
+                        ListFooterComponent={renderFooter}
+                        onEndReached={loadMoreItem}
+                        onEndReachedThreshold={0.1}
+                    />
+                )}
             </View>
         </SafeAreaView>
     );

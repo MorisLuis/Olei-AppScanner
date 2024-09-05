@@ -7,11 +7,9 @@ import { authReducer } from './authReducer';
 import { AuthContext } from './AuthContext';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 import { DbAuthContext } from '../dbAuth/DbAuthContext';
 import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
-import { InventoryBagContext } from '../Inventory/InventoryBagContext';
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
@@ -20,11 +18,6 @@ export interface AuthState {
     user: UserInterface | null;
     codeBar?: string;
     codeBarStatus?: boolean
-}
-
-export interface LoginResponse {
-    usuario: UserInterface;
-    token: string;
 }
 
 export interface LoginData {
@@ -41,15 +34,14 @@ const AUTH_INITIAL_STATE: AuthState = {
     codeBarStatus: false
 }
 
-
 export const AuthProvider = ({ children }: any) => {
 
     const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
     const [loggingIn, setLoggingIn] = useState(false);
     const navigation = useNavigation<any>();
     const { status } = useContext(DbAuthContext);
-
     const [currentScreen, setCurrentScreen] = React.useState('');
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('state', () => {
             setCurrentScreen(navigation.getCurrentRoute().name);
@@ -93,13 +85,40 @@ export const AuthProvider = ({ children }: any) => {
         checkToken();
     }, [])
 
+    const signIn = async ({ Id_Usuario, password }: LoginData) => {
+        setLoggingIn(true)
+
+        try {
+            state.status = "checking"
+            const { data } = await api.post('/api/auth/login', { Id_Usuario, password });
+
+            dispatch({
+                type: '[Auth] - signUp',
+                payload: {
+                    token: data.token,
+                    user: data.user
+                }
+            });
+            await AsyncStorage.setItem('token', data.token);
+
+        } catch (error: any) {
+            console.log({ ErrorSignInAuth: error })
+            dispatch({
+                type: '[Auth] - addError',
+                payload: (error.response ? error.response.data.error : error.message) || 'Información incorrecta'
+            })
+        } finally {
+            setLoggingIn(false)
+        }
+    };
+
     const checkToken = async () => {
 
         try {
             const token = await AsyncStorage.getItem('token');
 
             // No token, no autenticado
-            if (!token) return dispatch({ type: 'notAuthenticated' });
+            if (!token) return dispatch({ type: '[Auth] - notAuthenticated' });
 
             // Hay token
             const resp = await api.get('/api/auth/renewLogin', {
@@ -110,12 +129,12 @@ export const AuthProvider = ({ children }: any) => {
             });
 
             if (resp.status !== 200) {
-                return dispatch({ type: 'notAuthenticated' });
+                return dispatch({ type: '[Auth] - notAuthenticated' });
             }
 
             await AsyncStorage.setItem('token', resp.data.token);
             dispatch({
-                type: 'signUp',
+                type: '[Auth] - signUp',
                 payload: {
                     token: resp.data.token,
                     user: resp.data.user
@@ -124,49 +143,22 @@ export const AuthProvider = ({ children }: any) => {
 
         } catch (error) {
             console.log({ errorAuthToken: error })
-            return dispatch({ type: 'notAuthenticated' });
+            return dispatch({ type: '[Auth] - notAuthenticated' });
         }
     }
 
-    const signIn = async ({ Id_Usuario, password }: LoginData) => {
-        setLoggingIn(true)
-
-        try {
-            state.status = "checking"
-            const { data } = await api.post('/api/auth/login', { Id_Usuario, password });
-
-            dispatch({
-                type: 'signUp',
-                payload: {
-                    token: data.token,
-                    user: data.user
-                }
-            });
-
-            await AsyncStorage.setItem('token', data.token);
-            setLoggingIn(false)
-
-        } catch (error: any) {
-            console.log({ error })
-            setLoggingIn(false)
-
-            dispatch({
-                type: 'addError',
-                payload: (error.response ? error.response.data.error : error.message) || 'Información incorrecta'
-            })
-        }
-    };
-
-    const logOut = async () => {
+    const logOut = async (findSession?: boolean) => {
         setLoggingIn(false);
+        if (findSession) {
+            await api.get('/api/auth/logoutApp');
+        }
         await AsyncStorage.removeItem('token');
-        dispatch({ type: 'logout' });
+        dispatch({ type: '[Auth] - logout' });
     };
 
     const removeError = () => {
-        dispatch({ type: 'removeError' });
+        dispatch({ type: '[Auth] - removeError' });
     };
-
 
     const updateTypeOfMovements = async (value: Id_TipoMovInvInterface) => {
         try {
@@ -184,13 +176,10 @@ export const AuthProvider = ({ children }: any) => {
                     }
                 }
             });
-
         } catch (error: any) {
             console.log({ error: error })
         }
     }
-
-
 
     const getTypeOfMovementsName = () => {
         let name;
@@ -205,7 +194,6 @@ export const AuthProvider = ({ children }: any) => {
         }
         return name
     }
-
 
     return (
         <AuthContext.Provider value={{

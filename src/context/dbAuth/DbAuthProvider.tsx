@@ -1,46 +1,28 @@
-import React, { useReducer, useEffect, useState, useContext } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import { api } from '../../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { dbAuthReducer } from './dbAuthReducer';
 import { DbAuthContext } from './DbAuthContext';
 import UserInterface from '../../interface/user';
-import { InventoryBagContext } from '../Inventory/InventoryBagContext';
 
-export interface userDB {
-    servidor: string;
-    database: string;
-    user: UserInterface
-}
 
 export interface DbAuthState {
     status: 'dbChecking' | 'dbAuthenticated' | 'dbNot-authenticated';
     tokenDB: string | null;
     errorMessage: string;
-    userDB: userDB | null;
     user: UserInterface | null
 }
 
-export interface LoginResponse {
-    userDB: userDB;
-    tokenDB: string;
-}
 
 export interface LoginData {
     IdUsuarioOLEI: string;
     PasswordOLEI: string;
 }
 
-export interface RegisterData {
-    servidor: string;
-    database: string;
-    nombre: string;
-}
-
 const AUTH_INITIAL_STATE: DbAuthState = {
     status: 'dbChecking',
     tokenDB: null,
-    userDB: null,
     errorMessage: '',
     user: null
 }
@@ -55,12 +37,11 @@ export const DbAuthProvider = ({ children }: any) => {
     }, [])
 
     const checkToken = async () => {
-
         try {
             const token = await AsyncStorage.getItem('tokenDB');
 
             // No token, no autenticado
-            if (!token) return dispatch({ type: 'notAuthenticated' });
+            if (!token) return dispatch({ type: '[DBAuth] - notAuthenticated' });
 
             // Hay token
             const resp = await api.get('/api/auth/renew', {
@@ -71,38 +52,35 @@ export const DbAuthProvider = ({ children }: any) => {
             });
     
             if (resp.status !== 200) {
-                return dispatch({ type: 'notAuthenticated' });
+                return dispatch({ type: '[DBAuth] - notAuthenticated' });
             }
     
             await AsyncStorage.setItem('tokenDB', resp.data.token);
             dispatch({
-                type: 'signUp',
+                type: '[DBAuth] - signUp',
                 payload: {
                     tokenDB: resp.data.tokenDB,
-                    userDB: resp.data.userDB,
                     user: resp.data.user
                 }
             });
 
         } catch (error) {
             console.log({ errorDBToken: error })
-            return dispatch({ type: 'notAuthenticated' });
+            return dispatch({ type: '[DBAuth] - notAuthenticated' });
         }
     }
-
 
     const signInDB = async ({ IdUsuarioOLEI, PasswordOLEI }: LoginData) => {
         setLoggingIn(true)
         try {
             state.status = "dbChecking"
             const { data } = await api.post('/api/auth/loginDB', { IdUsuarioOLEI, PasswordOLEI });
-            await AsyncStorage.removeItem('token');
+            await AsyncStorage.removeItem('token'); // Just to confirm that doesnt exist a token of login.
 
             dispatch({
-                type: 'signUp',
+                type: '[DBAuth] - signUp',
                 payload: {
                     tokenDB: data.tokenDB,
-                    userDB: data.userDB,
                     user: data.user
                 }
             });
@@ -115,7 +93,7 @@ export const DbAuthProvider = ({ children }: any) => {
             setLoggingIn(false)
 
             dispatch({
-                type: 'addErrorDB',
+                type: '[DBAuth] - addError',
                 payload: (error.response ? error.response.data.error : error.message )|| 'Información incorrecta'
             })
         }
@@ -123,12 +101,15 @@ export const DbAuthProvider = ({ children }: any) => {
 
     const logOut = async () => {
         setLoggingIn(false);
-        await AsyncStorage.removeItem('tokenDB');
-        dispatch({ type: 'logout' });
+        await api.get('/api/auth/logoutAppDB');
+        dispatch({ type: '[DBAuth] - logout' });
+        setTimeout(() => {
+            AsyncStorage.removeItem('tokenDB');
+        }, 100);
     };
 
     const removeError = () => {
-        dispatch({ type: 'removeError' });
+        dispatch({ type: '[DBAuth] - removeError' });
     };
 
 
