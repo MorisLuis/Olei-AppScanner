@@ -3,7 +3,7 @@ import { api } from "../api/api";
 const getProductDetails = async (id: string, marca: string) => {
     let product;
     try {
-        const getProduct = await api.get(`/api/products/${id}?Marca=${marca}`);
+        const getProduct = await api.get(`/api/product/${id}?Marca=${marca}`);
         product = getProduct.data;
     } catch (error: any) {
         return { error: error };

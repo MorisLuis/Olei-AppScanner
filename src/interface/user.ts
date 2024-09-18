@@ -22,7 +22,7 @@ export default interface UserInterface {
     };
     Id_Almacen: number;
     Nombre?: string;
-    Id_Usuario: number;
+    Id_Usuario: string;
     Company?: string;
 
 }

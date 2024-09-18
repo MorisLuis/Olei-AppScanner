@@ -6,43 +6,43 @@ import { useNavigation } from '@react-navigation/native';
 
 export const useErrorHandler = () => {
     const { user } = useContext(AuthContext);
+    const navigation = useNavigation();
 
     const handleError = async (error: any) => {
-
-        console.log({error})
-
         const { status: statusCode, Message, Metodo } = error ?? {}
-        const navigation = useNavigation<any>();
-
-        // Verifica que error y error.response existan antes de acceder a error.response.status
+        
         const status = error?.response?.status || statusCode;
         const method = error?.response?.config?.method;
 
-        const message = error.response.data.error ? error.response.data.error :
-            error.response.data.message ? error.response.data.message :
-                error.message ? error.message : error;
+        const message = error?.response?.data?.error 
+            ? error?.response?.data?.error 
+            : error?.response?.data?.message 
+            ? error?.response?.data?.message 
+            : error?.message 
+            ? error?.message 
+            : error;
 
         await sendError({
-            From: `mobil/${user?.IdUsuarioOLEI?.trim()}`,
+            From: `mobil/${user?.Id_Usuario?.trim()}`,
             Message: message || Message,
-            Id_Usuario: user?.IdUsuarioOLEI?.trim(),
+            Id_Usuario: user?.Id_Usuario?.trim(),
             Metodo: method || Metodo || '',
             code: status.toString()
-        })
-        
+        });
 
         Toast.show({
             type: 'error',
-            text1: 'Algo salio mal!'
-        })
+            text1: 'Algo salió mal!'
+        });
 
+        // Utiliza navigation.goBack() aquí
         setTimeout(() => {
             navigation?.goBack();
         }, 300);
     };
 
     return { handleError };
-}
+};
 
 
 export default useErrorHandler;
