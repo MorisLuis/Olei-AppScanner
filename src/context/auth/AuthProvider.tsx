@@ -46,7 +46,7 @@ export const AUTH_INITIAL_STATE: AuthState = {
             Id_AlmDest: 0
         },
         Id_Almacen: 0,
-        Id_Usuario: 0
+        Id_Usuario: ''
     },
     errorMessage: '',
     codeBar: "",
@@ -123,11 +123,11 @@ export const AuthProvider = ({ children }: any) => {
                 await AsyncStorage.setItem('token', data.token);
 
             } catch (error: any) {
+                
                 dispatch({
                     type: '[Auth] - addError',
                     payload: (error.response ? error.response.data.error : error.message) || 'Información incorrecta'
                 })
-                handleError(error);
             } finally {
                 setLoggingIn(false)
             }
@@ -164,7 +164,6 @@ export const AuthProvider = ({ children }: any) => {
 
             } catch (error) {
                 dispatch({ type: '[Auth] - notAuthenticated' });
-                handleError(error);
                 return;
             }
         }

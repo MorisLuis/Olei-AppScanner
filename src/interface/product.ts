@@ -13,10 +13,7 @@ export default interface ProductInterface {
     Id_ListaPrecios: number;
     Cantidad: number;
     Impto: number;
-    imagen: [{
-        url: string,
-        id: number
-    }];
+    imagen: string;
 
     CodBar?: string
 }

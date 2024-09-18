@@ -23,20 +23,6 @@ export const ProductItemSearch = ({
 
     return (
         <TouchableOpacity style={ProductItemSearchStyles(theme, typeTheme).ProductItemSearch} onPress={onClick}>
-            {/* {
-                product?.imagen ?
-                    <Image
-                        style={ProductItemSearchStyles(theme, typeTheme).productInventoryCard__Image}
-                        source={{
-                            uri: product?.imagen[0]?.url
-                        }}
-                    />
-                    :
-                    <View style={ProductItemSearchStyles(theme, typeTheme).notImage}>
-                        <Icon name={'camera'} size={hp("3%")} color={typeTheme, typeTheme} />
-                        <Text style={ProductItemSearchStyles(theme, typeTheme).notImageText} numberOfLines={2}>{user?.Company || "Olei"}</Text>
-                    </View>
-            } */}
             <View style={ProductItemSearchStyles(theme, typeTheme).information}>
                 <Text style={ProductItemSearchStyles(theme, typeTheme).description}>{product.Descripcion}</Text>
                 <View style={ProductItemSearchStyles(theme, typeTheme).otherInformation}>

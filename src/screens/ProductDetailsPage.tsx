@@ -117,7 +117,7 @@ const ProductDetailsContent = React.memo(({ productDetailsData, handleOptionsToU
                         <Image
                             style={productDetailsStyles(theme).image}
                             source={{
-                                uri: productDetailsData.imagen[0]?.url
+                                uri: productDetailsData.imagen
                             }}
                         />
                     ) : (
