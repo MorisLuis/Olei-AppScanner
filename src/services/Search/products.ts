@@ -2,15 +2,15 @@ import { api } from "../../api/api";
 
 
 const getSearchProductInStock = async (searchTerm: string) => {
-    let products;
+
     try {
         const getProduct = await api.get(`/api/search/inventory?searchTerm=${searchTerm}`);
-        products = getProduct.data;
+        const products = getProduct.data;
+        return products
     } catch (error: any) {
-        console.log({ error: error })
+        return { error: error };
     }
 
-    return products
 }
 
 

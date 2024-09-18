@@ -7,12 +7,14 @@ import { TypeOfMovementSkeleton } from '../components/Skeletons/TypeOfMovementSk
 import { AuthContext } from '../context/auth/AuthContext';
 import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 import { useTheme } from '../context/ThemeContext';
+import useErrorHandler from '../hooks/useErrorHandler';
 
 export const TypeOfMovementScreen = () => {
 
     const { updateTypeOfMovements } = useContext(AuthContext);
     const { theme, typeTheme } = useTheme();
     const { navigate } = useNavigation<any>();
+    const { handleError } = useErrorHandler()
 
     const [typeOfMovement, setTypeOfMovement] = useState<Id_TipoMovInvInterface[]>([]);
     const [typeSelected, setTypeSelected] = useState<Id_TipoMovInvInterface>()
@@ -47,7 +49,7 @@ export const TypeOfMovementScreen = () => {
             updateTypeOfMovements(typeSelected);
             navigate('BottomNavigation')
         } catch (error) {
-            console.log({ error })
+            handleError(error)
         }
     }
 

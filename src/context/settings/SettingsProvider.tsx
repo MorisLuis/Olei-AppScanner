@@ -2,6 +2,7 @@ import React, { useReducer } from 'react';
 import { SettingsContext } from './SettingsContext';
 import { settingsReducer } from './settingsReducer';
 import UserInterface from '../../interface/user';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 export interface SettingsInterface {
     vibration?: boolean;
@@ -27,6 +28,7 @@ export const SettingsInitialState: SettingsInterface = {
 export const SettingsProvider = ({ children }: { children: JSX.Element }) => {
 
     const [state, dispatch] = useReducer(settingsReducer, SettingsInitialState);
+    const { handleError } = useErrorHandler()
 
     const handleVibrationState = (value: boolean) => {
         dispatch({ type: '[Settings] - Vibration state', vibration: value });
@@ -58,8 +60,8 @@ export const SettingsProvider = ({ children }: { children: JSX.Element }) => {
             handleCodebarScannedProcces(true)
             dispatch({ type: '[Settings] - codeBar', codeBar: value });
         } catch (error: any) {
+            handleError(error)
             handleCodebarScannedProcces(false)
-            console.log({ error: error })
         }
     }
 

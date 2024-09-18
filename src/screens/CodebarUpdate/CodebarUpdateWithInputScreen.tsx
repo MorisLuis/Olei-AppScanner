@@ -10,6 +10,7 @@ import codebartypes from '../../utils/codebarTypes.json';
 import ProductInterface from '../../interface/product';
 import { CodebarUpdateWithInputScreenStyles } from '../../theme/CodebarUpdateWithInputScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 interface CodebarUpdateWithInputScreenInterface {
     productDetails?: ProductInterface
@@ -21,6 +22,7 @@ export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWi
     const navigation = useNavigation<any>();
     const { codebarType } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
+    const { handleError } = useErrorHandler()
 
     const currentType = codebartypes.barcodes.find((code: any) => code.id === codebarType)
     const regex = new RegExp(currentType?.regex as string);
@@ -28,7 +30,15 @@ export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWi
 
     const hanldeUpdateCodebarWithCodeRandom = async () => {
 
-        if (!productDetails) return;
+        if (!productDetails) {
+            handleError({
+                status: 400,
+                Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeRandom/CodebarUpdateWithInputScreen",
+                Metodo: "B-PUT"
+            })
+            return;
+        };
+
         if (!regex.test(text)) return;
 
         await updateCodbar({

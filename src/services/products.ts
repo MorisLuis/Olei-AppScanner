@@ -9,7 +9,8 @@ const getProductDetails = async (id: string, marca: string) => {
         product = getProduct.data;
 
     } catch (error: any) {
-        console.log({ error: error })
+        return { error: error };
+
     }
 
     return product;
@@ -27,7 +28,8 @@ const getProductByCodeBar = async ({ codeBar, codigo }: getProductByCodeBarInter
         product = getProduct.data;
 
     } catch (error: any) {
-        console.log({ error: error })
+        return { error: error };
+
     }
 
     return product
@@ -43,7 +45,8 @@ const getProductsByStock = async (PageNumber: number) => {
         const getProduct = await api.get(`/api/product/byStock?PageNumber=${PageNumber}&PageSize=10`);
         products = getProduct.data;
     } catch (error: any) {
-        console.log({ error: error })
+        return { error: error };
+
     }
 
     return products
@@ -56,7 +59,8 @@ const getTotalProductsByStock = async () => {
         const getProduct = await api.get(`/api/product/byStockCount`);
         total = getProduct.data[0].TotalProductos;
     } catch (error: any) {
-        console.log({ error: error })
+        return { error: error };
+
     }
 
     return total;

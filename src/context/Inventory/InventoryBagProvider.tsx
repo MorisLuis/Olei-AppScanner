@@ -5,6 +5,7 @@ import { innventoryBagReducer } from './InventoryBagReducer';
 import { api } from '../../api/api';
 import { AuthContext } from '../auth/AuthContext';
 import Toast from 'react-native-toast-message';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 export interface inventoryDataInterface {
     Folio: number
@@ -33,6 +34,7 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
     const [inventoryCreated, setInventoryCreated] = useState(false);
     const [productAdded, setProductAdded] = useState(false);
     const [keyNumber, setKeyNumber] = useState(0);
+    const { handleError } = useErrorHandler()
 
 
     const addProduct = (product: ProductInterfaceBag) => {
@@ -43,7 +45,7 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
             dispatch({ type: '[InventoryBag] - Add Product', payload: { ...product, key: newKey } })
             setProductAdded(true);
         } catch (error) {
-            console.log({ error })
+            handleError(error)
             setProductAdded(false);
         } finally {
             timeoutRef.current = setTimeout(() => {

@@ -9,17 +9,15 @@ export interface Id_TipoMovInvInterface {
 
 const getTypeOfMovements = async () => {
 
-    let typeOfMov;
     try {
         const getTypeOfMovements = await api.get(`/api/typeofmovements`);
-        typeOfMov = getTypeOfMovements.data;
-
+        const typeOfMov = getTypeOfMovements.data;
+        return typeOfMov
     } catch (error: any) {
-        console.log({ errorTP: error })
+        return { error: error };
     }
 
-    return typeOfMov
-
+    
 }
 
 

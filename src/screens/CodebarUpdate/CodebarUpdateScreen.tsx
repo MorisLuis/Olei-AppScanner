@@ -15,6 +15,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { CodebarUpdateScreenStyles } from '../../theme/CodebarUpdateScreenTheme';
 import { CodebarUpdateOptionCard } from '../../components/Cards/CodebarUpdateOptionCard';
 import ProductInterface from '../../interface/product';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 type optionSelectedInterface = {
     screen: string,
@@ -32,7 +33,7 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
     const { updateBarCode, handleCodebarScannedProcces, handleGetCodebarType, codebarType, codeBar, codeBarStatus } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black"
-    const iconColorActive = typeTheme === 'dark' ? "black" : "black"
+    const { handleError } = useErrorHandler()
 
     const [selectedOption, setSelectedOption] = useState<optionSelectedInterface>({ screen: "", title: "" });
     const [openModalCamera, setOpenModalCamera] = useState(false)
@@ -41,26 +42,9 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
     const currentType = codebartypes.barcodes.find((code: any) => code.id === codebarType)
     const [optionSelected, setOptionSelected] = useState<number>(0)
 
-    const handleOptionOfUpdateCodeSelect = (option: optionSelectedInterface) => {
-        setSelectedOption(option);
-    };
-
     const hanldeCodebarTypeSelected = (value: number) => {
         handleGetCodebarType(value)
     }
-
-    /* const handleGoToNextStep = () => {
-        if (selectedOption.screen === "updateWithCode") {
-            hanldeUpdateCodebarWithCodeFound()
-        } else if (selectedOption.screen === "updateWithRandomCode") {
-            hanldeUpdateCodebarWithCodeRandom()
-        } else if (selectedOption.screen === "CameraModal") {
-            setOpenModalCamera(true)
-        } else {
-            navigation.navigate(selectedOption.screen, { title: selectedOption.title, productDetails });
-        }
-    } */
-
 
     const handleGoToNextStep = () => {
         if (optionSelected === 1) {
@@ -77,7 +61,14 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
 
 
     const hanldeUpdateCodebarWithCodeFound = async () => {
-        if (!productDetails) return;
+        if (!productDetails) {
+            handleError({
+                status: 400,
+                Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeFound",
+                Metodo: "B-PUT"
+            })
+            return;
+        };
 
         await updateCodbar({
             codigo: productDetails?.Codigo,
@@ -90,7 +81,14 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
     }
 
     const hanldeUpdateCodebarWithCodeRandom = async () => {
-        if (!productDetails) return;
+        if (!productDetails) {
+            handleError({
+                status: 400,
+                Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeRandom",
+                Metodo: "B-PUT"
+            })
+            return;
+        };
 
         await updateCodbar({
             codigo: productDetails?.Codigo,

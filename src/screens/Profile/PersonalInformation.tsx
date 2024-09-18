@@ -91,7 +91,7 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
 
                 <View style={PersonalInformationStyles(theme).data}>
                     <Text style={PersonalInformationStyles(theme).label}>Base de datos:</Text>
-                    <Text style={{ color: theme.text_color }}>{user?.BaseSQL || userFromDB?.BaseSQL}</Text>
+                    <Text style={{ color: theme.text_color }}>{user?.baseclientes || userFromDB?.baseclientes}</Text>
                 </View>
             </View>
 

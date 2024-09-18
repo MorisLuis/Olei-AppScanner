@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { dbAuthReducer } from './dbAuthReducer';
 import { DbAuthContext } from './DbAuthContext';
 import UserInterface from '../../interface/user';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 
 export interface DbAuthState {
@@ -31,6 +32,7 @@ export const DbAuthProvider = ({ children }: any) => {
 
     const [state, dispatch] = useReducer(dbAuthReducer, AUTH_INITIAL_STATE);
     const [loggingIn, setLoggingIn] = useState(false);
+    const { handleError } = useErrorHandler()
 
     useEffect(() => {
         checkToken();
@@ -65,7 +67,7 @@ export const DbAuthProvider = ({ children }: any) => {
             });
 
         } catch (error) {
-            console.log({ errorDBToken: error })
+            handleError(error)
             return dispatch({ type: '[DBAuth] - notAuthenticated' });
         }
     }

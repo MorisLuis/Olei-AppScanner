@@ -12,6 +12,7 @@ import { getProductByCodeBar } from '../../../services/products';
 import codebartypes from '../../../utils/codebarTypes.json';
 import { CameraModalStyles } from '../../../theme/ModalRenders/CameraModalTheme';
 import { useTheme } from '../../../context/ThemeContext';
+import useErrorHandler from '../../../hooks/useErrorHandler';
 
 interface CameraModalInterface {
     productDetails: ProductInterface;
@@ -23,6 +24,7 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
     const { vibration, updateBarCode, codebarType, codeBar } = useContext(SettingsContext);
     const navigation = useNavigation<any>();
     const { theme, typeTheme } = useTheme();
+    const { handleError } = useErrorHandler()
 
     const [isScanningAllowed, setIsScanningAllowed] = useState(true);
     const [codeIsScanning, setCodeIsScanning] = useState(false);
@@ -44,7 +46,6 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
         if (!regex.test(codes)) {
             setCodebarTest(false)
         }
-
 
         setCodeIsScanning(true)
         if (codes.length > 0 && isScanningAllowed) {
@@ -71,7 +72,14 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
     }
 
     const hanldeUpdateCodebar = async () => {
-        if (!productDetails) return;
+        if (!productDetails) {
+            handleError({
+                status: 400,
+                Message: "productDetails neccesary in hanldeUpdateCodebar",
+                Metodo: "B-PUT"
+            })
+            return;
+        };
 
         await updateCodbar({
             codigo: productDetails?.Codigo,
@@ -148,16 +156,16 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
 
                                             {
                                                 codeBar && codeBar?.length < 20 ?
-                                                <TouchableOpacity
-                                                    style={[buttonStyles(theme).button_small, { marginBottom: globalStyles(theme).globalMarginBottom.marginBottom }]}
-                                                    onPress={hanldeUpdateCodebar}
-                                                >
-                                                    <Text style={buttonStyles(theme).buttonTextTertiary}>Asignar codigo de barras</Text>
-                                                </TouchableOpacity>
-                                                :
-                                                <View>
-                                                    <Text>El codigo de barras es maximo de 20 caracteres</Text>
-                                                </View>
+                                                    <TouchableOpacity
+                                                        style={[buttonStyles(theme).button_small, { marginBottom: globalStyles(theme).globalMarginBottom.marginBottom }]}
+                                                        onPress={hanldeUpdateCodebar}
+                                                    >
+                                                        <Text style={buttonStyles(theme).buttonTextTertiary}>Asignar codigo de barras</Text>
+                                                    </TouchableOpacity>
+                                                    :
+                                                    <View>
+                                                        <Text>El codigo de barras es maximo de 20 caracteres</Text>
+                                                    </View>
                                             }
                                         </>
                         }

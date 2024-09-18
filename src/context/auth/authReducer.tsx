@@ -1,11 +1,11 @@
 import UserInterface from "../../interface/user";
-import { Id_TipoMovInvInterface } from "../../services/typeOfMovement";
+import { AUTH_INITIAL_STATE } from "./AuthProvider";
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
     token: string | null;
     errorMessage: string;
-    user: UserInterface | null;
+    user: UserInterface;
     codeBar?: string;
 }
 
@@ -20,7 +20,7 @@ type AuthAction =
 const clearAuthState = (): AuthState => ({
     status: 'not-authenticated',
     token: null,
-    user: null,
+    user: AUTH_INITIAL_STATE.user,
     errorMessage: '',
     codeBar: ''
 });
