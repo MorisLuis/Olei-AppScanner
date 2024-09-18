@@ -11,12 +11,14 @@ import { SettingsContext } from '../../context/settings/SettingsContext';
 import { useTheme } from '../../context/ThemeContext';
 import { InventoryScreenStyles } from '../../theme/InventoryScreenTheme';
 import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 export const Inventory = () => {
     const { handleCodebarScannedProcces } = useContext(SettingsContext);
     const { navigate } = useNavigation<any>();
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black";
+    const { handleError } = useErrorHandler()
 
     const [productsInInventory, setProductsInInventory] = useState<ProductInterface[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -27,27 +29,33 @@ export const Inventory = () => {
     const showNoProductsMessage = productsInInventory.length === 0 && !isLoading;
 
     const handleGetProductsByStock = async (page: number) => {
-        setIsLoading(true);
 
-        const products = await getProductsByStock(page);
-
-        setProductsInInventory((prevProducts) => {
-            const newProducts = products.filter(
-                (product: any) =>
-                    !prevProducts.some(
-                        (prevProduct) =>
-                            prevProduct.Codigo === product.Codigo &&
-                            prevProduct.Id_Marca === product.Id_Marca &&
-                            prevProduct.Marca === product.Marca &&
-                            prevProduct.Id_Almacen === product.Id_Almacen &&
-                            prevProduct.Id_ListaPrecios === product.Id_ListaPrecios
-                    )
-            );
-
-            return prevProducts ? [...prevProducts, ...newProducts] : newProducts;
-        });
-
-        setIsLoading(false);
+        try {
+            setIsLoading(true);
+            const products = await getProductsByStock(page);
+            if (products.error) {
+                handleError(products.error);
+                return;
+            }
+            setProductsInInventory((prevProducts) => {
+                const newProducts = products.filter(
+                    (product: any) =>
+                        !prevProducts.some(
+                            (prevProduct) =>
+                                prevProduct.Codigo === product.Codigo &&
+                                prevProduct.Id_Marca === product.Id_Marca &&
+                                prevProduct.Marca === product.Marca &&
+                                prevProduct.Id_Almacen === product.Id_Almacen &&
+                                prevProduct.Id_ListaPrecios === product.Id_ListaPrecios
+                        )
+                );
+                return prevProducts ? [...prevProducts, ...newProducts] : newProducts;
+            });
+        } catch (error) {
+            handleError(error);
+        } finally{
+            setIsLoading(false);
+        }
     };
 
     const loadMoreItem = () => {
@@ -91,8 +99,16 @@ export const Inventory = () => {
 
     useEffect(() => {
         const getTotalCountOfProducts = async () => {
-            const total = await getTotalProductsByStock();
-            setTotalProducts(total);
+            try {
+                const total = await getTotalProductsByStock();
+                if (total.error) {
+                    handleError(total.error);
+                    return;
+                }
+                setTotalProducts(total);
+            } catch (error) {
+                handleError(error)
+            }
         }
         getTotalCountOfProducts();
     }, []);

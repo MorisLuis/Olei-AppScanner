@@ -61,43 +61,64 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
 
 
     const hanldeUpdateCodebarWithCodeFound = async () => {
-        if (!productDetails) {
-            handleError({
-                status: 400,
-                Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeFound",
-                Metodo: "B-PUT"
-            })
-            return;
-        };
+        try {            
+            if (!productDetails) {
+                handleError({
+                    status: 400,
+                    Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeFound",
+                    Metodo: "B-PUT"
+                })
+                return;
+            };
 
-        await updateCodbar({
-            codigo: productDetails?.Codigo,
-            Id_Marca: productDetails?.Id_Marca,
-            body: {
-                CodBar: codeBar
+            const response = await updateCodbar({
+                codigo: productDetails?.Codigo,
+                Id_Marca: productDetails?.Id_Marca,
+                body: {
+                    CodBar: codeBar
+                }
+            })
+            
+            navigation.goBack();
+
+            if (response.error) {
+                handleError(response.error);
+                return;
             }
-        })
-        navigation.goBack()
+        } catch (error) {
+            handleError(error);
+        }
     }
 
     const hanldeUpdateCodebarWithCodeRandom = async () => {
-        if (!productDetails) {
-            handleError({
-                status: 400,
-                Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeRandom",
-                Metodo: "B-PUT"
-            })
-            return;
-        };
 
-        await updateCodbar({
-            codigo: productDetails?.Codigo,
-            Id_Marca: productDetails?.Id_Marca,
-            body: {
-                codeRandom: "true"
+        try {
+            if (!productDetails) {
+                handleError({
+                    status: 400,
+                    Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeRandom",
+                    Metodo: "B-PUT"
+                })
+                return;
+            };
+
+            const response = await updateCodbar({
+                codigo: productDetails?.Codigo,
+                Id_Marca: productDetails?.Id_Marca,
+                body: {
+                    codeRandom: "true"
+                }
+            })
+
+            navigation.goBack()
+
+            if (response.error) {
+                handleError(response.error);
+                return;
             }
-        })
-        navigation.goBack()
+        } catch (error) {
+            handleError(error)
+        }
     }
 
 

@@ -13,6 +13,7 @@ import { SettingsContext } from '../context/settings/SettingsContext';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { SearchProductScreenStyles } from '../theme/SearchProductScreenTheme';
 import { useTheme } from '../context/ThemeContext';
+import useErrorHandler from '../hooks/useErrorHandler';
 
 
 type SearchProductScreenInterface = {
@@ -28,9 +29,9 @@ type SearchProductScreenInterface = {
 export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => {
 
     const { modal, isModal } = route?.params ?? {};
-    const { codeBar } = useContext(SettingsContext,);
+    const { codeBar } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
-
+    const { handleError } = useErrorHandler()
 
     const navigation = useNavigation<any>();
     const [productsInInventory, setProductsInInventory] = useState<ProductInterface[]>([])
@@ -38,8 +39,16 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
     const [openModalAdvice, setOpenModalAdvice] = useState(false)
 
     const getSearchData = async (searchTerm: string) => {
-        const products = await getSearchProductInStock(searchTerm ? searchTerm : "")
-        setProductsInInventory(products);
+        try {
+            const products = await getSearchProductInStock(searchTerm ? searchTerm : "");
+            if (products.error) {
+                handleError(products.error);
+                return;
+            }
+            setProductsInInventory(products);
+        } catch (error) {
+            handleError(error)
+        }
     }
 
     const renderItem = ({ item }: { item: ProductInterface }) => {

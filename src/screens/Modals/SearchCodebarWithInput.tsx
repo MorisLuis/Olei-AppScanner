@@ -9,34 +9,45 @@ import ModalMiddle from '../../components/Modals/ModalMiddle';
 import { useNavigation } from '@react-navigation/native';
 import { SettingsContext } from '../../context/settings/SettingsContext';
 import { useTheme } from '../../context/ThemeContext';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 export const SearchCodebarWithInput = () => {
 
     const { updateBarCode } = useContext(SettingsContext);
     const navigation = useNavigation<any>();
     const { theme, typeTheme } = useTheme();
+    const { handleError } = useErrorHandler()
 
     const [Barcode, onChangeBarcode] = useState('');
     const [typeOfSearch, setTypeOfSearch] = useState('code')
     const [loadingSearch, setLoadingSearch] = useState(false)
     const buttondisabled = Barcode.length < 1 || loadingSearch;
-    
-
-
 
     const handleSearchProductByCodebarInput = async () => {
         updateBarCode('')
         setLoadingSearch(true)
 
         let response;
-        if (typeOfSearch === 'code') {
-            response = await getProductByCodeBar({ codigo: Barcode });
-            handleNavigatoToProduct(response);
-            setLoadingSearch(false);
-        } else {
-            updateBarCode(Barcode)
-            response = await getProductByCodeBar({ codeBar: Barcode });
-            handleNavigatoToProduct(response);
+        try {            
+            if (typeOfSearch === 'code') {
+                response = await getProductByCodeBar({ codigo: Barcode });
+                if (response.error) {
+                    handleError(response.error);
+                    return;
+                }
+                handleNavigatoToProduct(response);
+            } else {
+                updateBarCode(Barcode)
+                response = await getProductByCodeBar({ codeBar: Barcode });
+                if (response.error) {
+                    handleError(response.error);
+                    return;
+                }
+                handleNavigatoToProduct(response);
+            }
+        } catch (error) {
+            handleError(error)
+        } finally {
             setLoadingSearch(false);
         }
     }

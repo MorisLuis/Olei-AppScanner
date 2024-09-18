@@ -88,16 +88,14 @@ export const DbAuthProvider = ({ children }: any) => {
             });
 
             await AsyncStorage.setItem('tokenDB', data.tokenDB);
-            setLoggingIn(false)
-
 
         } catch (error: any) {
-            setLoggingIn(false)
-
             dispatch({
                 type: '[DBAuth] - addError',
                 payload: (error.response ? error.response.data.error : error.message )|| 'Información incorrecta'
             })
+        } finally {
+            setLoggingIn(false);
         }
     };
 

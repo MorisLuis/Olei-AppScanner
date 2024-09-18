@@ -26,6 +26,7 @@ const updateCodbar = async ({
             type: 'tomatoToast',
             text1: 'Se actualizó el codigo de barras!'
         })
+        return { ok: true }
     } catch (error: any) {
         return { error: error };
     }

@@ -10,6 +10,7 @@ import { productDetailsStyles } from '../theme/productDetailsTheme';
 import { SettingsContext } from '../context/settings/SettingsContext';
 import { globalStyles } from '../theme/appTheme';
 import { useTheme } from '../context/ThemeContext';
+import useErrorHandler from '../hooks/useErrorHandler';
 
 type ProductDetailsPageInterface = {
     route?: {
@@ -27,6 +28,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
     const { handleCameraAvailable, codeBar } = useContext(SettingsContext);
     const shouldCleanUp = useRef(true);
     const [isLoading, setIsLoading] = useState(true);
+    const { handleError } = useErrorHandler()
 
     const navigation = useNavigation<any>();
     const [productDetailsData, setProductDetailsData] = useState<ProductInterface | null>(null);
@@ -39,9 +41,13 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
         try {
             setIsLoading(true);
             const productData = await getProductDetails(Codigo as string, Marca as string);
+            if (productData.error) {
+                handleError(productData.error);
+                return;
+            }
             setProductDetailsData(productData);
         } catch (error) {
-            console.error('Error fetching product details:', error);
+            handleError(error)
         } finally {
             setIsLoading(false);
         }

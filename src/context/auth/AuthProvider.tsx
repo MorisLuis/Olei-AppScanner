@@ -123,11 +123,11 @@ export const AuthProvider = ({ children }: any) => {
                 await AsyncStorage.setItem('token', data.token);
 
             } catch (error: any) {
-                handleError(error)
                 dispatch({
                     type: '[Auth] - addError',
                     payload: (error.response ? error.response.data.error : error.message) || 'Información incorrecta'
                 })
+                handleError(error);
             } finally {
                 setLoggingIn(false)
             }
@@ -163,8 +163,9 @@ export const AuthProvider = ({ children }: any) => {
                 });
 
             } catch (error) {
-                handleError(error)
-                return dispatch({ type: '[Auth] - notAuthenticated' });
+                dispatch({ type: '[Auth] - notAuthenticated' });
+                handleError(error);
+                return;
             }
         }
 

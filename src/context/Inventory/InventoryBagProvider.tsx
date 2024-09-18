@@ -46,7 +46,6 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
             setProductAdded(true);
         } catch (error) {
             handleError(error)
-            setProductAdded(false);
         } finally {
             timeoutRef.current = setTimeout(() => {
                 setProductAdded(false);
@@ -83,8 +82,7 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
             dispatch({ type: '[InventoryBag] - Post Inventory', payload: inventory.data })
             setInventoryCreated(true)
         } catch (error) {
-            console.error('Error posting inventory:', error);
-            setInventoryCreated(false);
+            handleError(error);
         } finally {
             timeoutRef.current = setTimeout(() => {
                 setInventoryCreated(false);
@@ -103,8 +101,9 @@ export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => 
             await api.post(`/api/inventory/inventoryDetails`, inventoryDetailsbody);
             dispatch({ type: '[InventoryBag] - Post Inventory Details', payload: products })
             setInventoryCreated(true)
+
         } catch (error) {
-            console.error('Error posting inventory details:', error);
+            handleError(error)
         }
     }
 

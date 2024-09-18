@@ -54,15 +54,19 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
             if (!codeValue) return;
             try {
                 const response = await getProductByCodeBar({ codeBar: codeValue });
+                if (response.error) {
+                    handleError(response.error);
+                    return;
+                }
                 handleVibrate()
                 updateBarCode(codeValue)
                 if (response.length > 0) {
                     setProductExistent(true)
                 }
             } catch (error) {
-                setCodebarTest(true)
-                console.error('Error fetching product:', error);
+                handleError(error);
             } finally {
+                setCodebarTest(true);
                 setTimeout(() => {
                     setIsScanningAllowed(true);
                 }, 2000);
@@ -72,6 +76,7 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
     }
 
     const hanldeUpdateCodebar = async () => {
+
         if (!productDetails) {
             handleError({
                 status: 400,
@@ -81,15 +86,25 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
             return;
         };
 
-        await updateCodbar({
-            codigo: productDetails?.Codigo,
-            Id_Marca: productDetails?.Id_Marca,
-            body: {
-                CodBar: codeBar
+        try {
+            const response = await updateCodbar({
+                codigo: productDetails?.Codigo,
+                Id_Marca: productDetails?.Id_Marca,
+                body: {
+                    CodBar: codeBar
+                }
+            })
+
+            if (response.error) {
+                handleError(response.error);
+                return;
             }
-        })
-        onClose();
-        navigation.goBack();
+        } catch (error) {
+            handleError(error);
+        } finally {
+            onClose();
+            navigation.goBack();
+        }
     }
 
     const handleTryAgain = () => {

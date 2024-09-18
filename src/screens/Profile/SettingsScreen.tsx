@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import { Button, Text, TouchableOpacity, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import { globalStyles } from '../../theme/appTheme';
 import { Id_TipoMovInvInterface, getTypeOfMovements } from '../../services/typeOfMovement';
 import { AuthContext } from '../../context/auth/AuthContext';
@@ -12,11 +12,13 @@ import { buttonStyles } from '../../theme/UI/buttons';
 import Toast from 'react-native-toast-message';
 import { SettingsScreenStyles } from '../../theme/SettingsScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 export const SettingsScreen = () => {
 
     const { updateTypeOfMovements } = useContext(AuthContext);
     const { theme, toggleTheme, typeTheme } = useTheme();
+    const { handleError } = useErrorHandler()
 
     const { vibration, handleVibrationState, limitProductsScanned, handleLimitProductsScanned } = useContext(SettingsContext);
     const [typeSelected, setTypeSelected] = useState<number>()
@@ -44,11 +46,20 @@ export const SettingsScreen = () => {
         })
     }
 
-    useEffect(() => {
-        const handleGetTypeOfMovements = async () => {
+    const handleGetTypeOfMovements = async () => {
+        try {
             const types = await getTypeOfMovements();
+            if (types.error) {
+                handleError(types.error);
+                return;
+            }
             setTypeOfMovement(types)
+        } catch (error) {
+            handleError(error)
         }
+    }
+
+    useEffect(() => {
         setTypeSelected(user?.Id_TipoMovInv?.Id_TipoMovInv)
         handleGetTypeOfMovements()
     }, []);

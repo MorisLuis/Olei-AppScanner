@@ -5,6 +5,7 @@ import { PERMISSIONS, check, openSettings, request } from "react-native-permissi
 import { SettingsContext } from "../../context/settings/SettingsContext";
 import ProductInterface from "../../interface/product";
 import UserInterface from "../../interface/user";
+import useErrorHandler from "../../hooks/useErrorHandler";
 
 type PermissionStatus = 'unavailable' | 'denied' | 'limited' | 'granted' | 'blocked';
 
@@ -24,7 +25,7 @@ export const cameraSettings = ({
 
     const { handleCameraAvailable, cameraAvailable, vibration, updateBarCode, handleStartScanning } = useContext(SettingsContext);
     const [codeDetected, setCodeDetected] = useState(false)
-
+    const { handleError } = useErrorHandler()
 
     const requestCameraPermission = async () => {
         const result = await request(
@@ -87,15 +88,19 @@ export const cameraSettings = ({
 
             try {
                 const response = await getProductByCodeBar({ codeBar: codeValue.trim() });
+                if (response.error) {
+                    handleError(response.error);
+                    return;
+                }
                 handleOpenProductsFoundByCodebar(response);
                 handleVibrate()
                 updateBarCode(codeValue)
-                handleStartScanning(false)
             } catch (error) {
-                handleStartScanning(false)
+                handleError(error)
                 setCodeDetected(false)
                 handleCameraAvailable(true)
-                console.error('Error fetching product:', error);
+            } finally {
+                handleStartScanning(false)
             }
         } else {
             handleCameraAvailable(true)

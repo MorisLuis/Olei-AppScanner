@@ -30,26 +30,36 @@ export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWi
 
     const hanldeUpdateCodebarWithCodeRandom = async () => {
 
-        if (!productDetails) {
-            handleError({
-                status: 400,
-                Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeRandom/CodebarUpdateWithInputScreen",
-                Metodo: "B-PUT"
-            })
-            return;
-        };
+        try {            
+            if (!productDetails) {
+                handleError({
+                    status: 400,
+                    Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeRandom/CodebarUpdateWithInputScreen",
+                    Metodo: "B-PUT"
+                })
+                return;
+            };
+    
+            if (!regex.test(text)) return;
+    
+            const response = await updateCodbar({
+                codigo: productDetails?.Codigo,
+                Id_Marca: productDetails?.Id_Marca,
+                body: { CodBar: text }
+            });
 
-        if (!regex.test(text)) return;
-
-        await updateCodbar({
-            codigo: productDetails?.Codigo,
-            Id_Marca: productDetails?.Id_Marca,
-            body: {
-                CodBar: text
+            if (response.error) {
+                handleError(response.error);
+                return;
             }
-        })
-        navigation.goBack()
-        navigation.goBack()
+
+        } catch (error) {
+            handleError(error);
+        } finally{
+            navigation.goBack()
+            navigation.goBack()
+        }
+
     }
 
     const handleTextChange = (value: string) => {

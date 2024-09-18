@@ -47,9 +47,10 @@ export const TypeOfMovementScreen = () => {
         try {
             if (typeSelected === undefined || typeSelected === null) return
             updateTypeOfMovements(typeSelected);
-            navigate('BottomNavigation')
         } catch (error) {
             handleError(error)
+        } finally {
+            navigate('BottomNavigation');
         }
     }
 
@@ -64,10 +65,21 @@ export const TypeOfMovementScreen = () => {
     };
 
     const handleGetTypeOfMovements = async () => {
-        setIsLoading(true);
-        const types = await getTypeOfMovements();
-        setTypeOfMovement(types);
-        setIsLoading(false);
+
+        try {
+            setIsLoading(true);
+            const types = await getTypeOfMovements();
+            if (types.error) {
+                handleError(types.error);
+                return;
+            }
+            setTypeOfMovement(types);
+        } catch (error) {
+            handleError(error);
+        } finally {
+            setIsLoading(false);
+        }
+
     }
 
     useEffect(() => {

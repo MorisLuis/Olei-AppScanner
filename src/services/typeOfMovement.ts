@@ -17,7 +17,6 @@ const getTypeOfMovements = async () => {
         return { error: error };
     }
 
-    
 }
 
 
