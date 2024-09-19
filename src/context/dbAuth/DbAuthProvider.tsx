@@ -100,6 +100,8 @@ export const DbAuthProvider = ({ children }: any) => {
     };
 
     const logOut = async () => {
+
+        console.log("log out DB!!")
         setLoggingIn(false);
         await api.get('/api/auth/logoutAppDB');
         dispatch({ type: '[DBAuth] - logout' });

@@ -22,6 +22,7 @@ import { ProductsFindByCodeBar } from '../screens/Modals/ProductsFindByCodeBar';
 import { AuthContext } from '../context/auth/AuthContext';
 import { ConfirmationScreen } from '../screens/InventoryBag/ConfirmationScreen';
 import { EditProductInBag } from '../screens/Modals/EditProductInBag';
+import { SessionExpiredScreen } from '../screens/SessionExpired';
 
 export type InventoryNavigationStackParamList = {
     // Navigation
@@ -41,6 +42,7 @@ export type InventoryNavigationStackParamList = {
     succesMessageScreen: undefined;
     typeOfMovementScreen: undefined;
     searchProductScreen: undefined;
+    sessionExpired: undefined;
 
     // Modal
     "[Modal] - scannerResultScreen": undefined,
@@ -64,6 +66,7 @@ export const AppNavigation = () => {
 
     const authScreens = TESTAPP !== 'FALSE' ? (
         <>
+
             <Stack.Screen
                 name="StartupScreen"
                 component={StartupScreen}
@@ -75,9 +78,16 @@ export const AppNavigation = () => {
                 component={LoginDatabaseScreen}
                 options={{ headerShown: false }}
             />
+
             <Stack.Screen
                 name="LoginPage"
                 component={LoginScreen}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="sessionExpired"
+                component={SessionExpiredScreen}
                 options={{ headerShown: false }}
             />
         </>
