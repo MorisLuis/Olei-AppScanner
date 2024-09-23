@@ -34,7 +34,7 @@
     <key>NSLocalNetworkUsageDescription</key>
     <string>We need access to the local network to debug your application.</string>
     <key>NSCameraUsageDescription</key>
-    <string>$(PRODUCT_NAME) needs access to your Camera.</string>
+    <string>$(PRODUCT_NAME) necesita acceder a la cámara para escanear códigos de productos y agilizar el proceso de inventario. Las imágenes no serán almacenadas ni compartidas.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string></string>
     <key>NSMicrophoneUsageDescription</key>

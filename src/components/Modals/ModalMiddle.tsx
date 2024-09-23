@@ -41,7 +41,9 @@ const ModalMiddle = ({
                                         title ?
                                             <Text style={ModalMiddlenStyles(theme, typeTheme).title}>{title}</Text> : <Text></Text>
                                     }
-                                    <Icon name="close-outline" size={hp("4%")} color={iconColor} />
+                                    <View style={{ backgroundColor: 'red', width: 24, height: 24 }}>
+                                        <Icon name="close-outline" size={hp("4%")} color={iconColor} />
+                                    </View>
                                 </TouchableOpacity>
                                 <View style={ModalMiddlenStyles(theme, typeTheme).modalChildren}>
                                     {children}
@@ -63,7 +65,9 @@ const ModalMiddle = ({
                                         title ?
                                             <Text style={ModalMiddlenStyles(theme, typeTheme).title}>{title}</Text> : <Text></Text>
                                     }
-                                    <Icon name="close-outline" size={hp("4%")} color={iconColor} />
+                                    <View style={{ width: 48, height: 48, justifyContent: 'center', alignItems: 'center' }}>
+                                        <Icon name="close-outline" size={24} color={iconColor} />
+                                    </View>
                                 </TouchableOpacity>
                                 <View style={ModalMiddlenStyles(theme, typeTheme).modalChildren}>
                                     {children}

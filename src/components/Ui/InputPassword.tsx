@@ -44,9 +44,13 @@ export const InputPassword = ({
             />
             <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
-                style={inputStyles(theme, typeTheme).passwordToggle}
+                style={[inputStyles(theme, typeTheme).passwordToggle, { width: 48, height: 48, justifyContent: 'center', alignItems: 'center' }]} // Aumenta el área táctil a 48x48
             >
-                <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} color={theme.text_color} />
+                <Icon
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    size={22}
+                    color={theme.text_color}
+                />
             </TouchableOpacity>
         </View>
     )

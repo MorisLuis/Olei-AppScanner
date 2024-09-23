@@ -15,12 +15,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { InputPassword } from '../../components/Ui/InputPassword';
 import { useProtectPage } from '../../hooks/useProtectPage';
+import ModalMiddle from '../../components/Modals/ModalMiddle';
 
 export const LoginScreen = () => {
     const { signIn, errorMessage, removeError, loggingIn, status } = useContext(AuthContext);
 
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black"
+    const [errorModal, setErrorModal] = useState(false);
 
     const navigation = useNavigation<any>();
     const { Id_Usuario, password, onChange } = useForm({
@@ -30,7 +32,7 @@ export const LoginScreen = () => {
 
     useEffect(() => {
         if (errorMessage.length === 0) return;
-        Alert.alert('Login incorrecto', errorMessage, [{ text: 'Ok', onPress: removeError }]);
+        setErrorModal(true)
     }, []);
 
     const onLogin = () => {
@@ -55,59 +57,74 @@ export const LoginScreen = () => {
     if (loggingIn) return <LoadingScreen message='Iniciando sesion...' state={loggingIn} />;
 
     return !protectThisPage ? (
-        <KeyboardAvoidingView
-            style={[loginStyles(theme).LoginScreen]}
-            behavior={(Platform.OS === 'ios') ? 'padding' : 'height'}
-        >
-            <SafeAreaView style={{ flex: 1 }}>
-                <View style={loginStyles(theme).formContainer}>
-                    <View style={loginStyles(theme).imageContainer}>
-                        <Image
-                            style={[keyboardActive ? loginStyles(theme).logoActived : loginStyles(theme).logo]}
-                            source={require('../../assets/logo01.png')}
+        <>
+            <KeyboardAvoidingView
+                style={[loginStyles(theme).LoginScreen]}
+                behavior={(Platform.OS === 'ios') ? 'padding' : 'height'}
+            >
+                <SafeAreaView style={{ flex: 1 }}>
+                    <View style={loginStyles(theme).formContainer}>
+                        <View style={loginStyles(theme).imageContainer}>
+                            <Image
+                                style={[keyboardActive ? loginStyles(theme).logoActived : loginStyles(theme).logo]}
+                                source={require('../../assets/logo01.png')}
+                            />
+                        </View>
+                        <Text style={loginStyles(theme).title}>Bienvenido!</Text>
+                        <Text style={loginStyles(theme).textLogin}>Ingresar datos de Usuario</Text>
+
+                        <TextInput
+                            placeholder="Escribe tu Id Usuario..."
+                            placeholderTextColor={theme.text_color}
+                            keyboardType="email-address"
+                            style={[inputStyles(theme, typeTheme).input, globalStyles(theme).globalMarginBottom]}
+                            selectionColor={theme.text_color}
+                            onChangeText={(value) => onChange(value, 'Id_Usuario')}
+                            value={Id_Usuario}
+                            onSubmitEditing={onLogin}
+                            autoCapitalize="none"
+                            autoCorrect={false}
                         />
+
+                        <InputPassword
+                            password={password}
+                            onChange={onChange}
+                            onLogin={onLogin}
+                            placeholder={"Escribe tu contraseña..."}
+                            inputName="password"
+                        />
+
+                        <View style={loginStyles(theme).buttonContainer}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[buttonStyles(theme).button, buttonStyles(theme).black]}
+                                onPress={onLogin}
+                            >
+                                <Text style={buttonStyles(theme).buttonText}>Iniciar sesión</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <Text style={loginStyles(theme).title}>Bienvenido!</Text>
-                    <Text style={loginStyles(theme).textLogin}>Ingresar datos de Usuario</Text>
 
-                    <TextInput
-                        placeholder="Escribe tu Id Usuario..."
-                        placeholderTextColor={theme.text_color}
-                        keyboardType="email-address"
-                        style={[inputStyles(theme, typeTheme).input, globalStyles(theme).globalMarginBottom]}
-                        selectionColor={theme.text_color}
-                        onChangeText={(value) => onChange(value, 'Id_Usuario')}
-                        value={Id_Usuario}
-                        onSubmitEditing={onLogin}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                    />
+                    <TouchableOpacity style={loginStyles(theme).footer} onPress={handleNavigateToProfile}>
+                        <Text style={loginStyles(theme).footerText}>Configuración</Text>
+                        <Icon name="cog-outline" size={20} color={iconColor} />
+                    </TouchableOpacity>
+                </SafeAreaView>
+            </KeyboardAvoidingView>
 
-                    <InputPassword
-                        password={password}
-                        onChange={onChange}
-                        onLogin={onLogin}
-                        placeholder={"Escribe tu contraseña..."}
-                        inputName="password"
-                    />
-
-                    <View style={loginStyles(theme).buttonContainer}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={[buttonStyles(theme).button, buttonStyles(theme).black]}
-                            onPress={onLogin}
-                        >
-                            <Text style={buttonStyles(theme).buttonText}>Iniciar sesión</Text>
-                        </TouchableOpacity>
-                    </View>
+            <ModalMiddle
+                visible={errorModal}
+                onClose={() => {
+                    setErrorModal(false);
+                    removeError();
+                }}
+                title="Login incorrecto"
+            >
+                <View>
+                    <Text>{errorMessage}</Text>
                 </View>
-
-                <TouchableOpacity style={loginStyles(theme).footer} onPress={handleNavigateToProfile}>
-                    <Text style={loginStyles(theme).footerText}>Configuración</Text>
-                    <Icon name="cog-outline" size={20} color={iconColor} />
-                </TouchableOpacity>
-            </SafeAreaView>
-        </KeyboardAvoidingView>
+            </ModalMiddle>
+        </>
     )
         :
         <LoadingScreen message='Redireccionando...' state={!protectThisPage} />
