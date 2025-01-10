@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Text, View, TextInput, Platform, KeyboardAvoidingView, Keyboard, Alert, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { Text, View, TextInput, Platform, KeyboardAvoidingView, Keyboard, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -24,9 +24,10 @@ export const LoginScreen = () => {
     const iconColor = typeTheme === 'dark' ? "white" : "black"
     const [errorModal, setErrorModal] = useState(false);
 
-    const navigation = useNavigation<any>();
-    const { Id_Usuario, password, onChange } = useForm({
-        Id_Usuario: '',
+    const navigation = useNavigation<any>(); //LAST
+
+    const { user, password, onChange } = useForm({
+        user: '',
         password: ''
     });
 
@@ -37,17 +38,22 @@ export const LoginScreen = () => {
 
     const onLogin = () => {
         Keyboard.dismiss();
-        signIn({ Id_Usuario, password });
+        signIn({ Id_Usuario: user, password });
     };
 
     const handleNavigateToProfile = () => {
-        navigation.navigate('BottomNavigation', {
-            screen: 'BottomNavigation - Profile', params: {
-                screen: '[ProfileNavigation] - personalInformationScreen',
-                params: { fromLogIn: true }
+        navigation.navigate(
+            'BottomNavigation',
+            {
+                screen: 'BottomNavigation - Profile',
+                params: {
+                    screen: '[ProfileNavigation] - personalInformationScreen',
+                    params: { fromLogIn: true }
+                }
             }
-        });
+        );
     };
+
     const { protectThisPage } = useProtectPage({
         protectionCondition: status === 'authenticated',
         navigatePage: 'typeOfMovementScreen'
@@ -79,8 +85,8 @@ export const LoginScreen = () => {
                             keyboardType="email-address"
                             style={[inputStyles(theme, typeTheme).input, globalStyles(theme).globalMarginBottom]}
                             selectionColor={theme.text_color}
-                            onChangeText={(value) => onChange(value, 'Id_Usuario')}
-                            value={Id_Usuario}
+                            onChangeText={(value) => onChange(value, 'user')}
+                            value={user}
                             onSubmitEditing={onLogin}
                             autoCapitalize="none"
                             autoCorrect={false}

@@ -26,7 +26,6 @@ export const sendError = async ({
     }
 
     try {
-        console.log({errorBody})
         const error = await api.post(`/api/errors`, errorBody);
         return error;
     } catch (error) {

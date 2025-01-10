@@ -5,14 +5,15 @@ import { useNavigation } from '@react-navigation/native';
 import { InventoryBagContext } from '../context/Inventory/InventoryBagContext';
 import { SuccesMessageScreenStyles } from '../theme/SuccesMessageScreenTheme';
 import { useTheme } from '../context/ThemeContext';
+import { AppNavigationProp } from '../interface/navigation';
 
 
 export const SuccesMessage = () => {
 
-    const { navigate } = useNavigation<any>();
+    const { navigate } = useNavigation<AppNavigationProp>();
     const { inventoryData } = useContext(InventoryBagContext);
     const { theme, typeTheme } = useTheme();
-    const iconColor = typeTheme === 'dark' ? "white" : "black"
+    const iconColor = typeTheme === 'dark' ? "white" : "black";
 
     return (
         <SafeAreaView style={{ backgroundColor: theme.background_color }}>

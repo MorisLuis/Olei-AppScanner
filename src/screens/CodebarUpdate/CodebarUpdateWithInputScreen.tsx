@@ -11,30 +11,32 @@ import ProductInterface from '../../interface/product';
 import { CodebarUpdateWithInputScreenStyles } from '../../theme/CodebarUpdateWithInputScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
+import { CodebarUpdateNavigationProp } from '../../interface/navigation';
 
 interface CodebarUpdateWithInputScreenInterface {
-    productDetails?: ProductInterface
+    Codigo: string; 
+    Id_Marca: number
 }
 
-export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWithInputScreenInterface) => {
+export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdateWithInputScreenInterface) => {
 
     const [text, setText] = useState('');
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CodebarUpdateNavigationProp>();
     const { codebarType } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
     const { handleError } = useErrorHandler()
 
-    const currentType = codebartypes.barcodes.find((code: any) => code.id === codebarType)
+    const currentType = codebartypes.barcodes.find((code) => code.id === codebarType)
     const regex = new RegExp(currentType?.regex as string);
 
 
     const hanldeUpdateCodebarWithCodeRandom = async () => {
 
         try {            
-            if (!productDetails) {
+            if (!Codigo || !Id_Marca ) {
                 handleError({
                     status: 400,
-                    Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeRandom/CodebarUpdateWithInputScreen",
+                    Message: "Codigo, Id_Marca  neccesary in hanldeUpdateCodebarWithCodeRandom/CodebarUpdateWithInputScreen",
                     Metodo: "B-PUT"
                 })
                 return;
@@ -43,8 +45,8 @@ export const CodebarUpdateWithInputScreen = ({ productDetails }: CodebarUpdateWi
             if (!regex.test(text)) return;
     
             const response = await updateCodbar({
-                codigo: productDetails?.Codigo,
-                Id_Marca: productDetails?.Id_Marca,
+                codigo: Codigo,
+                Id_Marca: Id_Marca,
                 body: { CodBar: text }
             });
 

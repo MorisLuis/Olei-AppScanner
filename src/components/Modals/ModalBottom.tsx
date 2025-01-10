@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Modal, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, Text } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -8,10 +8,10 @@ import { useTheme } from '../../context/ThemeContext';
 interface ModalBottomInterface {
     visible: boolean;
     onClose: () => void;
-    children: any;
+    children: ReactNode;
 
     blurNotAvailable?: boolean;
-    blurType?: any;
+    blurType?: 'light' | 'dark';
     blurAmount?: number
 }
 

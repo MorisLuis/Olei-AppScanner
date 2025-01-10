@@ -10,10 +10,10 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 export type BottomNavigationStackParamList = {
     "BottomNavigation - Scanner": undefined;
-    "BottomNavigation - Profile": undefined;
+    "BottomNavigation - Profile": { fromLogIn?: boolean};
 };
 
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { RouteProp, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useTheme } from '../context/ThemeContext';
 
 export const BottomNavigation = () => {
@@ -21,7 +21,7 @@ export const BottomNavigation = () => {
     const BottomTabIOS = createBottomTabNavigator<BottomNavigationStackParamList>();
     const { theme } = useTheme();
 
-    const getTabBarVisibility = (route: any) => {
+    const getTabBarVisibility = (route: RouteProp<BottomNavigationStackParamList, keyof BottomNavigationStackParamList>) => {
         const routeName = getFocusedRouteNameFromRoute(route) ?? '';
         if (routeName === '[ProfileNavigation] - profile') {
             return 'flex';

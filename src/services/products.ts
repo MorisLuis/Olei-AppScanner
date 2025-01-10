@@ -5,7 +5,7 @@ const getProductDetails = async (id: string, marca: string) => {
     try {
         const getProduct = await api.get(`/api/product/${id}?Marca=${marca}`);
         product = getProduct.data;
-    } catch (error: any) {
+    } catch (error) {
         return { error: error };
     }
 
@@ -22,7 +22,7 @@ const getProductByCodeBar = async ({ codeBar, codigo }: getProductByCodeBarInter
     try {
         const getProduct = await api.get(`/api/product/byStockAndCodeBar?CodBar=${codeBar}&Codigo=${codigo}`);
         product = getProduct.data;
-    } catch (error: any) {
+    } catch (error) {
         return { error: error };
     }
 
@@ -36,7 +36,7 @@ const getProductsByStock = async (PageNumber: number) => {
     try {
         const getProduct = await api.get(`/api/product/byStock?PageNumber=${PageNumber}&PageSize=10`);
         products = getProduct.data;
-    } catch (error: any) {
+    } catch (error) {
         return { error: error };
     }
 
@@ -49,7 +49,7 @@ const getTotalProductsByStock = async () => {
     try {
         const getProduct = await api.get(`/api/product/byStockCount`);
         total = getProduct.data[0].TotalProductos;
-    } catch (error: any) {
+    } catch (error) {
         return { error: error };
 
     }

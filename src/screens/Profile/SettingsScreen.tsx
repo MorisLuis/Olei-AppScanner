@@ -74,7 +74,7 @@ export const SettingsScreen = () => {
                         <>
                             <Selector
                                 label={"Tipo de movimiento"}
-                                items={typeOfMovement.map((item: any) => {
+                                items={typeOfMovement.map((item) => {
                                     return { label: item?.Descripcion, value: item?.Id_TipoMovInv }
                                 })}
                                 value={
@@ -83,7 +83,7 @@ export const SettingsScreen = () => {
                                         'Selecciona una opción...'
                                 }
                                 //Methods
-                                onValueChange={(value: any) => onChangetTypeOfMovement(value)}
+                                onValueChange={(value) => onChangetTypeOfMovement(value)}
                             />
 
                             <View style={SettingsScreenStyles(theme).divider}></View>

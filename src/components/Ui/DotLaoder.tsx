@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
+import { View, Animated, StyleSheet, ViewStyle } from 'react-native';
 import { LoaderStyles } from '../../theme/UI/LoaderStyles';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -11,7 +11,7 @@ const DotLoader = () => {
     const dot3 = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        const animateDot = (dot: any, delay: any) => {
+        const animateDot = (dot: Animated.Value, delay: number) => {
             Animated.loop(
                 Animated.sequence([
                     Animated.timing(dot, {
@@ -34,7 +34,7 @@ const DotLoader = () => {
         animateDot(dot3, 300);
     }, [dot1, dot2, dot3]);
 
-    const dotStyle = (dot: any) => ({
+    const dotStyle = (dot: Animated.Value): ViewStyle => ({
         transform: [
             {
                 translateY: dot,

@@ -5,8 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { dbAuthReducer } from './dbAuthReducer';
 import { DbAuthContext } from './DbAuthContext';
 import UserInterface from '../../interface/user';
-import useErrorHandler from '../../hooks/useErrorHandler';
-
+import useErrorHandler, { useCatchError } from '../../hooks/useErrorHandler';
 
 export interface DbAuthState {
     status: 'dbChecking' | 'dbAuthenticated' | 'dbNot-authenticated';
@@ -14,7 +13,6 @@ export interface DbAuthState {
     errorMessage: string;
     user: UserInterface | null
 }
-
 
 export interface LoginData {
     IdUsuarioOLEI: string;
@@ -28,7 +26,7 @@ const AUTH_INITIAL_STATE: DbAuthState = {
     user: null
 }
 
-export const DbAuthProvider = ({ children }: any) => {
+export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
 
     const [state, dispatch] = useReducer(dbAuthReducer, AUTH_INITIAL_STATE);
     const [loggingIn, setLoggingIn] = useState(false);
@@ -52,11 +50,11 @@ export const DbAuthProvider = ({ children }: any) => {
                     'x-token': token || ''
                 }
             });
-    
+
             if (resp.status !== 200) {
                 return dispatch({ type: '[DBAuth] - notAuthenticated' });
             }
-    
+
             await AsyncStorage.setItem('tokenDB', resp.data.token);
             dispatch({
                 type: '[DBAuth] - signUp',
@@ -89,19 +87,15 @@ export const DbAuthProvider = ({ children }: any) => {
 
             await AsyncStorage.setItem('tokenDB', data.tokenDB);
 
-        } catch (error: any) {
-            dispatch({
-                type: '[DBAuth] - addError',
-                payload: (error.response ? error.response.data.error : error.message )|| 'Información incorrecta'
-            })
+        } catch (error) {
+            const { errorMessage } = useCatchError(error);
+            dispatch({ type: '[DBAuth] - addError', payload: errorMessage })
         } finally {
             setLoggingIn(false);
         }
     };
 
     const logOut = async () => {
-
-        console.log("log out DB!!")
         setLoggingIn(false);
         await api.get('/api/auth/logoutAppDB');
         dispatch({ type: '[DBAuth] - logout' });
@@ -113,7 +107,6 @@ export const DbAuthProvider = ({ children }: any) => {
     const removeError = () => {
         dispatch({ type: '[DBAuth] - removeError' });
     };
-
 
     return (
         <DbAuthContext.Provider value={{

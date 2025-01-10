@@ -8,12 +8,13 @@ import { AuthContext } from '../context/auth/AuthContext';
 import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 import { useTheme } from '../context/ThemeContext';
 import useErrorHandler from '../hooks/useErrorHandler';
+import { AppNavigationProp } from '../interface/navigation';
 
 export const TypeOfMovementScreen = () => {
 
     const { updateTypeOfMovements } = useContext(AuthContext);
     const { theme, typeTheme } = useTheme();
-    const { navigate } = useNavigation<any>();
+    const { navigate } = useNavigation<AppNavigationProp>();
     const { handleError } = useErrorHandler()
 
     const [typeOfMovement, setTypeOfMovement] = useState<Id_TipoMovInvInterface[]>([]);

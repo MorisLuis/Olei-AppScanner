@@ -5,22 +5,13 @@ import { TouchableOpacity } from 'react-native';
 import { buttonStyles } from '../theme/UI/buttons';
 import { globalFont, globalStyles } from '../theme/appTheme';
 import { useNavigation } from '@react-navigation/native';
+import { AppNavigationProp } from '../interface/navigation';
 
-interface SessionExpiredScreenInterface {
-    message?: string;
-    state?: boolean;
-    loading?: boolean
 
-};
-
-export const SessionExpiredScreen = ({
-    message,
-    state,
-    loading
-}: SessionExpiredScreenInterface) => {
+export const SessionExpiredScreen = () => {
 
     const { theme } = useTheme();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AppNavigationProp>();
 
     return (
         <View style={{

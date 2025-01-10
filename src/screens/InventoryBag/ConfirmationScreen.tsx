@@ -12,12 +12,14 @@ import DotLoader from '../../components/Ui/DotLaoder';
 import { ProductInterfaceBag } from '../../interface/product';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useProtectPage } from '../../hooks/useProtectPage';
+import { CombineNavigationProp } from '../../interface/navigation';
 
 export const ConfirmationScreen = () => {
+
     const { typeTheme, theme } = useTheme();
     const { getTypeOfMovementsName, user } = useContext(AuthContext);
     const { bag, cleanBag, numberOfItems, postInventory } = useContext(InventoryBagContext);
-    const { navigate } = useNavigation<any>();
+    const { navigate } = useNavigation<CombineNavigationProp>();
 
     const iconColor = theme.color_tertiary;
     const [createInventaryLoading, setCreateInventaryLoading] = useState(false);
@@ -29,7 +31,16 @@ export const ConfirmationScreen = () => {
     }, [bag, page, pageSize]);
 
     const renderItem = useCallback(({ item }: { item: ProductInterfaceBag }) => (
-        <ProductInventoryConfirmationCard product={item} onClick={() => navigate('[Modal] - editProductInBag', { product: item })} disabled={createInventaryLoading} />
+        <ProductInventoryConfirmationCard
+            product={item}
+            disabled={createInventaryLoading}
+            onClick={() => {
+                navigate(
+                    '[Modal] - editProductInBag',
+                    { product: item }
+                )
+            }}
+        />
     ), [createInventaryLoading]);
 
     const onPostInventary = useCallback(async () => {
@@ -43,7 +54,7 @@ export const ConfirmationScreen = () => {
             navigate('succesMessageScreen');
         }, 500);
     }, [bag, postInventory, cleanBag, navigate]);
-    
+
 
     const handleLoadMore = () => {
         if (filteredBag.length >= numberOfItems) return;

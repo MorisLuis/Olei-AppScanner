@@ -4,10 +4,12 @@ import { sendError } from '../services/errors';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 import { DbAuthContext } from '../context/dbAuth/DbAuthContext';
+import { AppNavigationProp } from '../interface/navigation';
+import { AxiosError } from 'axios';
 
-export const useErrorHandler = () => {
+const useErrorHandler = () => {
     const { user } = useContext(AuthContext);
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AppNavigationProp>();
     const { logOut } = useContext(DbAuthContext);
 
     const handleError = async (error: any) => {
@@ -50,8 +52,31 @@ export const useErrorHandler = () => {
             }
         }, 300);
     };
+
     return { handleError };
 };
 
+const useCatchError = (errorValue: unknown) => {
+
+    let errorMessage;
+
+    if (errorValue instanceof AxiosError && errorValue.response) {
+        errorMessage = errorValue.response.data.error || 'Error en el servidor';
+    } else if (errorValue instanceof Error) {
+        errorMessage = errorValue.message;
+    } else {
+        errorMessage = 'Error desconocido';
+    }
+
+    return {
+        errorMessage
+    }
+}
 
 export default useErrorHandler;
+
+export {
+    useCatchError
+}
+
+

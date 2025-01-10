@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { DbAuthProvider } from './src/context/dbAuth/DbAuthProvider';
 import { AuthProvider } from './src/context/auth/AuthProvider';
 import { SettingsProvider } from './src/context/settings/SettingsProvider';
@@ -19,7 +19,11 @@ const App = () => {
   );
 };
 
-const AppState = ({ children }: any) => {
+interface AppStateProps {
+  children: ReactNode;
+}
+
+const AppState: React.FC<AppStateProps> = ({ children }) => {
   return (
     <DbAuthProvider>
       <AuthProvider>

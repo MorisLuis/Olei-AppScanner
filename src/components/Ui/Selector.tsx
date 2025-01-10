@@ -5,14 +5,18 @@ import { Text, View } from 'react-native'
 import { globalFont, globalStyles } from '../../theme/appTheme';
 import { useTheme } from '../../context/ThemeContext';
 
+export type OptionType = {
+    label: string
+    value: string | number
+}
 
 interface SelectorInterface {
-    items: any[];
+    items: OptionType[];
     onDone?: () => void;
     onValueChange: (value: number) => void;
     value: string;
     label: string
-}
+};
 
 export const Selector = ({
     items,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Switch, Text, Platform } from 'react-native';
+import { View, Switch, Text, Platform, StyleProp, ViewStyle } from 'react-native';
 import { toggleStyles } from '../../theme/UI/inputs';
 import { useTheme } from '../../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -7,9 +7,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 interface ToggleInterface {
     label: string;
     message: string;
-    extraStyles: any;
+    extraStyles: StyleProp<ViewStyle>;
     value?: boolean;
-    onChange: any
+    onChange: (newValue: boolean) => void;
 }
 
 const Toggle = ({

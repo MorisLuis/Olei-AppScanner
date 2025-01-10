@@ -38,7 +38,7 @@ const themeReducer = (state: ThemeState, action: ThemeAction): ThemeState => {
     }
 };
 
-export const ThemeProvider = ({ children }: any) => {
+export const ThemeProvider = ({ children }: { children: JSX.Element }) => {
     const [state, dispatch] = useReducer(themeReducer, {
         theme: lightTheme,
         typeTheme: 'light',

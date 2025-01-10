@@ -1,21 +1,23 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { ReactNode, useContext, useEffect, useRef } from 'react';
 import { SafeAreaView, Text, TouchableOpacity, View, Platform, Animated } from 'react-native';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
-import { useNavigation } from '@react-navigation/native';
+import { ParamListBase, Route, useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { BlurView } from '@react-native-community/blur';
 import { SettingsContext } from '../../context/settings/SettingsContext';
 import { customTabBarStyles } from '../../theme/UI/customTabBarTheme';
 import { useTheme } from '../../context/ThemeContext';
+import { AppNavigationProp } from '../../interface/navigation';
+import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 
-
-export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
+export const CustomTabBar = ({ state, descriptors, navigation }: MaterialTopTabBarProps) => {
 
     if (!state) return null;
+
     const { numberOfItems, productAdded } = useContext(InventoryBagContext);
     const { getTypeOfMovementsName } = useContext(AuthContext);
     const { handleCameraAvailable, startScanning } = useContext(SettingsContext);
-    const { navigate } = useNavigation<any>();
+    const { navigate } = useNavigation<AppNavigationProp>();
     const { theme, typeTheme } = useTheme();
 
     const handleOpenBagInventory = () => {
@@ -23,7 +25,8 @@ export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
         navigate('bagInventoryScreen')
     }
 
-    const renderTabButton = (route: any, index: number) => {
+    const renderTabButton = (route: Route<string>, index: number) => {
+
         const { options } = descriptors[route.key];
         const label = options.tabBarLabel ?? options.title ?? route.name;
         const isFocused = state.index === index;
@@ -68,7 +71,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
                                         !isFocused && typeTheme === 'dark' ? theme.text_color :
                                             theme.text_color_secondary
                             }]}>
-                                {label}
+                                {typeof label === 'string' ? label : label({ focused: isFocused, color: theme.text_color, children: '' })}
                             </Text>
                         </View>
                         :
@@ -83,7 +86,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
                                         !isFocused && typeTheme === 'dark' ? theme.text_color_secondary :
                                             theme.text_color
                             }]}>
-                                {label}
+                                {typeof label === 'string' ? label : label({ focused: isFocused, color: theme.text_color, children: '' })}
                             </Text>
                         </BlurView>
                 }
@@ -91,9 +94,6 @@ export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
         );
     };
 
-/*     useEffect(() => {
-        getTypeOfMovementsName()
-    }, [user]) */
 
     return (
         <SafeAreaView style={customTabBarStyles(theme).customTabBar}>
@@ -138,11 +138,16 @@ export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
 // Bag Inventory animation
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
-const AnimatedButton = ({ isScaled, children }: any) => {
+interface AnimatedButtonInterface {
+    isScaled: boolean;
+    children: ReactNode
+}
+
+const AnimatedButton = ({ isScaled, children }: AnimatedButtonInterface) => {
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const { theme } = useTheme();
-    const { navigate } = useNavigation<any>();
+    const { navigate } = useNavigation<AppNavigationProp>();
     const { startScanning } = useContext(SettingsContext);
 
     useEffect(() => {

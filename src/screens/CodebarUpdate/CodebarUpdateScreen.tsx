@@ -14,32 +14,26 @@ import { SettingsContext } from '../../context/settings/SettingsContext';
 import { useTheme } from '../../context/ThemeContext';
 import { CodebarUpdateScreenStyles } from '../../theme/CodebarUpdateScreenTheme';
 import { CodebarUpdateOptionCard } from '../../components/Cards/CodebarUpdateOptionCard';
-import ProductInterface from '../../interface/product';
 import useErrorHandler from '../../hooks/useErrorHandler';
-
-type optionSelectedInterface = {
-    screen: string,
-    title: string
-}
+import { CodebarUpdateNavigationProp } from '../../interface/navigation';
 
 interface CodebarUpdateScreenInterface {
-    productDetails: ProductInterface
+    Codigo: string;
+    Id_Marca: number
 }
 
-export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInterface) => {
+export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInterface) => {
 
-
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CodebarUpdateNavigationProp>();
     const { updateBarCode, handleCodebarScannedProcces, handleGetCodebarType, codebarType, codeBar, codeBarStatus } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black"
     const { handleError } = useErrorHandler()
 
-    const [selectedOption, setSelectedOption] = useState<optionSelectedInterface>({ screen: "", title: "" });
     const [openModalCamera, setOpenModalCamera] = useState(false)
     const [codebartypeSelected, setCodebartypeSelected] = useState<number>()
     const [changeTypeOfCodebar, setChangeTypeOfCodebar] = useState(false)
-    const currentType = codebartypes.barcodes.find((code: any) => code.id === codebarType)
+    const currentType = codebartypes.barcodes.find((code) => code.id === codebarType)
     const [optionSelected, setOptionSelected] = useState<number>(0)
 
     const hanldeCodebarTypeSelected = (value: number) => {
@@ -55,30 +49,36 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
         } else if (optionSelected === 3) {
             hanldeUpdateCodebarWithCodeRandom()
         } else if (optionSelected === 4) {
-            navigation.navigate('[CodebarUpdateNavigation] - UpdateCodeBarWithInput', { title: "Escribir manualmente jeje", productDetails: productDetails });
+            navigation.navigate(
+                '[CodebarUpdateNavigation] - UpdateCodeBarWithInput',
+                {
+                    Codigo,
+                    Id_Marca
+                }
+            );
         }
     }
 
 
     const hanldeUpdateCodebarWithCodeFound = async () => {
-        try {            
-            if (!productDetails) {
+        try {
+            if (!Codigo || !Id_Marca) {
                 handleError({
                     status: 400,
-                    Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeFound",
+                    Message: "Codigo, Id_Marca  neccesary in hanldeUpdateCodebarWithCodeFound",
                     Metodo: "B-PUT"
                 })
                 return;
             };
 
             const response = await updateCodbar({
-                codigo: productDetails?.Codigo,
-                Id_Marca: productDetails?.Id_Marca,
+                codigo: Codigo,
+                Id_Marca: Id_Marca,
                 body: {
                     CodBar: codeBar
                 }
             })
-            
+
             navigation.goBack();
 
             if (response.error) {
@@ -93,7 +93,7 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
     const hanldeUpdateCodebarWithCodeRandom = async () => {
 
         try {
-            if (!productDetails) {
+            if (!Codigo || !Id_Marca) {
                 handleError({
                     status: 400,
                     Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeRandom",
@@ -103,8 +103,8 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
             };
 
             const response = await updateCodbar({
-                codigo: productDetails?.Codigo,
-                Id_Marca: productDetails?.Id_Marca,
+                codigo: Codigo,
+                Id_Marca: Id_Marca,
                 body: {
                     codeRandom: "true"
                 }
@@ -147,7 +147,7 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
                             <View style={CodebarUpdateScreenStyles(theme).selectorCodebarType}>
                                 <Selector
                                     label={"Tipo de codigo de barras: "}
-                                    items={codebartypes.barcodes.map((item: any) => {
+                                    items={codebartypes.barcodes.map((item) => {
                                         return { label: item?.type, value: item?.id }
                                     })}
                                     value={codebartypes?.barcodes.find((code) => code?.id === codebartypeSelected)?.type || "Code 128"}
@@ -210,11 +210,15 @@ export const CodebarUpdateScreen = ({ productDetails }: CodebarUpdateScreenInter
                     handleCodebarScannedProcces(false)
                 }}
             >
-                <CameraModal productDetails={productDetails} onClose={() => {
-                    handleCodebarScannedProcces(false)
-                    updateBarCode('')
-                    setOpenModalCamera(false)
-                }} />
+                <CameraModal
+                    Codigo={Codigo}
+                    Id_Marca={Id_Marca}
+                    onClose={() => {
+                        handleCodebarScannedProcces(false)
+                        updateBarCode('')
+                        setOpenModalCamera(false)
+                    }}
+                />
             </ModalBottom>
         </>
     )

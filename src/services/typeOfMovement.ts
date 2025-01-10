@@ -13,7 +13,7 @@ const getTypeOfMovements = async () => {
         const getTypeOfMovements = await api.get(`/api/typeofmovements`);
         const typeOfMov = getTypeOfMovements.data;
         return typeOfMov
-    } catch (error: any) {
+    } catch (error) {
         return { error: error };
     }
 

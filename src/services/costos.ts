@@ -27,7 +27,7 @@ const updateCodbar = async ({
             text1: 'Se actualizó el codigo de barras!'
         })
         return { ok: true }
-    } catch (error: any) {
+    } catch (error) {
         return { error: error };
     }
 }

@@ -13,6 +13,7 @@ import { CameraPermission } from '../../components/screens/CameraPermission';
 import { Camera } from 'react-native-camera-kit';
 import { cameraSettings, getTypeOfMovementsName } from './cameraSettings';
 import Diente from "../../assets/diente.svg";
+import { AppNavigationProp } from '../../interface/navigation';
 
 type PermissionStatus = 'unavailable' | 'denied' | 'limited' | 'granted' | 'blocked';
 
@@ -22,14 +23,14 @@ export type OnReadCodeData = {
     };
 };
 
-const CameraTest: React.FC = () => {
+const CameraScreen: React.FC = () => {
 
     const { bag } = useContext(InventoryBagContext);
 
     const { handleCameraAvailable, limitProductsScanned, cameraAvailable, startScanning } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
 
-    const { navigate } = useNavigation<any>();
+    const { navigate } = useNavigation<AppNavigationProp>();
     const isFocused = useIsFocused();
     const onTheLimitProductScanned = limitProductsScanned < bag?.length;
 
@@ -160,6 +161,7 @@ const CameraTest: React.FC = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+
             {
                 !startScanning ?
                     <View style={cameraStyles(theme).message}>
@@ -178,4 +180,4 @@ const CameraTest: React.FC = () => {
     );
 };
 
-export default CameraTest;
+export default CameraScreen;

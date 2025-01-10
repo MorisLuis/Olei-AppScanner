@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Modal, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,7 +10,7 @@ interface ModalCompleteInterface {
     visible: boolean;
     onClose: () => void;
     title?: string,
-    children: any
+    children: ReactNode
 }
 
 const ModalComplete = ({

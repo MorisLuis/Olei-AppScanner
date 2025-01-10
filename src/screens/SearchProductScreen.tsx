@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 
-import { FlatList, SafeAreaView, Text, View } from 'react-native'
+import { FlatList, NativeSyntheticEvent, SafeAreaView, Text, TextInputChangeEventData, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { getSearchProductInStock } from '../services/Search/products';
 import ProductInterface from '../interface/product';
@@ -14,6 +14,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { SearchProductScreenStyles } from '../theme/SearchProductScreenTheme';
 import { useTheme } from '../context/ThemeContext';
 import useErrorHandler from '../hooks/useErrorHandler';
+import { AppNavigationProp } from '../interface/navigation';
 
 
 type SearchProductScreenInterface = {
@@ -33,7 +34,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
     const { theme, typeTheme } = useTheme();
     const { handleError } = useErrorHandler()
 
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AppNavigationProp>();
     const [productsInInventory, setProductsInInventory] = useState<ProductInterface[]>([])
     const [currentPage, setCurrentPage] = useState(1);
     const [openModalAdvice, setOpenModalAdvice] = useState(false)
@@ -66,9 +67,9 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
         if (modal) {
             if (isModal) {
                 navigation?.goBack()
-                navigation.navigate('[ProductDetailsPage] - inventoryDetailsScreen', { selectedProduct, fromUpdateCodebar: true })
+                navigation.navigate('[ProductDetailsPage] - inventoryDetailsScreen', { selectedProduct })
             } else {
-                navigation.navigate('[ProductDetailsPage] - inventoryDetailsScreen', { selectedProduct, fromUpdateCodebar: true })
+                navigation.navigate('[ProductDetailsPage] - inventoryDetailsScreen', { selectedProduct })
             }
         } else {
             navigation.navigate('[ProductDetailsPage] - inventoryDetailsScreen', { selectedProduct });
@@ -92,16 +93,12 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
             headerStyle: {
                 backgroundColor: theme.background_color
             },
-            headerLeft: () =>
-                <CustomBackButton
-                    navigation={navigation}
-                />,
+            headerLeft: () => <CustomBackButton navigation={navigation} />,
             headerSearchBarOptions: {
-                placeholderTextColor: theme.color_green,
                 placeholder: "Buscar producto por nombre...",
                 tintColor: theme.text_color,
                 textColor: theme.text_color,
-                onChangeText: (event: any) => {
+                onChangeText: (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
                     getSearchData(event.nativeEvent.text);
                 },
             }

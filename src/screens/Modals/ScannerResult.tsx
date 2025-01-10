@@ -14,6 +14,7 @@ import { modalRenderstyles } from '../../theme/ModalRenders/ScannerResultTheme';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import ModalBottom from '../../components/Modals/ModalBottom';
 import { useTheme } from '../../context/ThemeContext';
+import { AppNavigationProp } from '../../interface/navigation';
 
 interface ScannerResultInterface {
     fromInput?: boolean;
@@ -24,7 +25,8 @@ interface ScannerResultInterface {
             fromProductDetails?: boolean
         };
     };
-}
+};
+
 const ScannerResult = ({
     fromInput,
     seeProductDetails = true,
@@ -35,7 +37,7 @@ const ScannerResult = ({
     const { theme, typeTheme } = useTheme();
     const { addProduct } = useContext(InventoryBagContext)
     const { handleCameraAvailable, codeBar } = useContext(SettingsContext);
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AppNavigationProp>();
 
     const [loadingAddProduct, setLoadingAddProduct] = useState(false)
     const [counterProduct, setCounterProduct] = useState<number>(0);
@@ -64,8 +66,14 @@ const ScannerResult = ({
     }
 
     const handleExpandProductDetails = () => {
+        if (!product) return
         navigation.goBack()
-        navigation.navigate('[ProductDetailsPage] - productDetailsScreen', { selectedProduct: product, fromModal: true });
+        navigation.navigate('[ProductDetailsPage] - productDetailsScreen',
+            {
+                selectedProduct: product,
+                fromModal: true
+            }
+        );
     }
 
     const handleSearchByCode = () => {
@@ -77,7 +85,11 @@ const ScannerResult = ({
         handleCameraAvailable(false)
         setTimeout(() => {
             navigation.goBack()
-            navigation.navigate('[Modal] - searchProductModal', { modal: true })
+            navigation.navigate('[Modal] - searchProductModal',
+                {
+                    modal: true
+                }
+            )
         }, 500);
     }
 

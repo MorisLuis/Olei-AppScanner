@@ -11,12 +11,13 @@ interface ProductInventoryCardInterface {
     onClick?: () => void;
 }
 
-const ProductInventoryCardComponent = ({
+export const ProductInventoryCardComponent = ({
     product,
     showDelete,
     onDelete,
     onClick,
 }: ProductInventoryCardInterface) => {
+
     const { theme, typeTheme } = useTheme();
 
     return (
@@ -53,6 +54,7 @@ const ProductInventoryCardComponent = ({
 };
 
 export const ProductInventoryCard = React.memo(ProductInventoryCardComponent, (prevProps, nextProps) => {
+
     // Comparar las propiedades previas y nuevas para evitar renderizados innecesarios
     return (
         prevProps.product.Codigo === nextProps.product.Codigo &&

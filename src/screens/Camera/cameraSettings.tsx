@@ -57,15 +57,14 @@ export const cameraSettings = ({
     };
 
     const handleVibrate = () => {
-        if (vibration) {
-            Vibration.vibrate(500);
-        }
+        if (vibration) Vibration.vibrate(500);
     };
 
-    const codeScanned = async ({ codes }: any) => {
-        handleStartScanning(true)
-        handleCameraAvailable(false)
-        setProductsScanned(undefined)
+    const codeScanned = async ({ codes }: { codes: string }) => {
+        handleStartScanning(true);
+        handleCameraAvailable(false);
+        setProductsScanned(undefined);
+
         if (!cameraAvailable) {
             handleCameraAvailable(true)
             return;

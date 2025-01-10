@@ -1,11 +1,12 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import ProductInterface from '../../interface/product';
 import { ProductInventoryCard } from '../../components/Cards/ProductInventoryCard';
 import ModalMiddle from '../../components/Modals/ModalMiddle';
 import { useNavigation } from '@react-navigation/native';
 import { ProductFindByCodebarInputStyles } from '../../theme/ModalRenders/ProductFindByCodebarInputTheme';
 import { useTheme } from '../../context/ThemeContext';
+import { AppNavigationProp } from '../../interface/navigation';
 
 interface ProductFindByCodeBarInterface {
     route?: {
@@ -18,7 +19,7 @@ interface ProductFindByCodeBarInterface {
 export const ProductsFindByCodeBar = ({ route }: ProductFindByCodeBarInterface) => {
 
     const { products } = route?.params || {}
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AppNavigationProp>();
     const { theme } = useTheme();
 
     const onSelectProduct = (product: ProductInterface) => {

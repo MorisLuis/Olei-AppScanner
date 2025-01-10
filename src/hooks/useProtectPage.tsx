@@ -1,12 +1,16 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { AppNavigationProp } from '../interface/navigation';
+import { AppNavigationStackParamList } from '../navigator/AppNavigation';
+
+type NavigatePageType = keyof AppNavigationStackParamList | 'back';
 
 interface UseProtectPageProps {
+    protectionCondition?: boolean;
+
     numberOfItems?: number;
-    protectionCondition?: any;
     loading?: boolean;
-    navigatePage: string;
-    passProtection?: boolean;
+    navigatePage: NavigatePageType;
 }
 
 export const useProtectPage = ({
@@ -14,11 +18,9 @@ export const useProtectPage = ({
     protectionCondition,
     loading,
     navigatePage,
-    passProtection
 }: UseProtectPageProps) => {
 
-    const { navigate } = useNavigation<any>();
-    const navigation = useNavigation<any>();
+    const { navigate, canGoBack } = useNavigation<AppNavigationProp>();
 
     const protectThisPage = (numberOfItems && numberOfItems <= 0 && !loading) ? true : false;
     const protectThisPage2 = protectionCondition;
@@ -26,20 +28,21 @@ export const useProtectPage = ({
     useFocusEffect(
         useCallback(() => {
             const checkAccess = async () => {
-                if( navigatePage === 'back' ) {
-                    return navigation.canGoBack() ? navigation.canGoBack?.() : navigation.navigate('typeOfMovementScreen')
+                if (navigatePage === 'back') {
+                    return canGoBack() ? canGoBack?.() : navigate('typeOfMovementScreen')
                 }
 
                 if (protectThisPage) {
                     return navigate(navigatePage);
                 }
 
-                if (protectThisPage2) {
+
+                if (protectThisPage || protectThisPage2) {
                     return navigate(navigatePage);
                 }
             };
             checkAccess();
-        }, [protectThisPage, protectThisPage2,navigate])
+        }, [protectThisPage, protectThisPage2, navigate])
     );
 
     return {

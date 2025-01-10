@@ -21,7 +21,7 @@ import ModalMiddle from '../../components/Modals/ModalMiddle';
 
 export const LoginDatabaseScreen = () => {
     const { signInDB, errorMessage, removeError, loggingIn } = useContext(DbAuthContext);
-    const { IdUsuarioOLEI, PasswordOLEI, onChange } = useForm({ IdUsuarioOLEI: '', PasswordOLEI: '' });
+    const { user, password, onChange } = useForm({ user: '', password: '' });
     const { theme, toggleTheme, typeTheme } = useTheme();
     const [errorModal, setErrorModal] = useState(false);
 
@@ -33,7 +33,7 @@ export const LoginDatabaseScreen = () => {
 
     const onLogin = () => {
         Keyboard.dismiss();
-        signInDB({ IdUsuarioOLEI, PasswordOLEI });
+        signInDB({ IdUsuarioOLEI: user, PasswordOLEI: password });
     };
 
     const keyboardActive = useKeyboardStatus();
@@ -69,19 +69,18 @@ export const LoginDatabaseScreen = () => {
                         keyboardType="email-address"
                         style={[inputStyles(theme, typeTheme).input, globalStyles(theme).globalMarginBottom]}
                         selectionColor={theme.text_color}
-                        onChangeText={(value) => onChange(value, 'IdUsuarioOLEI')}
-                        value={IdUsuarioOLEI}
+                        onChangeText={(value) => onChange(value, 'user')}
+                        value={user}
                         onSubmitEditing={onLogin}
                         autoCapitalize="none"
                         autoCorrect={false}
                     />
 
                     <InputPassword
-                        //password={password}
                         onChange={onChange}
                         onLogin={onLogin}
                         placeholder={"Escribe Contraseña Olei"}
-                        inputName="PasswordOLEI"
+                        inputName="password"
                     />
 
                     <View style={loginDBStyles(theme).buttonContainerDB}>

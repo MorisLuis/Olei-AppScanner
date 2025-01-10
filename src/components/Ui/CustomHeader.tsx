@@ -7,8 +7,11 @@ import { customHeaderStyles } from '../../theme/UI/customHeader';
 import { useTheme } from '../../context/ThemeContext';
 
 interface CustomHeaderInterface {
-    navigation: any;
+    navigation: {
+        goBack: () => void;
+    };
     title: string;
+    
     backAvailable?: boolean;
     back?: () => void;
     backCustum?: boolean;
@@ -63,7 +66,7 @@ export const CustomHeader = ({
                 </SafeAreaView>
             ) : (
                 <SafeAreaView style={{ backgroundColor: secondaryDesign ? theme.background_color_secondary : theme.background_color }}>
-                    <View style={secondaryDesign ? customHeaderStyles(theme).CustomHeaderSecondary :  customHeaderStyles(theme).CustomHeader}>
+                    <View style={secondaryDesign ? customHeaderStyles(theme).CustomHeaderSecondary : customHeaderStyles(theme).CustomHeader}>
                         {backAvailable && (
                             <TouchableOpacity
                                 style={customHeaderStyles(theme).back}
@@ -83,7 +86,14 @@ export const CustomHeader = ({
 }
 
 
-export const CustomBackButton = ({ navigation, onClick }: any) => {
+interface CustomBackButtonProps {
+    navigation: {
+        goBack: () => void;
+    };
+    onClick?: () => void; // Define el tipo como una función opcional
+}
+
+export const CustomBackButton = ({ navigation, onClick }: CustomBackButtonProps) => {
 
 
     const { typeTheme, theme } = useTheme();

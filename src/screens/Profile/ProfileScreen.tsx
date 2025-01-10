@@ -11,6 +11,7 @@ import { ProfileScreenStyles } from '../../theme/ProfileScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 import DeviceInfo from 'react-native-device-info';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
+import { ProfileNavigationProp } from '../../interface/navigation';
 
 
 export const ProfileScreen = () => {
@@ -20,7 +21,7 @@ export const ProfileScreen = () => {
 
     const { logOut: logOutDB } = useContext(DbAuthContext);
     const { theme, typeTheme } = useTheme();
-    const { navigate } = useNavigation<any>();
+    const { navigate } = useNavigation<ProfileNavigationProp>();
     const { cleanBag } = useContext(InventoryBagContext);
 
     const iconColor = typeTheme === 'dark' ? "white" : "black"

@@ -13,10 +13,12 @@ import { inputStyles } from '../../theme/UI/inputs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../../context/ThemeContext';
 import { InventoryBagScreenStyles } from '../../theme/InventoryBagScreenTheme';
+import { AppNavigationProp } from '../../interface/navigation';
 
 export const InventoryBagScreen = () => {
+
     const { bag, cleanBag, numberOfItems, removeProduct } = useContext(InventoryBagContext);
-    const { navigate, goBack } = useNavigation<any>();
+    const { navigate, goBack } = useNavigation<AppNavigationProp>();
     const { theme, typeTheme } = useTheme();
 
     const [createInventaryLoading, setCreateInventaryLoading] = useState(false);

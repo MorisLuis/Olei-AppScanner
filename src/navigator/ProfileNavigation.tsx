@@ -23,7 +23,7 @@ export const ProfileNavigation = () => {
             <ProfileTabs.Screen
                 name="[ProfileNavigation] - profile"
                 options={({ navigation }) => ({
-                    header: props => (
+                    header: () => (
                         <CustomHeader
                             navigation={navigation}
                             title="Perfil"
@@ -38,7 +38,7 @@ export const ProfileNavigation = () => {
                 name="[ProfileNavigation] - personalInformationScreen"
                 component={PersonalInformation}
                 options={({ navigation, route }) => ({
-                    header: props => (
+                    header: () => (
                         <CustomHeader
                             title="Información Personal"
                             navigation={navigation}
@@ -57,7 +57,7 @@ export const ProfileNavigation = () => {
                 name="[ProfileNavigation] - settingsSceen"
                 component={SettingsScreen}
                 options={({ navigation }) => ({
-                    header: props => <CustomHeader title="Configuración" navigation={navigation} />,
+                    header: () => <CustomHeader title="Configuración" navigation={navigation} />,
                 })}
             />
 
@@ -65,7 +65,7 @@ export const ProfileNavigation = () => {
                 name="[ProfileNavigation] - privacyScreen"
                 component={PrivacyScreen}
                 options={({ navigation }) => ({
-                    header: props => <CustomHeader title="Aviso de privacidad" navigation={navigation} />,
+                    header: () => <CustomHeader title="Aviso de privacidad" navigation={navigation} />,
                 })}
             />
         </ProfileTabs.Navigator>

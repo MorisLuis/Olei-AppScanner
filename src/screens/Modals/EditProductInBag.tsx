@@ -9,6 +9,7 @@ import { buttonStyles } from '../../theme/UI/buttons';
 import { globalStyles } from '../../theme/appTheme';
 import { Counter } from '../../components/Ui/Counter';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
+import { AppNavigationProp } from '../../interface/navigation';
 
 type EditProductInBagInterface = {
     route?: {
@@ -22,8 +23,8 @@ export const EditProductInBag = ({ route }: EditProductInBagInterface) => {
 
     const { product } = route?.params ?? {};
     const { editProduct, removeProduct } = useContext(InventoryBagContext);
-    const navigation = useNavigation<any>();
-    const { theme, typeTheme } = useTheme();
+    const navigation = useNavigation<AppNavigationProp>();
+    const { theme } = useTheme();
     const [loadingSearch, setLoadingSearch] = useState(false)
     const [piezasCount, setPiezasCount] = useState(0)
     const buttondisabled = false;

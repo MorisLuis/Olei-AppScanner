@@ -13,16 +13,19 @@ import codebartypes from '../../../utils/codebarTypes.json';
 import { CameraModalStyles } from '../../../theme/ModalRenders/CameraModalTheme';
 import { useTheme } from '../../../context/ThemeContext';
 import useErrorHandler from '../../../hooks/useErrorHandler';
+import { AppNavigationProp } from '../../../interface/navigation';
+import { OnReadCodeData } from '../../../screens/Camera/CameraScreen';
 
 interface CameraModalInterface {
-    productDetails: ProductInterface;
+    Codigo: string, 
+    Id_Marca: number;    
     onClose: () => void
 }
 
-const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
+const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
 
     const { vibration, updateBarCode, codebarType, codeBar } = useContext(SettingsContext);
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AppNavigationProp>();
     const { theme, typeTheme } = useTheme();
     const { handleError } = useErrorHandler()
 
@@ -32,7 +35,7 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
     const [codebarTest, setCodebarTest] = useState(true);
 
     const iconColor = typeTheme === 'dark' ? "white" : "black"
-    const currentType = codebartypes.barcodes.find((code: any) => code.id === codebarType)
+    const currentType = codebartypes.barcodes.find((code) => code.id === codebarType)
     const regex = new RegExp(currentType?.regex as string);
 
     const handleVibrate = () => {
@@ -41,7 +44,7 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
         }
     };
 
-    const codeScanned = async ({ codes }: any) => {
+    const codeScanned = async ({ codes }: { codes: string }) => {
 
         if (!regex.test(codes)) {
             setCodebarTest(false)
@@ -77,7 +80,7 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
 
     const hanldeUpdateCodebar = async () => {
 
-        if (!productDetails) {
+        if (!Codigo || !Id_Marca ) {
             handleError({
                 status: 400,
                 Message: "productDetails neccesary in hanldeUpdateCodebar",
@@ -88,8 +91,8 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
 
         try {
             const response = await updateCodbar({
-                codigo: productDetails?.Codigo,
-                Id_Marca: productDetails?.Id_Marca,
+                codigo: Codigo,
+                Id_Marca: Id_Marca,
                 body: {
                     CodBar: codeBar
                 }
@@ -148,7 +151,7 @@ const CameraModal = ({ productDetails, onClose }: CameraModalInterface) => {
                                     <View style={CameraModalStyles(theme).content}>
                                         <Camera
                                             scanBarcode={true}
-                                            onReadCode={(event: any) => codeScanned({ codes: event.nativeEvent.codeStringValue })}
+                                            onReadCode={(event: OnReadCodeData) => codeScanned({ codes: event.nativeEvent.codeStringValue })}
                                             style={CameraModalStyles(theme).camera}
                                         />
                                     </View>

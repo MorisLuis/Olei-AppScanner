@@ -1,0 +1,104 @@
+import React, { useCallback, useContext, useRef, useState } from 'react';
+import { getProductDetails } from '../../services/products';
+import ProductInterface from '../../interface/product';
+import { RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { ProductDetailsSkeleton } from '../../components/Skeletons/ProductDetailsSkeleton';
+import { SettingsContext } from '../../context/settings/SettingsContext';
+import useErrorHandler from '../../hooks/useErrorHandler';
+import { AppNavigationStackParamList } from '../../navigator/AppNavigation';
+import { AppNavigationProp } from '../../interface/navigation';
+import { ProductDetailsContent } from './ProductDetailsContent';
+
+type ProductDetailsPageRouteProp = RouteProp<AppNavigationStackParamList, '[ProductDetailsPage] - productDetailsScreen'>;
+type ProductDetailsInventorySectionPageRouteProp = RouteProp<AppNavigationStackParamList, '[ProductDetailsPage] - inventoryDetailsScreen'>;
+
+interface ProductDetailsPageInterface {
+    route: ProductDetailsPageRouteProp | ProductDetailsInventorySectionPageRouteProp
+}
+
+export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
+
+    const { selectedProduct, fromModal, fromUpdateCodebar } = route.params ?? {};
+    const { Codigo, Marca } = selectedProduct ?? {};
+    const { handleCameraAvailable } = useContext(SettingsContext);
+    const shouldCleanUp = useRef(true);
+    const { handleError } = useErrorHandler()
+    const navigation = useNavigation<AppNavigationProp>();
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [productDetailsData, setProductDetailsData] = useState<ProductInterface | null>(null);
+
+    const handleGetProductDetails = async () => {
+        try {
+            setIsLoading(true);
+            const productData = await getProductDetails(Codigo, Marca);
+            if (productData.error) {
+                handleError(productData.error);
+                return;
+            }
+            setProductDetailsData(productData);
+        } catch (error) {
+            handleError(error)
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleOptionsToUpdateCodebar = useCallback(() => {
+        if (!selectedProduct) return;
+
+        navigation.navigate('CodebarUpdateNavigation',
+            {
+                Id_Marca: selectedProduct.Marca,
+                Codigo: selectedProduct.Codigo
+            }
+        );
+
+    }, [navigation, selectedProduct]);
+
+    const handleAddToInventory = useCallback(() => {
+        if (!selectedProduct) return;
+
+        shouldCleanUp.current = false;
+        navigation.navigate('[Modal] - scannerResultScreen',
+            {
+                product: selectedProduct,
+                fromProductDetails: true
+            }
+        );
+    }, [navigation, selectedProduct]);
+
+    useFocusEffect(
+        useCallback(() => {
+            handleCameraAvailable(false);
+            handleGetProductDetails();
+
+            return () => {
+                if (shouldCleanUp.current) {
+                    setProductDetailsData(null);
+                }
+
+                if (fromUpdateCodebar) {
+                    shouldCleanUp.current = true;
+                }
+            };
+        }, [selectedProduct])
+    );
+
+    if (isLoading) {
+        return <ProductDetailsSkeleton />;
+    }
+
+    if (!productDetailsData) {
+        return <ProductDetailsSkeleton />;
+    }
+
+    return (
+        <ProductDetailsContent
+            productDetailsData={productDetailsData}
+            handleOptionsToUpdateCodebar={handleOptionsToUpdateCodebar}
+            handleAddToInventory={handleAddToInventory}
+            fromModal={fromModal}
+        />
+    );
+};

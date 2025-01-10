@@ -1,11 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ProductInterface from '../interface/product';
+import ProductInterface, { ProductInterfaceBag } from '../interface/product';
 import { BottomNavigation } from './BottomNavigation';
 import { CustomHeader } from '../components/Ui/CustomHeader';
 import { CodebarUpdateNavigation } from './CodebarUpdateNavigation';
 import { SettingsContext } from '../context/settings/SettingsContext';
-import { TESTAPP } from "@env";
 
 // Screens
 import { LoginScreen } from '../screens/Onboarding/LoginScreen';
@@ -17,17 +16,22 @@ import { LoginDatabaseScreen } from '../screens/Onboarding/LoginDatabaseScreen';
 import { SearchCodebarWithInput } from '../screens/Modals/SearchCodebarWithInput';
 import ScannerResult from '../screens/Modals/ScannerResult';
 import { StartupScreen } from '../screens/Onboarding/StartupScreen';
-import { ProductDetailsPage } from '../screens/ProductDetailsPage';
+import { ProductDetailsPage } from '../screens/ProductDetails/ProductDetailsPage';
 import { ProductsFindByCodeBar } from '../screens/Modals/ProductsFindByCodeBar';
 import { AuthContext } from '../context/auth/AuthContext';
 import { ConfirmationScreen } from '../screens/InventoryBag/ConfirmationScreen';
 import { EditProductInBag } from '../screens/Modals/EditProductInBag';
 import { SessionExpiredScreen } from '../screens/SessionExpired';
 
-export type InventoryNavigationStackParamList = {
+type OptionsScreen = {
+    headerBackTitle: 'Atrás',
+    headerTitleAlign: 'center'
+}
+
+export type AppNavigationStackParamList = {
     // Navigation
     BottomNavigation: undefined;
-    CodebarUpdateNavigation: { productDetails: ProductInterface },
+    CodebarUpdateNavigation: { Codigo: string; Id_Marca: string };
 
     // Login
     LoginPage: undefined;
@@ -35,8 +39,16 @@ export type InventoryNavigationStackParamList = {
     StartupScreen: undefined;
 
     // Screens
-    "[ProductDetailsPage] - inventoryDetailsScreen": { selectedProduct: ProductInterface };
-    "[ProductDetailsPage] - productDetailsScreen": { selectedProduct?: ProductInterface, productDetails?: ProductInterface, fromModal?: boolean };
+    "[ProductDetailsPage] - inventoryDetailsScreen": {
+        selectedProduct: ProductInterface;
+        fromUpdateCodebar?: boolean;
+        fromModal?: boolean
+    };
+    "[ProductDetailsPage] - productDetailsScreen": {
+        selectedProduct: ProductInterface;
+        fromUpdateCodebar?: boolean;
+        fromModal?: boolean
+    };
     bagInventoryScreen: undefined;
     confirmationScreen: undefined;
     succesMessageScreen: undefined;
@@ -45,28 +57,37 @@ export type InventoryNavigationStackParamList = {
     sessionExpired: undefined;
 
     // Modal
-    "[Modal] - scannerResultScreen": undefined,
+    "[Modal] - scannerResultScreen": {
+        product: ProductInterface;
+        fromProductDetails?: boolean
+    },
     "[Modal] - findByCodebarInputModal": undefined;
-    "[Modal] - searchProductModal": { modal: boolean, isModal: boolean };
-    "[Modal] - productsFindByCodeBarModal": undefined;
-    "[Modal] - editProductInBag": { product: ProductInterface };
+    "[Modal] - searchProductModal": {
+        modal: boolean,
+        isModal?: boolean
+    };
+    "[Modal] - productsFindByCodeBarModal": {
+        products: ProductInterface[];
+    };
+    "[Modal] - editProductInBag": {
+        product: ProductInterfaceBag
+    };
 
 };
 
-const Stack = createNativeStackNavigator<InventoryNavigationStackParamList>();
+const Stack = createNativeStackNavigator<AppNavigationStackParamList>();
 
 export const AppNavigation = () => {
     const { handleCameraAvailable, updateBarCode } = useContext(SettingsContext);
     const { getTypeOfMovementsName } = useContext(AuthContext);
 
-    const commonOptions: any = {
+    const commonOptions: OptionsScreen = {
         headerBackTitle: 'Atrás',
         headerTitleAlign: 'center'
     };
 
-    const authScreens = TESTAPP !== 'FALSE' ? (
+    const stackScreens = useMemo(() => (
         <>
-
             <Stack.Screen
                 name="StartupScreen"
                 component={StartupScreen}
@@ -90,12 +111,6 @@ export const AppNavigation = () => {
                 component={SessionExpiredScreen}
                 options={{ headerShown: false }}
             />
-        </>
-    ) : null;
-
-    const stackScreens = useMemo(() => (
-        <>
-            {authScreens}
             <Stack.Screen
                 name="BottomNavigation"
                 component={BottomNavigation}
@@ -117,7 +132,7 @@ export const AppNavigation = () => {
             <Stack.Screen
                 name="bagInventoryScreen"
                 component={InventoryBagScreen}
-                options={({ navigation }: any) => ({
+                options={({ navigation }) => ({
                     presentation: "modal",
                     header: props => (
                         <CustomHeader
@@ -136,7 +151,7 @@ export const AppNavigation = () => {
             <Stack.Screen
                 name="confirmationScreen"
                 component={ConfirmationScreen}
-                options={({ navigation }: any) => ({
+                options={({ navigation }) => ({
                     header: props => (
                         <CustomHeader
                             {...props}
@@ -165,7 +180,7 @@ export const AppNavigation = () => {
             <Stack.Screen
                 name="[ProductDetailsPage] - inventoryDetailsScreen"
                 component={ProductDetailsPage}
-                options={({ navigation, route }: any) => ({
+                options={({ navigation }) => ({
                     header: props => (
                         <CustomHeader
                             {...props}
@@ -197,6 +212,7 @@ export const AppNavigation = () => {
                             back={() => {
                                 navigation.goBack();
                                 updateBarCode('');
+
                                 if (route.params?.selectedProduct) {
                                     setTimeout(() => {
                                         navigation.navigate('[Modal] - scannerResultScreen', { product: route.params.selectedProduct });
@@ -227,7 +243,7 @@ export const AppNavigation = () => {
                     headerTitle: "Buscar Producto",
                     ...commonOptions
                 }}
-                initialParams={{ isModal: true }} // Parámetros iniciales
+                initialParams={{ isModal: true }}
             />
             <Stack.Screen
                 name="[Modal] - productsFindByCodeBarModal"
@@ -240,7 +256,7 @@ export const AppNavigation = () => {
                 options={{ presentation: 'transparentModal', headerShown: false }}
             />
         </>
-    ), [authScreens, handleCameraAvailable, updateBarCode]);
+    ), [handleCameraAvailable, updateBarCode]);
 
     return (
         <Stack.Navigator>

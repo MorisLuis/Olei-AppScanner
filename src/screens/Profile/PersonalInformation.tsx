@@ -1,24 +1,25 @@
-import React, { useContext, useEffect } from 'react';
-import { Alert, Button, Text, TouchableOpacity, View } from 'react-native';
+import React, { useContext } from 'react';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 import { buttonStyles } from '../../theme/UI/buttons';
 import { PersonalInformationStyles } from '../../theme/PersonalInformationTheme';
 import { useTheme } from '../../context/ThemeContext';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
+import { RouteProp } from '@react-navigation/native';
+import { ProfileNavigationStackParamList } from '../../navigator/ProfileNavigation';
+
+type PersonalInformationRouteProp = RouteProp<ProfileNavigationStackParamList, '[ProfileNavigation] - personalInformationScreen'>
 
 interface PersonalInformationInterface {
-    route: {
-        params: {
-            fromLogIn?: boolean;
-        };
-    };
+    route: PersonalInformationRouteProp;
 }
 
 export const PersonalInformation = ({ route }: PersonalInformationInterface) => {
+
     const { user } = useContext(AuthContext);
     const { user: userFromDB, logOut } = useContext(DbAuthContext);
-    const { fromLogIn } = route.params || {};
+    const { fromLogIn } = route.params ?? {};
     const { theme, typeTheme } = useTheme();
     const { cleanBag } = useContext(InventoryBagContext);
 

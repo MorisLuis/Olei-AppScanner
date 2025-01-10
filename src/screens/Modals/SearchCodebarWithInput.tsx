@@ -10,11 +10,13 @@ import { useNavigation } from '@react-navigation/native';
 import { SettingsContext } from '../../context/settings/SettingsContext';
 import { useTheme } from '../../context/ThemeContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
+import ProductInterface from '../../interface/product';
+import { AppNavigationProp } from '../../interface/navigation';
 
 export const SearchCodebarWithInput = () => {
 
     const { updateBarCode } = useContext(SettingsContext);
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AppNavigationProp>();
     const { theme, typeTheme } = useTheme();
     const { handleError } = useErrorHandler()
 
@@ -52,16 +54,15 @@ export const SearchCodebarWithInput = () => {
         }
     }
 
-    const handleNavigatoToProduct = (response: any) => {
+    const handleNavigatoToProduct = (products: ProductInterface[]) => {
         navigation.goBack()
-        if (response.length === 1) {
-            navigation.navigate('[Modal] - scannerResultScreen', { product: response[0] });
-        } else if (response.length > 0) {
-            navigation.navigate('[Modal] - productsFindByCodeBarModal', { products: response });
+        if (products.length === 1) {
+            navigation.navigate('[Modal] - scannerResultScreen', { product: products[0] });
+        } else if (products.length > 0) {
+            navigation.navigate('[Modal] - productsFindByCodeBarModal', { products: products });
         } else {
-            navigation.navigate('[Modal] - scannerResultScreen', { product: response[0] });
-        }
-
+            navigation.navigate('[Modal] - scannerResultScreen', { product: products[0] });
+        };
     }
 
     const handleCloseModal = () => {

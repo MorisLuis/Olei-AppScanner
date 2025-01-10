@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer, useRef, useState } from 'react';
+import React, { ReactNode, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import ProductInterface, { ProductInterfaceBag } from '../../interface/product';
 import { InventoryBagContext } from './InventoryBagContext';
 import { innventoryBagReducer } from './InventoryBagReducer';
@@ -26,7 +26,7 @@ export const InventoryBagInitialState: InventoryBagInterface = {
 }
 
 
-export const InventoryProvider = ({ children }: { children: JSX.Element[] }) => {
+export const InventoryProvider = ({ children }: { children: ReactNode }) => {
 
     const [state, dispatch] = useReducer(innventoryBagReducer, InventoryBagInitialState);
     const { user } = useContext(AuthContext);

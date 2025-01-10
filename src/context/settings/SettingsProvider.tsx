@@ -59,7 +59,7 @@ export const SettingsProvider = ({ children }: { children: JSX.Element }) => {
         try {
             handleCodebarScannedProcces(true)
             dispatch({ type: '[Settings] - codeBar', codeBar: value });
-        } catch (error: any) {
+        } catch (error) {
             handleError(error)
         } finally {
             handleCodebarScannedProcces(false)
