@@ -11,7 +11,6 @@ import { SettingsContext } from '../../context/settings/SettingsContext';
 import { useTheme } from '../../context/ThemeContext';
 import { InventoryScreenStyles } from '../../theme/InventoryScreenTheme';
 import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
-import useErrorHandler from '../../hooks/useErrorHandler';
 import { AppNavigationProp } from '../../interface/navigation';
 import { useLoadMoreData } from '../../hooks/useLoadMoreData';
 
@@ -21,7 +20,6 @@ export const Inventory = () => {
     const { navigate } = useNavigation<AppNavigationProp>();
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black";
-    const { handleError } = useErrorHandler()
 
     const { data, handleLoadMore, handleResetData, isLoading, isButtonLoading, total } = useLoadMoreData({
         fetchInitialData: () => getProductsByStock(1),

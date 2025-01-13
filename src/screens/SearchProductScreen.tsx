@@ -113,7 +113,8 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
                     <FlatList
                         data={productsInInventory}
                         renderItem={renderItem}
-                        keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca}-${product.Id_Almacen}-${product.Id_ListaPrecios}`}
+                        keyExtractor={product => product.Codigo}
+                        //keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca}-${product.Id_Almacen}-${product.Id_ListaPrecios}`}
                         onEndReached={loadMoreItem}
                         onEndReachedThreshold={0}
                     />

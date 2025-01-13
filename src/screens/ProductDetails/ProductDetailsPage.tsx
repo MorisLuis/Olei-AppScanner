@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { getProductDetails } from '../../services/products';
 import ProductInterface from '../../interface/product';
 import { RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -68,7 +68,11 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
         );
     }, [navigation, selectedProduct]);
 
-    useFocusEffect(
+    useEffect(() => {
+        handleGetProductDetails();
+    }, [])
+
+    /* useFocusEffect(
         useCallback(() => {
             handleCameraAvailable(false);
             handleGetProductDetails();
@@ -83,7 +87,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
                 }
             };
         }, [selectedProduct])
-    );
+    ); */
 
     if (isLoading) {
         return <ProductDetailsSkeleton />;

@@ -23,7 +23,7 @@ export const ProductDetailsContent = React.memo(({
 }: ProductDetailsContentInterface) => {
 
     const { theme, typeTheme } = useTheme();
-    const iconColor = typeTheme === 'dark' ? "white" : "black"
+    const iconColor = typeTheme === 'dark' ? "white" : "black";
 
     return (
         <>
