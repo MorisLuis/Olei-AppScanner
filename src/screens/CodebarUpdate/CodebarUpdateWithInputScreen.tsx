@@ -7,7 +7,6 @@ import { updateCodbar } from '../../services/costos';
 import { useNavigation } from '@react-navigation/native';
 import { SettingsContext } from '../../context/settings/SettingsContext';
 import codebartypes from '../../utils/codebarTypes.json';
-import ProductInterface from '../../interface/product';
 import { CodebarUpdateWithInputScreenStyles } from '../../theme/CodebarUpdateWithInputScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 import useErrorHandler from '../../hooks/useErrorHandler';

@@ -11,10 +11,8 @@ export const useLoadMoreData = ({
     fetchInitialData,
     fetchPaginatedData,
     fetchTotalCount,
-    filters
+    filters,
 }: UseLoadMoreDataInterface) => {
-
-    //const { handleError } = useErrorHandler();
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
@@ -22,38 +20,45 @@ export const useLoadMoreData = ({
     const [total, setTotal] = useState<number | null>(null);
 
     const handleResetData = useCallback(async () => {
-        console.log("handleResetData")
         setIsLoading(true);
         try {
             const initialData = await fetchInitialData(filters);
             setData(initialData);
-            setPage(1);
+            setPage((prevPage) => prevPage + 1); // Actualizar página de forma segura
 
             if (fetchTotalCount) {
                 const total = await fetchTotalCount(filters);
                 setTotal(total);
             }
         } catch (error) {
-            //handleError(error as ErrorResponse)
+            // handleError(error as ErrorResponse)
         } finally {
             setIsLoading(false);
         }
-    }, [fetchInitialData, filters]);
+    }, [fetchInitialData, filters, fetchTotalCount]);
 
     const handleLoadMore = useCallback(async () => {
-        console.log("handleLoadMore")
+        // Evitar múltiples llamadas simultáneas
+        if (isButtonLoading) return;
+
+        // Calcular nueva página
+        const nextPage = page + 1;
+
+        // Verificar si se alcanzó el total de elementos
+        if (total !== null && data.length >= total) return;
+
         setButtonIsLoading(true);
+
         try {
-            const nextPage = page + 1;
             const moreData = await fetchPaginatedData(filters, nextPage);
-            setData(prevData => [...prevData, ...moreData]);
-            setPage(nextPage);
+            setData((prevData) => [...prevData, ...moreData]);
+            setPage((prevPage) => prevPage + 1); // Actualizar página de forma segura
         } catch (error) {
-            //handleError(error as ErrorResponse)
+            // handleError(error as ErrorResponse)
         } finally {
             setButtonIsLoading(false);
         }
-    }, [fetchPaginatedData, filters, page]);
+    }, [fetchPaginatedData, filters, isButtonLoading, data.length, total, page]);
 
     return {
         data,
@@ -63,4 +68,4 @@ export const useLoadMoreData = ({
         handleResetData,
         handleLoadMore,
     };
-}
+};

@@ -47,7 +47,8 @@ export const EditProductInBag = ({ route }: EditProductInBagInterface) => {
 
     useEffect(() => {
         const handleProductPiezasCount = () => {
-            setPiezasCount(product?.Cantidad as number)
+            if(!product?.Cantidad) return;
+            setPiezasCount(product?.Cantidad)
         }
 
         handleProductPiezasCount()

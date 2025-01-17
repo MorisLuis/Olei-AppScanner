@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { FlatList, SafeAreaView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, SafeAreaView, Text, View } from 'react-native';
 
 import { getProductsByStock, getTotalProductsByStock } from '../../services/products';
 import { ProductInventoryCardComponent } from '../../components/Cards/ProductInventoryCard';
@@ -61,6 +61,14 @@ export const Inventory = () => {
     const renderFooter = () => {
         const visible = !isLoading && data.length >= (total ?? 0);
 
+        if (isButtonLoading) {
+            return (
+                <View>
+                    <Text>Cargando...</Text>
+                </View>
+            );
+        }
+
         return visible && (
             <View style={InventoryScreenStyles(theme).footerContent}>
                 <Text style={InventoryScreenStyles(theme).footerMessage}>Estos son todos los productos que tienes. ({total})</Text> : renderLoader()
@@ -99,7 +107,8 @@ export const Inventory = () => {
                     <FlatList
                         data={data}
                         renderItem={renderItem}
-                        keyExtractor={(item) => item?.Codigo}
+                        keyExtractor={product => product.Codigo}
+                        //keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca?.trim()}-${product.Id_Almacen}-${product.Id_ListaPrecios}`}
                         ListFooterComponent={renderFooter}
                         onEndReached={handleLoadMore}
                         onEndReachedThreshold={0.5}

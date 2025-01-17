@@ -6,7 +6,6 @@ import { SettingsContext } from '../../../context/settings/SettingsContext';
 import { buttonStyles } from '../../../theme/UI/buttons';
 import { updateCodbar } from '../../../services/costos';
 import { useNavigation } from '@react-navigation/native';
-import ProductInterface from '../../../interface/product';
 import { Camera } from 'react-native-camera-kit';
 import { getProductByCodeBar } from '../../../services/products';
 import codebartypes from '../../../utils/codebarTypes.json';
@@ -17,8 +16,8 @@ import { AppNavigationProp } from '../../../interface/navigation';
 import { OnReadCodeData } from '../../../screens/Camera/CameraScreen';
 
 interface CameraModalInterface {
-    Codigo: string, 
-    Id_Marca: number;    
+    Codigo: string,
+    Id_Marca: number;
     onClose: () => void
 }
 
@@ -39,9 +38,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
     const regex = new RegExp(currentType?.regex as string);
 
     const handleVibrate = () => {
-        if (vibration) {
-            Vibration.vibrate(500);
-        }
+        if (vibration) Vibration.vibrate(500);
     };
 
     const codeScanned = async ({ codes }: { codes: string }) => {
@@ -76,14 +73,14 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
             }
         }
         setCodeIsScanning(false);
-    }
+    };
 
-    const hanldeUpdateCodebar = async () => {
+    const handleUpdateCodebar = async () => {
 
-        if (!Codigo || !Id_Marca ) {
+        if (!Codigo || !Id_Marca) {
             handleError({
                 status: 400,
-                Message: "productDetails neccesary in hanldeUpdateCodebar",
+                Message: "productDetails neccesary in handleUpdateCodebar",
                 Metodo: "B-PUT"
             })
             return;
@@ -108,12 +105,12 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
             onClose();
             navigation.goBack();
         }
-    }
+    };
 
     const handleTryAgain = () => {
         updateBarCode("")
         setProductExistent(false)
-    }
+    };
 
     return (
         <View style={CameraModalStyles(theme).cameraScreen}>
@@ -176,7 +173,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
                                                 codeBar && codeBar?.length < 20 ?
                                                     <TouchableOpacity
                                                         style={[buttonStyles(theme).button_small, { marginBottom: globalStyles(theme).globalMarginBottom.marginBottom }]}
-                                                        onPress={hanldeUpdateCodebar}
+                                                        onPress={handleUpdateCodebar}
                                                     >
                                                         <Text style={buttonStyles(theme).buttonTextTertiary}>Asignar codigo de barras</Text>
                                                     </TouchableOpacity>

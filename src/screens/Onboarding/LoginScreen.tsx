@@ -24,7 +24,7 @@ export const LoginScreen = () => {
     const iconColor = typeTheme === 'dark' ? "white" : "black"
     const [errorModal, setErrorModal] = useState(false);
 
-    const navigation = useNavigation<any>(); //LAST
+    const navigation = useNavigation<any>();
 
     const { user, password, onChange } = useForm({
         user: '',

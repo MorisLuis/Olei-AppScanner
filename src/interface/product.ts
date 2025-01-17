@@ -16,6 +16,7 @@ export default interface ProductInterface {
     imagen: string;
 
     CodBar?: string
+    UniqueKey?: string;
 }
 
 export interface ProductInterfaceBag {

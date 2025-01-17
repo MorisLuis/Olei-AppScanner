@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../../context/ThemeContext';
 import { InventoryBagScreenStyles } from '../../theme/InventoryBagScreenTheme';
 import { AppNavigationProp } from '../../interface/navigation';
+import { useInventoryBag } from './useInventoryBag';
 
 export const InventoryBagScreen = () => {
 
@@ -21,25 +22,22 @@ export const InventoryBagScreen = () => {
     const { navigate, goBack } = useNavigation<AppNavigationProp>();
     const { theme, typeTheme } = useTheme();
 
-    const [createInventaryLoading, setCreateInventaryLoading] = useState(false);
     const [openModalDecision, setOpenModalDecision] = useState(false);
-    const [searchText, setSearchText] = useState<string>('');
-    const [filteredBag, setFilteredBag] = useState<ProductInterfaceBag[]>([]);
-    const [page, setPage] = useState(1);
     const [pageSize] = useState(5);
     const inputRef = useRef<TextInput>(null);
+
+    const {
+        searchText,
+        setSearchText,
+        filteredBag,
+        page,
+        setPage
+    } = useInventoryBag(bag, pageSize)
 
     const onPostInventary = async () => {
         goBack();
         navigate("confirmationScreen");
     };
-
-    const updateProductBySearch = useCallback(() => {
-        const filteredData = bag.filter(product =>
-            product?.Descripcion?.toLowerCase().includes(searchText.toLowerCase())
-        );
-        setFilteredBag(filteredData.slice(0, page * pageSize));
-    }, [searchText, bag, page, pageSize]);
 
     const handleLoadMore = () => {
         if (filteredBag.length >= numberOfItems) return;
@@ -50,7 +48,7 @@ export const InventoryBagScreen = () => {
         setOpenModalDecision(false);
         cleanBag();
         setPage(1);
-        setFilteredBag([]);
+        //setFilteredBag([]);
     };
 
     const renderItem = useCallback(({ item }: { item: ProductInterfaceBag }) => (
@@ -61,12 +59,7 @@ export const InventoryBagScreen = () => {
         />
     ), [removeProduct]);
 
-    useEffect(() => {
-        updateProductBySearch();
-    }, [searchText, page, updateProductBySearch]);
-
-
-    return !createInventaryLoading ? (
+    return (
         <>
             <SafeAreaView style={InventoryBagScreenStyles(theme, typeTheme).InventoryBagScreen}>
 
@@ -156,7 +149,5 @@ export const InventoryBagScreen = () => {
                 </TouchableOpacity>
             </ModalDecision>
         </>
-    ) : (
-        <LoadingScreen message='Guardando...' />
-    );
+    )
 };

@@ -37,10 +37,12 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
     const navigation = useNavigation<AppNavigationProp>();
     const [productsInInventory, setProductsInInventory] = useState<ProductInterface[]>([])
     const [currentPage, setCurrentPage] = useState(1);
-    const [openModalAdvice, setOpenModalAdvice] = useState(false)
+    const [openModalAdvice, setOpenModalAdvice] = useState(false);
+    const [searchingProducts, setSearchingProducts] = useState(false)
 
     const getSearchData = async (searchTerm: string) => {
         try {
+            setSearchingProducts(true)
             const products = await getSearchProductInStock(searchTerm ? searchTerm : "");
             if (products.error) {
                 handleError(products.error);
@@ -48,13 +50,20 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
             }
             setProductsInInventory(products);
         } catch (error) {
+            console.log({ error })
             handleError(error)
+        } finally {
+            setSearchingProducts(false)
         }
     }
 
     const renderItem = ({ item }: { item: ProductInterface }) => {
         return (
-            <ProductItemSearch fromModal={modal ? modal : false} product={item} onClick={() => navigateToProduct(item)} />
+            <ProductItemSearch
+                fromModal={modal ? modal : false}
+                product={item}
+                onClick={() => navigateToProduct(item)}
+            />
         );
     };
 
@@ -105,6 +114,16 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
         });
     }, [navigation, theme]);
 
+    if(searchingProducts){
+        return(
+            <SafeAreaView style={SearchProductScreenStyles(theme).SearchProductScreen}>
+                <View style={SearchProductScreenStyles(theme).content}>
+                    <Text>Buscando...</Text>
+                </View>
+            </SafeAreaView>
+        )
+    }
+
     return (productsInInventory && productsInInventory.length > 0) ? (
 
         <>
@@ -113,10 +132,11 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
                     <FlatList
                         data={productsInInventory}
                         renderItem={renderItem}
-                        keyExtractor={product => product.Codigo}
+                        keyExtractor={product => product.UniqueKey || product.Codigo}
                         //keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca}-${product.Id_Almacen}-${product.Id_ListaPrecios}`}
                         onEndReached={loadMoreItem}
-                        onEndReachedThreshold={0}
+                        onEndReachedThreshold={0.5}
+                        initialNumToRender={10}
                     />
                 </View>
             </SafeAreaView>

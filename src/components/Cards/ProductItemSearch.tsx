@@ -19,16 +19,15 @@ export const ProductItemSearch = ({
     fromModal
 }: ProductItemSearchInterface) => {
     const { theme, typeTheme } = useTheme();
-    const iconColor = typeTheme === 'dark' ? "white" : "black"
 
     return (
         <TouchableOpacity style={ProductItemSearchStyles(theme, typeTheme).ProductItemSearch} onPress={onClick}>
             <View style={ProductItemSearchStyles(theme, typeTheme).information}>
-                <Text style={ProductItemSearchStyles(theme, typeTheme).description}>{product.Descripcion}</Text>
+                <Text style={ProductItemSearchStyles(theme, typeTheme).description}>{product.Descripcion.trim()}</Text>
                 <View style={ProductItemSearchStyles(theme, typeTheme).otherInformation}>
-                    <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>Codigo: {product.Codigo}</Text>
+                    <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>Codigo: {product.Codigo.trim()}</Text>
                     <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>-</Text>
-                    <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>Marca: {product.Marca}</Text>
+                    <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>Marca: {product.Marca.trim()}</Text>
                 </View>
                 {
                     fromModal &&

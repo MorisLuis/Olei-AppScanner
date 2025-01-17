@@ -6,7 +6,9 @@ export const identifyBarcodeType = (codebar?: string) => {
     for (let i = barcodeData.barcodes.length - 1; i >= 0; i--) {
         let barcode = barcodeData.barcodes[i];
         let regex = new RegExp(barcode.regex);
-        if (regex.test(codebar as string)) {
+
+        if(!codebar) return;
+        if (regex.test(codebar)) {
             return {
                 type: barcode.type,
                 id: barcode.id,

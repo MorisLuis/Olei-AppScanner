@@ -27,7 +27,6 @@ const useErrorHandler = () => {
                     : error;
 
         if (status === 401) {
-            console.log("session ended");
             navigation.navigate('sessionExpired');
             return logOut?.();
         }
