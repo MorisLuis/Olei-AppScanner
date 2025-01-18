@@ -48,14 +48,13 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
 
     }
 
-
     return (
         <View style={PersonalInformationStyles(theme).PersonalInformation}>
             <View style={PersonalInformationStyles(theme).profile}>
                 <View style={PersonalInformationStyles(theme).circle}>
                     <View style={PersonalInformationStyles(theme).circleContent}>
                         <Text style={PersonalInformationStyles(theme).circleText}>
-                            {user?.Nombre?.slice(0, 1) || userFromDB?.Nombre?.slice(0, 1)}
+                            {user?.Nombre?.slice(0, 1) || userFromDB?.RazonSocial?.slice(0, 1)}
                         </Text>
                     </View>
                 </View>
@@ -92,7 +91,7 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
 
                 <View style={PersonalInformationStyles(theme).data}>
                     <Text style={PersonalInformationStyles(theme).label}>Base de datos:</Text>
-                    <Text style={{ color: theme.text_color }}>{user?.baseclientes || userFromDB?.baseclientes}</Text>
+                    <Text style={{ color: theme.text_color }}>{user?.baseclientes || userFromDB?.BaseSQL}</Text>
                 </View>
             </View>
 

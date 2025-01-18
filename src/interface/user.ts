@@ -1,7 +1,11 @@
 
 export default interface UserInterface {
     serverclientes: string;
+
+    // have one or another
     baseclientes: string;
+    BaseSQL?: string;
+
     PasswordSQL: string;
     UsuarioSQL: string;
     IdUsuarioOLEI: string;
