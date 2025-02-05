@@ -13,7 +13,10 @@ import { CameraPermission } from '../../components/screens/CameraPermission';
 import { Camera } from 'react-native-camera-kit';
 import { cameraSettings, getTypeOfMovementsName } from './cameraSettings';
 import Diente from "../../assets/diente.svg";
+import Warehouse from "../../assets/warehouse.svg";
+
 import { AppNavigationProp } from '../../interface/navigation';
+import { AuthContext } from '../../context/auth/AuthContext';
 
 type PermissionStatus = 'unavailable' | 'denied' | 'limited' | 'granted' | 'blocked';
 
@@ -26,8 +29,8 @@ export type OnReadCodeData = {
 const CameraScreen: React.FC = () => {
 
     const { bag } = useContext(InventoryBagContext);
-
     const { handleCameraAvailable, limitProductsScanned, cameraAvailable, startScanning } = useContext(SettingsContext);
+    const { user } = useContext(AuthContext)
     const { theme, typeTheme } = useTheme();
 
     const { navigate } = useNavigation<AppNavigationProp>();
@@ -56,6 +59,10 @@ const CameraScreen: React.FC = () => {
     const handleOpenInputModal = () => {
         handleCameraAvailable(false);
         navigate('[Modal] - findByCodebarInputModal');
+    };
+
+    const handleOpenAlmacenes = () => {
+        navigate('[Modal] - almacenScreen', { valueDefault: 1 });
     }
 
     const {
@@ -116,7 +123,7 @@ const CameraScreen: React.FC = () => {
                 availableAuthorization={true}
             />
         )
-    }
+    };
 
     return (
         <View style={cameraStyles(theme).cameraScreen}>
@@ -151,7 +158,6 @@ const CameraScreen: React.FC = () => {
                 <View style={cameraStyles(theme).cog}>
                     <TouchableOpacity onPress={() => navigate('typeOfMovementScreen')}>
                         <Diente width={28} height={28} color={"white"} fill={"white"} />
-
                     </TouchableOpacity>
                 </View>
 
@@ -160,6 +166,15 @@ const CameraScreen: React.FC = () => {
                         <Icon name={"barcode-outline"} size={28} color="white" />
                     </TouchableOpacity>
                 </View>
+
+                {
+                    user.TodosAlmacenes === 1 &&
+                    <View>
+                        <TouchableOpacity onPress={handleOpenAlmacenes}>
+                            <Warehouse width={28} height={28} color={"white"} fill={"white"} />
+                        </TouchableOpacity>
+                    </View>
+                }
             </View>
 
             {

@@ -16,7 +16,9 @@ export default interface UserInterface {
     userId?: string;
     userRol?: string;
 
-    from: 'web' | 'mobil'
+    from: 'web' | 'mobil';
+
+    TodosAlmacenes: number;
 
     Id_TipoMovInv?: {
         Id_TipoMovInv: number,

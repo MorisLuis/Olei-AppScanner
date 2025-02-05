@@ -1,5 +1,5 @@
 
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { Theme, globalFont, globalStyles } from "./appTheme";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
@@ -84,18 +84,12 @@ export const cameraStyles = (theme: Theme, typeTheme?: string) => StyleSheet.cre
         textAlign: 'center',
         fontSize: globalFont.font_normal
     },
-    scanSvgContainer: {
-        position: "absolute",
-        top: hp("50%"),
-        left: wp("50%"),
-        transform: [{ translateX: -150 }, { translateY: -150 }],
-        zIndex: 2
-    },
     actions: {
         position: "absolute",
         right: wp("5%"),
-        top: hp("37.5%"),
-        zIndex: 2
+        top: hp("50%"),
+        zIndex: 2,
+        transform: [{ translateY: hp("-15%") }] 
     },
     flash: {
         marginBottom: 20

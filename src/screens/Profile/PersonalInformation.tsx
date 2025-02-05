@@ -98,7 +98,7 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
             {fromLogIn && (
                 <TouchableOpacity
                     activeOpacity={0.8}
-                    style={[buttonStyles(theme).button, buttonStyles(theme).black]}
+                    style={[buttonStyles(theme).button]}
                     onPress={handleLogOut}
                 >
                     <Text style={buttonStyles(theme).buttonText}>Cerrar sesión de base de datos</Text>

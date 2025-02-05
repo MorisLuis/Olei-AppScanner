@@ -11,7 +11,7 @@ export interface DbAuthState {
     status: 'dbChecking' | 'dbAuthenticated' | 'dbNot-authenticated';
     tokenDB: string | null;
     errorMessage: string;
-    user: UserInterface | null
+    user: Partial<UserInterface> | null
 }
 
 export interface LoginData {
@@ -108,13 +108,18 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
         dispatch({ type: '[DBAuth] - removeError' });
     };
 
+    const updateUserDB = (user: Partial<UserInterface>) => {
+        dispatch({ type: '[DBAuth] - updateUser', payload: user })
+    }
+
     return (
         <DbAuthContext.Provider value={{
             ...state,
             signInDB,
             loggingIn,
             logOut,
-            removeError
+            removeError,
+            updateUserDB
         }}>
             {children}
         </DbAuthContext.Provider>

@@ -47,7 +47,6 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
             }
             setProductsInInventory(products);
         } catch (error) {
-            console.log({ error });
             handleError(error);
         } finally {
             setSearchingProducts(false);

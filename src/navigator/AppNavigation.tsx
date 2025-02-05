@@ -22,6 +22,7 @@ import { AuthContext } from '../context/auth/AuthContext';
 import { ConfirmationScreen } from '../screens/InventoryBag/ConfirmationScreen';
 import { EditProductInBag } from '../screens/Modals/EditProductInBag';
 import { SessionExpiredScreen } from '../screens/SessionExpired';
+import AlmacenScreen from '../screens/Camera/AlmacenScreen';
 
 type OptionsScreen = {
     headerBackTitle: 'Atrás',
@@ -57,6 +58,9 @@ export type AppNavigationStackParamList = {
     sessionExpired: undefined;
 
     // Modal
+    "[Modal] - almacenScreen": {
+        valueDefault?: number;
+    },
     "[Modal] - scannerResultScreen": {
         product: ProductInterface;
         fromProductDetails?: boolean
@@ -175,6 +179,22 @@ export const AppNavigation = () => {
                 name="searchProductScreen"
                 component={SearchProductScreen}
                 options={commonOptions}
+            />
+
+            <Stack.Screen
+                name="[Modal] - almacenScreen"
+                component={AlmacenScreen}
+                options={({ navigation }) => ({
+                    presentation: "modal",
+                    header: (props) => (
+                        <CustomHeader
+                            {...props}
+                            title="Almacen"
+                            navigation={navigation}
+                            back={() => navigation.goBack()}
+                        />
+                    )
+                })}
             />
 
             <Stack.Screen

@@ -4,7 +4,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 
 // themeTypes.ts
 export interface Theme {
-    primary?: string;
+    //primary?: string;
     color_primary: string;
     color_secondary: string;
     color_tertiary: string;
@@ -87,7 +87,7 @@ export const darkTheme = {
 
 
 
-export const globalStyles = (theme: Theme) => StyleSheet.create({
+export const globalStyles = (theme?: Theme) => StyleSheet.create({
     globalPadding: {
         padding: wp("5%")
     },

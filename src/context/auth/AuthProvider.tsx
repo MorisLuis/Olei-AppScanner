@@ -41,6 +41,7 @@ export const AUTH_INITIAL_STATE: AuthState = {
         SwImagenes: '',
         Vigencia: '',
         from: 'mobil',
+        TodosAlmacenes: 0,
         Id_TipoMovInv: {
             Id_TipoMovInv: 0,
             Accion: 0,
@@ -119,7 +120,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 type: '[Auth] - signUp',
                 payload: {
                     token: data.token,
-                    user: data.user
+                    user: data.userStorage
                 }
             });
             await AsyncStorage.setItem('token', data.token);
