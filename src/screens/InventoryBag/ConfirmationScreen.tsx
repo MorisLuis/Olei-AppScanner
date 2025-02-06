@@ -10,8 +10,8 @@ import { AuthContext } from '../../context/auth/AuthContext';
 import { ProductInterfaceBag } from '../../interface/product';
 import { useProtectPage } from '../../hooks/useProtectPage';
 import { CombineNavigationProp } from '../../interface/navigation';
-import ButtonCustum from '../../components/Ui/ButtonCustum';
 import FooterScreen from '../../components/Navigation/Footer';
+import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 
 export const ConfirmationScreen = () => {
 
@@ -19,6 +19,7 @@ export const ConfirmationScreen = () => {
     const { getTypeOfMovementsName, user } = useContext(AuthContext);
     const { bag, cleanBag, numberOfItems, postInventory } = useContext(InventoryBagContext);
     const { navigate } = useNavigation<CombineNavigationProp>();
+    const { user: userFromDB } = useContext(DbAuthContext);
 
     const iconColor = theme.color_tertiary;
     const [createInventaryLoading, setCreateInventaryLoading] = useState(false);
@@ -76,10 +77,11 @@ export const ConfirmationScreen = () => {
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
                     ItemSeparatorComponent={() => <View style={{ height: 20 }} />} // Espaciado de 10px
+                    contentContainerStyle={{ paddingBottom: 150 }} // Ajusta según la altura del FooterScreen
                     ListHeaderComponent={
                         <>
                             <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationHeader}>
-                            <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationHeader__icon}>
+                                <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationHeader__icon}>
                                     <Icon name={typeTheme === 'light' ? "document-text-outline" : "document-text"} size={50} color={iconColor} />
                                     <View style={{ position: "absolute", right: 0, bottom: -8 }}>
                                         <Icon name="checkmark-circle" size={22} color={"green"} />
@@ -90,7 +92,7 @@ export const ConfirmationScreen = () => {
                             <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationInfo}>
                                 <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationText}>Productos afectados {numberOfItems}</Text>
                                 <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationText}>Tipo de movimiento: {getTypeOfMovementsName()}</Text>
-                                <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationText}>Almacen: {user?.Id_Almacen}</Text>
+                                <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationText}>Almacen: {userFromDB?.Id_Almacen}</Text>
                             </View>
                             <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationProductsContent}>
                                 <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationProductsContentHeader}>Productos</Text>
@@ -105,7 +107,7 @@ export const ConfirmationScreen = () => {
                 buttonOnPress={onPostInventary}
                 buttonDisabled={createInventaryLoading}
                 buttonLoading={createInventaryLoading}
-                />
+            />
         </SafeAreaView>
     )
         :
