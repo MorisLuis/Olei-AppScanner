@@ -5,15 +5,20 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => StyleSheet.create({
 
     ConfirmationScreen: {
-        flex: 1,
-        backgroundColor: theme.background_color_secondary,
-        height: "100%"
+        flex: 1
+    },
+    content:{
+        padding: globalStyles(theme).globalPadding.padding
     },
     confirmationHeader: {
         height: hp("20%"),
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    confirmationHeader__icon: {
+        position: 'relative',
+        marginBottom: 15
     },
     confirmationHeaderTitle: {
         fontSize: globalFont.font_normal,
@@ -26,10 +31,8 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => Sty
         padding: globalStyles(theme).globalPadding.padding,
         borderRadius: globalStyles(theme).borderRadius.borderRadius,
         marginBottom: globalStyles(theme).globalMarginBottom.marginBottom * 2,
-        marginHorizontal: globalStyles(theme).globalMarginBottom.marginBottom
     },
     confirmationProductsContent: {
-        marginHorizontal: globalStyles(theme).globalMarginBottom.marginBottom
     },
     confirmationProductsContentHeader: {
         color: theme.text_color,
@@ -37,6 +40,7 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => Sty
         textTransform: "uppercase",
         marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom / 2
     },
+
     confirmationText: {
         fontSize: globalFont.font_normal,
         color: theme.text_color

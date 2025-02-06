@@ -3,6 +3,7 @@ import React from 'react'
 import { useTheme } from '../../context/ThemeContext';
 import ButtonCustum from '../Ui/ButtonCustum';
 import { uiNavigationStyles } from '../../theme/UI/uiElementsTheme';
+import { Theme } from '../../theme/appTheme';
 
 interface FooterScreenInterface {
     buttonTitle: string;
@@ -10,7 +11,13 @@ interface FooterScreenInterface {
     buttonDisabled: boolean;
     buttonLoading?: boolean;
 
-    visible?: boolean
+    visible?: boolean;
+    buttonProperties?: {
+        iconName?: string;
+        iconColor?: string;
+        buttonColor?: keyof Theme;
+        textColor?: keyof Theme;
+    }
 };
 
 const FooterScreen = ({
@@ -18,7 +25,7 @@ const FooterScreen = ({
     buttonOnPress,
     buttonDisabled,
     buttonLoading,
-
+    buttonProperties,
     visible = true
 }: FooterScreenInterface ) => {
 
@@ -32,7 +39,11 @@ const FooterScreen = ({
                     onPress={buttonOnPress}
                     disabled={buttonDisabled}
                     loading={buttonLoading}
-                    buttonColor='color_white'
+                    
+                    iconName={buttonProperties?.iconName}
+                    iconColor={buttonProperties?.iconColor}
+                    buttonColor={buttonProperties?.buttonColor}
+                    textColor={buttonProperties?.textColor}
                 />
             </View>
         </SafeAreaView>

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity, SafeAreaView, FlatList } from 'react-native';
+import { Text, TouchableOpacity, SafeAreaView, FlatList, View } from 'react-native';
 import { Id_TipoMovInvInterface, getTypeOfMovements } from '../services/typeOfMovement';
 import { useNavigation } from '@react-navigation/native';
 import { TypeOfMovementSkeleton } from '../components/Skeletons/TypeOfMovementSkeleton';
@@ -8,7 +8,7 @@ import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 import { useTheme } from '../context/ThemeContext';
 import useErrorHandler from '../hooks/useErrorHandler';
 import { AppNavigationProp } from '../interface/navigation';
-import ButtonCustum from '../components/Ui/ButtonCustum';
+import FooterScreen from '../components/Navigation/Footer';
 
 export const TypeOfMovementScreen = () => {
 
@@ -90,25 +90,27 @@ export const TypeOfMovementScreen = () => {
 
 
     return (
-        <View style={TypeOfMovementScreenStyles(theme).container}>
-            <SafeAreaView style={TypeOfMovementScreenStyles(theme).header}>
-                <Text style={TypeOfMovementScreenStyles(theme).title}>Selecciona que movimiento haras?</Text>
-            </SafeAreaView>
+        <SafeAreaView style={TypeOfMovementScreenStyles(theme).TypeOfMovementScreen}>
+            <View style={TypeOfMovementScreenStyles(theme, typeTheme).content}>
+                <View style={TypeOfMovementScreenStyles(theme).header}>
+                    <Text style={TypeOfMovementScreenStyles(theme).title}>Selecciona que movimiento haras?</Text>
+                </View>
 
-            <FlatList
-                data={typeOfMovement}
-                renderItem={renderOption}
-                keyExtractor={typeOfMovement => `${typeOfMovement.Id_TipoMovInv}`}
-                ListFooterComponent={renderLoader}
-                onEndReachedThreshold={0}
-            />
+                <FlatList
+                    data={typeOfMovement}
+                    renderItem={renderOption}
+                    keyExtractor={typeOfMovement => `${typeOfMovement.Id_TipoMovInv}`}
+                    ListFooterComponent={renderLoader}
+                    onEndReachedThreshold={0}
+                    ItemSeparatorComponent={() => <View style={{ height: 20 }} />} // Espaciado de 10px
+                />
+            </View>
 
-            <ButtonCustum
-                title={'Avanzar'}
-                onPress={onChangetTypeOfMovement}
-                disabled={(typeSelected || typeSelected == 0) ? false : true}
-                loading={false}
+            <FooterScreen
+                buttonTitle="Avanzar"
+                buttonOnPress={onChangetTypeOfMovement}
+                buttonDisabled={(typeSelected || typeSelected == 0) ? false : true}
             />
-        </View>
+        </SafeAreaView>
     );
 };

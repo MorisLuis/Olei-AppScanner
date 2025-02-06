@@ -14,6 +14,7 @@ import { useTheme } from '../../../context/ThemeContext';
 import useErrorHandler from '../../../hooks/useErrorHandler';
 import { AppNavigationProp } from '../../../interface/navigation';
 import { OnReadCodeData } from '../../../screens/Camera/CameraScreen';
+import ButtonCustum from '../../Ui/ButtonCustum';
 
 interface CameraModalInterface {
     Codigo: string,
@@ -156,12 +157,16 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
                                     (codeBar && !codeIsScanning && !codebarTest) ?
                                         <View>
                                             <Text style={CameraModalStyles(theme).warningMessage}>{currentType?.errorMessage}</Text>
-                                            <TouchableOpacity
-                                                style={[buttonStyles(theme).button_small, { marginBottom: globalStyles(theme).globalMarginBottom.marginBottom }]}
+
+                                            <ButtonCustum
+                                                title={'Intentar de nuevo'}
                                                 onPress={handleTryAgain}
-                                            >
-                                                <Text style={buttonStyles(theme, typeTheme).buttonTextTertiary}>Intentar de nuevo</Text>
-                                            </TouchableOpacity>
+                                                disabled={false}
+                                                loading={false}
+                                                extraStyles={{
+                                                    marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
+                                                }}
+                                            />
                                         </View>
                                         :
                                         <>
@@ -171,12 +176,15 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
 
                                             {
                                                 codeBar && codeBar?.length < 20 ?
-                                                    <TouchableOpacity
-                                                        style={[buttonStyles(theme).button_small, { marginBottom: globalStyles(theme).globalMarginBottom.marginBottom }]}
+                                                    <ButtonCustum
+                                                        title={'Asignar codigo de barras'}
                                                         onPress={handleUpdateCodebar}
-                                                    >
-                                                        <Text style={buttonStyles(theme).buttonTextTertiary}>Asignar codigo de barras</Text>
-                                                    </TouchableOpacity>
+                                                        disabled={false}
+                                                        loading={false}
+                                                        extraStyles={{
+                                                            marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
+                                                        }}
+                                                    />
                                                     :
                                                     <View>
                                                         <Text>El codigo de barras es maximo de 20 caracteres</Text>
@@ -194,9 +202,15 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
                             </Text>
                         </View>
 
-                        <TouchableOpacity style={[buttonStyles(theme).button_small, { marginBottom: globalStyles(theme).globalMarginBottom.marginBottom }]} onPress={handleTryAgain}>
-                            <Text style={buttonStyles(theme, typeTheme).buttonTextTertiary}>Intentar de nuevo</Text>
-                        </TouchableOpacity>
+                        <ButtonCustum
+                            title={'Intentar de nuevo'}
+                            onPress={handleTryAgain}
+                            disabled={false}
+                            loading={false}
+                            extraStyles={{
+                                marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
+                            }}
+                        />
                     </>
             }
 

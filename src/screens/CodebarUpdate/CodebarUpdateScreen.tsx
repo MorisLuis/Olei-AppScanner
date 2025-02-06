@@ -16,6 +16,7 @@ import { CodebarUpdateScreenStyles } from '../../theme/CodebarUpdateScreenTheme'
 import { CodebarUpdateOptionCard } from '../../components/Cards/CodebarUpdateOptionCard';
 import useErrorHandler from '../../hooks/useErrorHandler';
 import { CodebarUpdateNavigationProp } from '../../interface/navigation';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 interface CodebarUpdateScreenInterface {
     Codigo: string;
@@ -194,11 +195,14 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
 
                 </View>
 
+
                 {optionSelected !== 0 && (
-                    <TouchableOpacity style={buttonStyles(theme).button} onPress={handleGoToNextStep}>
-                        <Text style={buttonStyles(theme, typeTheme).buttonText}>Avanzar</Text>
-                        <Icon name="arrow-forward" size={16} color={iconColor} />
-                    </TouchableOpacity>
+                    <ButtonCustum
+                        title={'Avanzar'}
+                        onPress={handleGoToNextStep}
+                        disabled={false}
+                        loading={false}
+                    />
                 )}
             </View>
 

@@ -114,20 +114,22 @@ export const InventoryBagScreen = () => {
                 {
                     numberOfItems > 0 &&
                     <View style={InventoryBagScreenStyles(theme, typeTheme).footer}>
-                        <TouchableOpacity
-                            style={[buttonStyles(theme).button, buttonStyles(theme).white, globalStyles(theme).globalMarginBottomSmall]}
-                            onPress={() => setOpenModalDecision(true)}
-                        >
-                            <Text style={buttonStyles(theme, typeTheme).buttonTextTertiary}>Limpiar carrito</Text>
-                        </TouchableOpacity>
-
-
-
                         <ButtonCustum
                             title={'Guardar'}
                             onPress={onNavigateToPostInventary}
                             disabled={false}
                             loading={false}
+                            extraStyles={{
+                                marginBottom: globalStyles().globalMarginBottomSmall.marginBottom
+                            }}
+                        />
+                        <ButtonCustum
+                            title={'Limpiar carrito'}
+                            onPress={() => setOpenModalDecision(true)}
+                            disabled={false}
+                            loading={false}
+                            buttonColor='color_red_light'
+                            textColor='text_color'
                         />
                     </View>
 
@@ -138,18 +140,28 @@ export const InventoryBagScreen = () => {
                 visible={openModalDecision}
                 message="Seguro de limpiar el inventario actual?"
             >
-                <TouchableOpacity
-                    style={[buttonStyles(theme).button, buttonStyles(theme).red, globalStyles(theme).globalMarginBottomSmall]}
-                    onPress={handleCleanTemporal}
-                >
-                    <Text style={buttonStyles(theme).buttonTextRed}>Limpiar carrito</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[buttonStyles(theme).button, buttonStyles(theme).white]}
+
+                <ButtonCustum
+                    title={'Limpiar carrito'}
+                    onPress={() => setOpenModalDecision(true)}
+                    disabled={false}
+                    loading={false}
+                    buttonColor='color_red_light'
+                    textColor='text_color'
+                    extraStyles={{
+                        marginBottom: globalStyles().globalMarginBottomSmall.marginBottom
+                    }}
+                />
+
+                <ButtonCustum
+                    title={'Cancelar'}
                     onPress={() => setOpenModalDecision(false)}
-                >
-                    <Text style={buttonStyles(theme).buttonTextTertiary}>Cancelar</Text>
-                </TouchableOpacity>
+                    disabled={false}
+                    loading={false}
+                    //buttonColor='color_white'
+                    butonSecondary
+                />
+
             </ModalDecision>
         </>
     )

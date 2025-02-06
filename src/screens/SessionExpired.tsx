@@ -1,12 +1,10 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 import { useTheme } from '../context/ThemeContext';
-import { TouchableOpacity } from 'react-native';
-import { buttonStyles } from '../theme/UI/buttons';
 import { globalFont, globalStyles } from '../theme/appTheme';
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigationProp } from '../interface/navigation';
-
+import ButtonCustum from '../components/Ui/ButtonCustum';
 
 export const SessionExpiredScreen = () => {
 
@@ -30,12 +28,13 @@ export const SessionExpiredScreen = () => {
             >
                 La sentimos por las molestias pero la sesión término, es necesario volver iniciar sesión.
             </Text>
-            <TouchableOpacity
-                style={[buttonStyles(theme).button_small, buttonStyles(theme).yellow, { width: "50%" }]}
+
+            <ButtonCustum
+                title={'Volver'}
                 onPress={() => navigation.navigate('LoginDatabaseScreen')}
-            >
-                <Text style={buttonStyles(theme).buttonTextTertiary}>Volver</Text>
-            </TouchableOpacity>
+                disabled={false}
+                loading={false}
+            />
         </View>
     )
 }

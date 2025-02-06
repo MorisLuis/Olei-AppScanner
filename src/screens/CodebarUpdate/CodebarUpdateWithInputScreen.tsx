@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { KeyboardType, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { buttonStyles } from '../../theme/UI/buttons';
+import { KeyboardType, Text, TextInput, View } from 'react-native'
 import { globalStyles } from '../../theme/appTheme';
 import { inputStyles } from '../../theme/UI/inputs';
 import { updateCodbar } from '../../services/costos';
@@ -11,9 +10,10 @@ import { CodebarUpdateWithInputScreenStyles } from '../../theme/CodebarUpdateWit
 import { useTheme } from '../../context/ThemeContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
 import { CodebarUpdateNavigationProp } from '../../interface/navigation';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 interface CodebarUpdateWithInputScreenInterface {
-    Codigo: string; 
+    Codigo: string;
     Id_Marca: number
 }
 
@@ -31,8 +31,8 @@ export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdate
 
     const hanldeUpdateCodebarWithCodeRandom = async () => {
 
-        try {            
-            if (!Codigo || !Id_Marca ) {
+        try {
+            if (!Codigo || !Id_Marca) {
                 handleError({
                     status: 400,
                     Message: "Codigo, Id_Marca  neccesary in hanldeUpdateCodebarWithCodeRandom/CodebarUpdateWithInputScreen",
@@ -40,9 +40,9 @@ export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdate
                 })
                 return;
             };
-    
+
             if (!regex.test(text)) return;
-    
+
             const response = await updateCodbar({
                 codigo: Codigo,
                 Id_Marca: Id_Marca,
@@ -56,7 +56,7 @@ export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdate
 
         } catch (error) {
             handleError(error);
-        } finally{
+        } finally {
             navigation.goBack()
             navigation.goBack()
         }
@@ -83,10 +83,12 @@ export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdate
 
             <Text style={CodebarUpdateWithInputScreenStyles(theme).warningMessage}>{currentType?.errorMessage}</Text>
 
-            {regex.test(text) && (
-                <TouchableOpacity style={buttonStyles(theme).button} onPress={hanldeUpdateCodebarWithCodeRandom}>
-                    <Text style={buttonStyles(theme).buttonText}>Actualizar</Text>
-                </TouchableOpacity>
-            )}
-        </View>)
+            <ButtonCustum
+                title={'Actualizar'}
+                onPress={hanldeUpdateCodebarWithCodeRandom}
+                disabled={!regex.test(text)}
+                loading={false}
+            />
+        </View>
+    )
 }

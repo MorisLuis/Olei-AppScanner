@@ -7,13 +7,19 @@ export const uiNavigationStyles = (theme: Theme, typeTheme?: string) => StyleShe
 
     FooterScreen: {
         backgroundColor: theme.background_color,
-        position: 'absolute',
+        padding: globalStyles(theme).globalPadding.padding,
+        height: hp("20%"),
+        maxHeight: 150,
+        width: '100%',
+        position: "absolute",
         bottom: 0,
-        right: globalStyles(theme).globalPadding.padding,
-        width: wp("100%") - globalStyles().globalPadding.padding * 2,
+        display: "flex",
+        borderTopWidth: 1,
+        borderColor: typeTheme === 'light' ? theme.color_border_secondary : theme.background_color_secondary
     },
     FooterScreenContainer: {
-        marginVertical: globalStyles(theme).globalMarginBottomSmall.marginBottom
+        marginVertical: globalStyles(theme).globalMarginBottomSmall.marginBottom,
+        paddingHorizontal:  globalStyles(theme).globalPadding.padding,
     },
     FooterTwoButtonsScreen: {
         backgroundColor: theme.background_color,

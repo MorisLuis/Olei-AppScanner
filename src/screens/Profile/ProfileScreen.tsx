@@ -12,6 +12,7 @@ import { useTheme } from '../../context/ThemeContext';
 import DeviceInfo from 'react-native-device-info';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import { ProfileNavigationProp } from '../../interface/navigation';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 
 export const ProfileScreen = () => {
@@ -106,9 +107,15 @@ export const ProfileScreen = () => {
 
                 <View style={ProfileScreenStyles(theme).divider}></View>
 
-                <TouchableOpacity onPress={logOutSesion} style={[buttonStyles(theme).button, globalStyles(theme).globalMarginBottom, { marginTop: globalStyles(theme).globalMarginBottom.marginBottom * 2 }]}>
-                    <Text style={buttonStyles(theme).buttonText}>Cerrar sesión</Text>
-                </TouchableOpacity>
+                <ButtonCustum
+                    title="Cerrar sesión"
+                    onPress={logOutSesion}
+                    disabled={false}
+                    extraStyles={{
+                        marginTop: globalStyles(theme).globalMarginBottom.marginBottom * 2,
+                        marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
+                    }}
+                />
 
                 <TouchableOpacity onPress={logOutDataBase} style={[ProfileScreenStyles(theme).logOutDB, { marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom }]}>
                     <Text style={ProfileScreenStyles(theme).logOutDBText}>Cambiar base de datos</Text>

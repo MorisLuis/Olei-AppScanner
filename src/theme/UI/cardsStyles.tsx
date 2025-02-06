@@ -229,8 +229,8 @@ export const ProductInventoryConfirmationCardTheme = (theme: Theme, typeTheme?: 
         borderRadius: globalStyles(theme).borderRadius.borderRadius,
         paddingHorizontal: globalStyles(theme).globalPadding.padding,
         paddingVertical: globalStyles(theme).globalPadding.padding / 2,
-        marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom,
-        marginHorizontal: globalStyles(theme).globalMarginBottom.marginBottom
+        //marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom,
+        //marginHorizontal: globalStyles(theme).globalMarginBottom.marginBottom
 
     },
     data: {
@@ -257,7 +257,8 @@ export const ProductInventoryConfirmationCardTheme = (theme: Theme, typeTheme?: 
     },
     description: {
         fontSize: globalFont.font_sm,
-        color: theme.text_color
+        color: theme.text_color,
+        fontWeight: 'bold'
     },
     edit:{
         backgroundColor: theme.background_color_tertiary,

@@ -11,6 +11,7 @@ import ModalDecision from '../../components/Modals/ModalDecision';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 import { globalStyles } from '../../theme/appTheme';
 import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
+import { TypeOfMovementSkeleton } from '../../components/Skeletons/TypeOfMovementSkeleton';
 
 interface AlmacenScreenInterface {
     route: any
@@ -60,6 +61,15 @@ export default function AlmacenScreen({
         setModalToTakeDecision(false)
     };
 
+    const renderLoader = () => {
+        return (
+            !almacenes ?
+                Array.from({ length: 10 }).map((_, index) => (
+                    <TypeOfMovementSkeleton key={index} />
+                ))
+                : null
+        );
+    };
 
     useEffect(() => {
         handleGetAlmacenes();
@@ -81,15 +91,15 @@ export default function AlmacenScreen({
                     renderItem={renderItem}
                     keyExtractor={product => `${product.Id_Almacen}`}
                     onEndReachedThreshold={0}
-                />
-
-
-                <FooterScreen
-                    buttonTitle="Cambiar almacen"
-                    buttonOnPress={() => setModalToTakeDecision(true)}
-                    buttonDisabled={buttondisabled}
+                    ListFooterComponent={renderLoader}
                 />
             </View>
+
+            <FooterScreen
+                buttonTitle="Cambiar almacen"
+                buttonOnPress={() => setModalToTakeDecision(true)}
+                buttonDisabled={buttondisabled}
+            />
 
             {/* Modal */}
             <ModalDecision
@@ -108,6 +118,7 @@ export default function AlmacenScreen({
                     onPress={() => setModalToTakeDecision(false)}
                     disabled={false}
                     buttonColor={'color_white'}
+                    textColor={'text_color'}
                 />
             </ModalDecision>
         </SafeAreaView>

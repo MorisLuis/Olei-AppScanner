@@ -1,9 +1,8 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ProductInventoryConfirmationCardTheme } from '../../theme/UI/cardsStyles';
-import ProductInterface, { ProductInterfaceBag } from '../../interface/product.js';
+import { ProductInterfaceBag } from '../../interface/product.js';
 import { useTheme } from '../../context/ThemeContext';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 interface ProductInventoryConfirmationCardInterface {
     product: ProductInterfaceBag;
@@ -21,7 +20,7 @@ export const ProductInventoryConfirmationCard = ({
     const iconColor = theme.color_tertiary
 
     return (
-        <View style={ProductInventoryConfirmationCardTheme(theme, typeTheme).ProductInventoryConfirmationCard}>
+        <TouchableOpacity style={ProductInventoryConfirmationCardTheme(theme, typeTheme).ProductInventoryConfirmationCard} onPress={onClick}>
             <View style={ProductInventoryConfirmationCardTheme(theme).data}>
                 <View style={ProductInventoryConfirmationCardTheme(theme).information}>
                     <View>
@@ -38,12 +37,7 @@ export const ProductInventoryConfirmationCard = ({
                         <Text style={ProductInventoryConfirmationCardTheme(theme).dataItemText}>{product?.Cantidad}</Text>
                     </View>
                 </View>
-
-                <TouchableOpacity style={ProductInventoryConfirmationCardTheme(theme, typeTheme).edit}  onPress={onClick} disabled={disabled}>
-                    <Icon name="create-outline" size={18} color={iconColor} />
-                </TouchableOpacity>
-
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }

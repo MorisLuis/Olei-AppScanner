@@ -1,12 +1,10 @@
 import React, { useContext, useState } from 'react';
 
-import { Text, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Text, View } from 'react-native';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import ProductInterface, { ProductInterfaceBag } from '../../interface/product';
 import { Counter } from '../../components/Ui/Counter';
 import { useNavigation } from '@react-navigation/native';
-import { buttonStyles } from '../../theme/UI/buttons';
 import { globalStyles } from '../../theme/appTheme';
 import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
 import { SettingsContext } from '../../context/settings/SettingsContext';
@@ -15,6 +13,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import ModalBottom from '../../components/Modals/ModalBottom';
 import { useTheme } from '../../context/ThemeContext';
 import { AppNavigationProp } from '../../interface/navigation';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 interface ScannerResultInterface {
     fromInput?: boolean;
@@ -119,12 +118,11 @@ const ScannerResult = ({
                             {
                                 (seeProductDetails && !fromProductDetails) &&
                                 <View style={{ width: wp("42.5%") }}>
-                                    <TouchableOpacity
+                                    <ButtonCustum
+                                        title={'Ver producto'}
                                         onPress={handleExpandProductDetails}
-                                        style={[buttonStyles(theme).button_small, buttonStyles(theme).white]}
-                                    >
-                                        <Text style={buttonStyles(theme, typeTheme).buttonTextTertiary}>Ver producto</Text>
-                                    </TouchableOpacity>
+                                        disabled={false}
+                                    />
                                 </View>
                             }
 
@@ -133,36 +131,35 @@ const ScannerResult = ({
                             </View>
                         </View>
 
-                        <TouchableOpacity
-                            style={[buttonStyles(theme).button, buttonStyles(theme).yellow, { display: 'flex', flexDirection: 'row' },
-                            ...(buttondisabled ? [buttonStyles(theme).disabled] : [])
-                            ]}
+                        <ButtonCustum
+                            title={'Agregar al inventario'}
                             onPress={handleAddToInventory}
                             disabled={buttondisabled}
-                        >
-                            <Icon name="add-circle-outline" size={16} color={"black"} style={{ marginRight: 10 }} />
-                            <Text style={buttonStyles(theme, typeTheme).buttonTextSecondary}>Agregar al inventario</Text>
-                        </TouchableOpacity>
+                        />
                     </View>
                     :
                     <View>
                         <EmptyMessageCard title={fromInput ? `No existe producto con este codigo.` : `No existe producto con codigo de barras:`} message={`${codeBar}`} icon='help-circle' />
 
-                        <TouchableOpacity
+                        <ButtonCustum
+                            title={'Buscar producto'}
                             onPress={handleSearchByCode}
-                            style={[buttonStyles(theme).button, buttonStyles(theme).white, { marginVertical: globalStyles(theme).globalMarginBottomSmall.marginBottom }]}
-                        >
-                            <Text style={buttonStyles(theme, typeTheme).buttonTextTertiary}>Buscar producto</Text>
-                        </TouchableOpacity>
+                            disabled={false}
+                            extraStyles={{
+                                marginVertical: globalStyles(theme).globalMarginBottomSmall.marginBottom
+                            }}
+                        />
 
                         {
                             (codeBar && codeBar !== "") &&
-                            <TouchableOpacity
+                            <ButtonCustum
+                                title={'Asignar a un producto'}
                                 onPress={handleAssignCodeToProduct}
-                                style={[buttonStyles(theme).button, { marginBottom: globalStyles(theme).globalMarginBottom.marginBottom }]}
-                            >
-                                <Text style={buttonStyles(theme, typeTheme).buttonText}>Asignar a un producto</Text>
-                            </TouchableOpacity>
+                                disabled={false}
+                                extraStyles={{
+                                    marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
+                                }}
+                            />
                         }
                     </View>
             }

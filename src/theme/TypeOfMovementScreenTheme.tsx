@@ -3,9 +3,10 @@ import { Theme, globalFont, globalStyles } from "./appTheme";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) => StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: theme.background_color,
+    TypeOfMovementScreen: {
+        flex: 1
+    },
+    content: {
         padding: globalStyles(theme).globalPadding.padding
     },
     header: {
@@ -19,7 +20,7 @@ export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) => 
     },
     optionContainer: {
         padding: globalStyles(theme).globalPadding.padding / 1.5,
-        marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+        //marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
         borderWidth: 0.7,
         borderRadius: globalStyles(theme).borderRadius.borderRadius,
         borderColor: theme.color_border_tertiary,

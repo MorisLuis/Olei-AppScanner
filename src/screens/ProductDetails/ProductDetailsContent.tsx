@@ -1,12 +1,14 @@
 import React from "react";
 import { useTheme } from "../../context/ThemeContext";
 import ProductInterface from "../../interface/product";
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { productDetailsStyles } from "../../theme/productDetailsTheme";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ProductDetailItem } from "./ProductDetailsItem";
-import { buttonStyles } from "../../theme/UI/buttons";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { globalStyles } from "../../theme/appTheme";
+import ButtonCustum from "../../components/Ui/ButtonCustum";
+import FooterScreen from "../../components/Navigation/Footer";
 
 interface ProductDetailsContentInterface {
     productDetailsData: ProductInterface,
@@ -27,7 +29,10 @@ export const ProductDetailsContent = React.memo(({
 
     return (
         <>
-            <ScrollView style={productDetailsStyles(theme).ProductDetailsPage}>
+            <ScrollView style={[
+                productDetailsStyles(theme).ProductDetailsPage,
+                !fromModal && { marginBottom: hp("20%") } //the height of footer
+            ]}>
                 <View style={productDetailsStyles(theme, typeTheme).imageContainer}>
                     {productDetailsData.imagen ? (
                         <Image
@@ -58,27 +63,28 @@ export const ProductDetailsContent = React.memo(({
                 </View>
 
                 {(!productDetailsData.CodBar && !fromModal) && (
-                    <TouchableOpacity
-                        style={[buttonStyles(theme).button, { marginBottom: globalStyles(theme).globalMarginBottom.marginBottom * 2 }]}
+                    <ButtonCustum
+                        title="Crear codigo de barras"
                         onPress={handleOptionsToUpdateCodebar}
-                    >
-                        <Text style={buttonStyles(theme).buttonText}>Crear codigo de barras</Text>
-                    </TouchableOpacity>
+                        disabled={false}
+                        extraStyles={{
+                            marginBottom: globalStyles(theme).globalMarginBottom.marginBottom * 2
+                        }}
+                    />
                 )}
-
-
             </ScrollView>
 
             {!fromModal && (
-                <View style={productDetailsStyles(theme, typeTheme).footer}>
-                    <TouchableOpacity
-                        style={[buttonStyles(theme).button, buttonStyles(theme).yellow, { display: 'flex', flexDirection: 'row', width: "100%" }]}
-                        onPress={handleAddToInventory}
-                    >
-                        <Icon name="add-circle-outline" size={16} color={"black"} style={{ marginRight: 10 }} />
-                        <Text style={buttonStyles(theme, typeTheme).buttonTextSecondary}>Agregar a inventario</Text>
-                    </TouchableOpacity>
-                </View>
+                <FooterScreen
+                    buttonTitle="Agregar a inventario"
+                    buttonOnPress={handleAddToInventory}
+                    buttonDisabled={false}
+                    buttonProperties={{
+                        buttonColor: 'color_yellow',
+                        textColor: 'text_color',
+                    }}
+                />
+
             )}
         </>
     );

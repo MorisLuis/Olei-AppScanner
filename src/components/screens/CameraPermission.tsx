@@ -1,8 +1,8 @@
 import React from 'react'
-import { Text, TouchableOpacity, View } from 'react-native';
-import { buttonStyles } from '../../theme/UI/buttons';
+import { Text, View } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { CameraPermissionStyles } from '../../theme/ExtraScreens/CameraPermissionTheme';
+import ButtonCustum from '../Ui/ButtonCustum';
 
 interface CameraPermissionInterface {
     requestPermissions: () => Promise<void>;
@@ -26,11 +26,12 @@ export const CameraPermission = ({
 
             {
                 availableAuthorization &&
-                <View>
-                    <TouchableOpacity style={buttonStyles(theme).button_small} onPress={requestPermissions}>
-                        <Text style={{ color: theme.text_color }}>Autorizar camara</Text>
-                    </TouchableOpacity>
-                </View>
+                <ButtonCustum
+                    title={'Autorizar camara'}
+                    onPress={requestPermissions}
+                    disabled={false}
+                    loading={false}
+                />
             }
         </View>
     )

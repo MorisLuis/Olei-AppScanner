@@ -156,8 +156,11 @@ const CameraScreen: React.FC = () => {
                 </View>
 
                 <View style={cameraStyles(theme).cog}>
-                    <TouchableOpacity onPress={() => navigate('typeOfMovementScreen')}>
-                        <Diente width={28} height={28} color={"white"} fill={"white"} />
+                    <TouchableOpacity
+                        onPress={() => navigate('typeOfMovementScreen')}
+                        style={{ transform: [{ rotate: '90deg' }] }}
+                    >
+                        <Icon name={"swap-horizontal-outline"} size={28} color="white" />
                     </TouchableOpacity>
                 </View>
 
@@ -169,7 +172,7 @@ const CameraScreen: React.FC = () => {
 
                 {
                     user.TodosAlmacenes === 1 &&
-                    <View>
+                    <View style={cameraStyles(theme).cog}>
                         <TouchableOpacity onPress={handleOpenAlmacenes}>
                             <Warehouse width={28} height={28} color={"white"} fill={"white"} />
                         </TouchableOpacity>

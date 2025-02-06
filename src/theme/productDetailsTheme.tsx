@@ -7,6 +7,7 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) => StyleS
         flex: 1,
         padding: globalStyles(theme).globalPadding.padding,
         backgroundColor: theme.background_color,
+        
     },
     imageContainer: {
         minHeight: 300,
@@ -94,7 +95,7 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) => StyleS
         width: '100%',
         height: 1,
         borderBottomWidth: 1,
-        borderBottomColor: `${theme.color_tertiary}${Math.round(0.25 * 255).toString(16)}`,
+        borderBottomColor: theme.color_border_secondary,
         backgroundColor: theme.color_border
     },
     optionsContent: {

@@ -21,6 +21,11 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) => StyleSheet.cre
         gap: globalStyles(theme).globalMarginBottomSmall.marginBottom / 2
     },
 
+    button_secondary:{
+        borderWidth: 0,
+        backgroundColor: theme.background_color,
+    },
+
     button_small: {
         flexDirection: "row",
         backgroundColor: theme.background_color_secondary,
@@ -95,11 +100,6 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) => StyleSheet.cre
         borderColor: theme.color_border,
         color: theme.text_color
     },
-
-    disabled: {
-        opacity: 0.5,
-    },
-
 
     // Colors
     white: {

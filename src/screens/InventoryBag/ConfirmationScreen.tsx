@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useContext, useState, useMemo } from 'react';
 import { SafeAreaView, Text, View, FlatList } from 'react-native';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import { ProductInventoryConfirmationCard } from '../../components/Cards/ProductInventoryConfirmationCard';
@@ -8,10 +8,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { ProductInterfaceBag } from '../../interface/product';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useProtectPage } from '../../hooks/useProtectPage';
 import { CombineNavigationProp } from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
+import FooterScreen from '../../components/Navigation/Footer';
 
 export const ConfirmationScreen = () => {
 
@@ -68,17 +68,18 @@ export const ConfirmationScreen = () => {
 
     return !protectThisPage ? (
         <SafeAreaView style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen}>
-            <View style={{ flex: 1, marginBottom: hp("12.5%") }}>
+            <View style={ConfirmationScreenStyles(theme, typeTheme).content}>
                 <FlatList
                     data={filteredBag}
                     renderItem={renderItem}
                     keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca}-${product.key}`}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
+                    ItemSeparatorComponent={() => <View style={{ height: 20 }} />} // Espaciado de 10px
                     ListHeaderComponent={
                         <>
                             <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationHeader}>
-                                <View style={{ position: 'relative', marginBottom: 15 }}>
+                            <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationHeader__icon}>
                                     <Icon name={typeTheme === 'light' ? "document-text-outline" : "document-text"} size={50} color={iconColor} />
                                     <View style={{ position: "absolute", right: 0, bottom: -8 }}>
                                         <Icon name="checkmark-circle" size={22} color={"green"} />
@@ -98,15 +99,13 @@ export const ConfirmationScreen = () => {
                     }
                 />
             </View>
-            <View style={ConfirmationScreenStyles(theme, typeTheme).footer}>
-                <ButtonCustum
-                    title={'Confirmar'}
-                    onPress={onPostInventary}
-                    disabled={createInventaryLoading}
-                    loading={createInventaryLoading}
-                />
-            </View>
 
+            <FooterScreen
+                buttonTitle="Confirmar"
+                buttonOnPress={onPostInventary}
+                buttonDisabled={createInventaryLoading}
+                buttonLoading={createInventaryLoading}
+                />
         </SafeAreaView>
     )
         :

@@ -8,6 +8,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import { RouteProp } from '@react-navigation/native';
 import { ProfileNavigationStackParamList } from '../../navigator/ProfileNavigation';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 type PersonalInformationRouteProp = RouteProp<ProfileNavigationStackParamList, '[ProfileNavigation] - personalInformationScreen'>
 
@@ -95,14 +96,13 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
                 </View>
             </View>
 
+
             {fromLogIn && (
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={[buttonStyles(theme).button]}
+                <ButtonCustum
+                    title="Cerrar sesión de base de datos"
                     onPress={handleLogOut}
-                >
-                    <Text style={buttonStyles(theme).buttonText}>Cerrar sesión de base de datos</Text>
-                </TouchableOpacity>
+                    disabled={false}
+                />
             )}
         </View>
     );
