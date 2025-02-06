@@ -32,7 +32,7 @@ const FooterScreen = ({
                     onPress={buttonOnPress}
                     disabled={buttonDisabled}
                     loading={buttonLoading}
-                    buttonColor='white'
+                    buttonColor='color_white'
                 />
             </View>
         </SafeAreaView>

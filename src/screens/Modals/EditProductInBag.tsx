@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { editProductStyles } from '../../theme/ModalRenders/SearchCodebarWithInputTheme';
 import ModalMiddle from '../../components/Modals/ModalMiddle';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../context/ThemeContext';
 import { ProductInterfaceBag } from '../../interface/product';
-import { buttonStyles } from '../../theme/UI/buttons';
 import { globalStyles } from '../../theme/appTheme';
 import { Counter } from '../../components/Ui/Counter';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import { AppNavigationProp } from '../../interface/navigation';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 type EditProductInBagInterface = {
     route?: {
@@ -71,15 +71,13 @@ export const EditProductInBag = ({ route }: EditProductInBagInterface) => {
                 </View>
             }
 
-            <TouchableOpacity
-                style={[buttonStyles(theme).button, buttonStyles(theme).black, globalStyles(theme).globalMarginBottomSmall,
-                ...(buttondisabled ? [buttonStyles(theme).disabled] : [])
-                ]}
+            <ButtonCustum
+                title={'Editar'}
                 onPress={onEdit}
                 disabled={buttondisabled}
-            >
-                <Text style={buttonStyles(theme).buttonText}>{loadingSearch ? "Editando..." : "Editar"}</Text>
-            </TouchableOpacity>
+                loading={loadingSearch}
+                extraStyles={{ marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom }}
+            />
         </ModalMiddle>
     );
 };

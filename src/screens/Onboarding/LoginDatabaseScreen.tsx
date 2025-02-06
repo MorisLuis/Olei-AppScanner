@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { Text, View, TextInput, Platform, KeyboardAvoidingView, Keyboard, Alert, TouchableOpacity } from 'react-native';
+import { Text, View, TextInput, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { useForm } from '../../hooks/useForm';
 import useKeyboardStatus from '../../hooks/useKeyboardStatus';
 import { LoadingScreen } from '../LoadingScreen';
 
-import { buttonStyles } from '../../theme/UI/buttons';
 import { inputStyles } from '../../theme/UI/inputs';
 import { globalStyles } from '../../theme/appTheme';
 import { loginDBStyles } from '../../theme/loginTheme';
@@ -17,24 +16,34 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { useTheme } from '../../context/ThemeContext';
 import { InputPassword } from '../../components/Ui/InputPassword';
 import ModalMiddle from '../../components/Modals/ModalMiddle';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 
 export const LoginDatabaseScreen = () => {
+
     const { signInDB, errorMessage, removeError, loggingIn } = useContext(DbAuthContext);
     const { user, password, onChange } = useForm({ user: '', password: '' });
-    const { theme, toggleTheme, typeTheme } = useTheme();
+    const { theme, typeTheme } = useTheme();
+    const [loadingLogin, setLoadingLogin] = useState(false)
     const [errorModal, setErrorModal] = useState(false);
 
     useEffect(() => {
         if (errorMessage.length === 0) return;
         setErrorModal(true)
-        //Alert.alert('Login incorrecto', errorMessage, [{ text: 'Ok', onPress: removeError }]);
     }, [errorMessage]);
 
     const onLogin = () => {
-        Keyboard.dismiss();
-        signInDB({ IdUsuarioOLEI: user, PasswordOLEI: password });
-    };
+        setLoadingLogin(true)
+        try {
+            Keyboard.dismiss();
+            signInDB({ IdUsuarioOLEI: user, PasswordOLEI: password });
+        } catch (error) {
+            console.log({error})
+        } finally {
+            setLoadingLogin(false)
+        };
+    }
+
 
     const keyboardActive = useKeyboardStatus();
 
@@ -83,15 +92,15 @@ export const LoginDatabaseScreen = () => {
                         inputName="password"
                     />
 
-                    <View style={loginDBStyles(theme).buttonContainerDB}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={[buttonStyles(theme).button, buttonStyles(theme).yellow]}
-                            onPress={onLogin}
-                        >
-                            <Text style={buttonStyles(theme, typeTheme).buttonTextSecondary}>Ingresar</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <ButtonCustum
+                        title={'Ingresar'}
+                        onPress={onLogin}
+                        disabled={user === '' || password === ''}
+                        loading={loadingLogin}
+                        extraStyles={{
+                            marginTop: globalStyles().globalMarginBottom.marginBottom
+                        }}
+                    />
 
                 </View>
             </KeyboardAvoidingView>

@@ -1,10 +1,9 @@
-import React, { useCallback, useContext, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useContext, useState, useRef } from 'react';
 import { FlatList, SafeAreaView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import { ProductInventoryCard } from '../../components/Cards/ProductInventoryCard';
 import { buttonStyles } from '../../theme/UI/buttons';
 import { globalFont, globalStyles } from '../../theme/appTheme';
-import { LoadingScreen } from '../LoadingScreen';
 import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
 import ModalDecision from '../../components/Modals/ModalDecision';
 import { useNavigation } from '@react-navigation/native';
@@ -15,6 +14,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { InventoryBagScreenStyles } from '../../theme/InventoryBagScreenTheme';
 import { AppNavigationProp } from '../../interface/navigation';
 import { useInventoryBag } from './useInventoryBag';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 export const InventoryBagScreen = () => {
 
@@ -34,7 +34,7 @@ export const InventoryBagScreen = () => {
         setPage
     } = useInventoryBag(bag, pageSize)
 
-    const onPostInventary = async () => {
+    const onNavigateToPostInventary = async () => {
         goBack();
         navigate("confirmationScreen");
     };
@@ -120,12 +120,15 @@ export const InventoryBagScreen = () => {
                         >
                             <Text style={buttonStyles(theme, typeTheme).buttonTextTertiary}>Limpiar carrito</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[buttonStyles(theme).button, buttonStyles(theme).black]}
-                            onPress={onPostInventary}
-                        >
-                            <Text style={buttonStyles(theme).buttonText}>Guardar</Text>
-                        </TouchableOpacity>
+
+
+
+                        <ButtonCustum
+                            title={'Guardar'}
+                            onPress={onNavigateToPostInventary}
+                            disabled={false}
+                            loading={false}
+                        />
                     </View>
 
                 }

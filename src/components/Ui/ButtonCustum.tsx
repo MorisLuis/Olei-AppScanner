@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTheme } from '../../context/ThemeContext'
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Theme, globalFont, lightTheme } from '../../theme/appTheme'
+import { Theme, globalFont } from '../../theme/appTheme'
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 import DotLoader from '../Ui/DotLaoder';
 import CustomText from '../CustumText';

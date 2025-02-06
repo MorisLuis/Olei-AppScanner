@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { InputPassword } from '../../components/Ui/InputPassword';
 import { useProtectPage } from '../../hooks/useProtectPage';
 import ModalMiddle from '../../components/Modals/ModalMiddle';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 export const LoginScreen = () => {
     const { signIn, errorMessage, removeError, loggingIn, status } = useContext(AuthContext);
@@ -23,7 +24,7 @@ export const LoginScreen = () => {
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black"
     const [errorModal, setErrorModal] = useState(false);
-
+    const [loadingLogin, setLoadingLogin] = useState(false)
     const navigation = useNavigation<any>();
 
     const { user, password, onChange } = useForm({
@@ -37,8 +38,15 @@ export const LoginScreen = () => {
     }, []);
 
     const onLogin = () => {
-        Keyboard.dismiss();
-        signIn({ Id_Usuario: user, password });
+        setLoadingLogin(true)
+        try {
+            Keyboard.dismiss();
+            signIn({ Id_Usuario: user, password });
+        } catch (error) {
+            console.log({ error })
+        } finally {
+            setLoadingLogin(false)
+        }
     };
 
     const handleNavigateToProfile = () => {
@@ -100,15 +108,16 @@ export const LoginScreen = () => {
                             inputName="password"
                         />
 
-                        <View style={loginStyles(theme).buttonContainer}>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={[buttonStyles(theme).button, buttonStyles(theme).black]}
-                                onPress={onLogin}
-                            >
-                                <Text style={buttonStyles(theme).buttonText}>Iniciar sesión</Text>
-                            </TouchableOpacity>
-                        </View>
+
+                        <ButtonCustum
+                            title={'Iniciar sesión'}
+                            onPress={onLogin}
+                            disabled={user === '' || password === ''}
+                            loading={loadingLogin}
+                            extraStyles={{
+                                marginTop: globalStyles().globalMarginBottom.marginBottom
+                            }}
+                        />
                     </View>
 
                     <TouchableOpacity style={loginStyles(theme).footer} onPress={handleNavigateToProfile}>

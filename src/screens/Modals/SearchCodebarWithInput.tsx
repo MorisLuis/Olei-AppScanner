@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { getProductByCodeBar } from '../../services/products';
-import { buttonStyles } from '../../theme/UI/buttons';
 import { globalStyles } from '../../theme/appTheme';
 import { inputStyles } from '../../theme/UI/inputs';
 import { modalRenderstyles } from '../../theme/ModalRenders/SearchCodebarWithInputTheme';
@@ -12,6 +11,7 @@ import { useTheme } from '../../context/ThemeContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
 import ProductInterface from '../../interface/product';
 import { AppNavigationProp } from '../../interface/navigation';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 export const SearchCodebarWithInput = () => {
 
@@ -30,7 +30,7 @@ export const SearchCodebarWithInput = () => {
         setLoadingSearch(true)
 
         let response;
-        try {            
+        try {
             if (typeOfSearch === 'code') {
                 response = await getProductByCodeBar({ codigo: Barcode });
                 if (response.error) {
@@ -83,15 +83,14 @@ export const SearchCodebarWithInput = () => {
                     placeholder="Ej: 6541q"
                     placeholderTextColor={theme.color_gray}
                 />
-                <TouchableOpacity
-                    style={[buttonStyles(theme).button, buttonStyles(theme).black, globalStyles(theme).globalMarginBottomSmall,
-                    ...(buttondisabled ? [buttonStyles(theme).disabled] : [])
-                    ]}
+
+                <ButtonCustum
+                    title={'Buscar producto'}
                     onPress={handleSearchProductByCodebarInput}
                     disabled={buttondisabled}
-                >
-                    <Text style={buttonStyles(theme).buttonText}>{loadingSearch ?  "Buscando..." : "Buscar producto"}</Text>
-                </TouchableOpacity>
+                    loading={loadingSearch}
+                    extraStyles={{ marginBottom:  globalStyles(theme).globalMarginBottomSmall.marginBottom }}
+                />
 
                 <View style={modalRenderstyles(theme).optionsContainer}>
                     <TouchableOpacity

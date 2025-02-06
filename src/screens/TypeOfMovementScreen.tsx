@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Text, View, TouchableOpacity, SafeAreaView, FlatList } from 'react-native';
-import { buttonStyles } from '../theme/UI/buttons';
 import { Id_TipoMovInvInterface, getTypeOfMovements } from '../services/typeOfMovement';
 import { useNavigation } from '@react-navigation/native';
 import { TypeOfMovementSkeleton } from '../components/Skeletons/TypeOfMovementSkeleton';
@@ -9,6 +8,7 @@ import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 import { useTheme } from '../context/ThemeContext';
 import useErrorHandler from '../hooks/useErrorHandler';
 import { AppNavigationProp } from '../interface/navigation';
+import ButtonCustum from '../components/Ui/ButtonCustum';
 
 export const TypeOfMovementScreen = () => {
 
@@ -103,13 +103,12 @@ export const TypeOfMovementScreen = () => {
                 onEndReachedThreshold={0}
             />
 
-            {(typeSelected || typeSelected == 0) && (
-                <View style={TypeOfMovementScreenStyles(theme, typeTheme).footer}>
-                    <TouchableOpacity style={[buttonStyles(theme).button]} onPress={onChangetTypeOfMovement}>
-                        <Text style={[buttonStyles(theme).buttonText]}>Avanzar</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
+            <ButtonCustum
+                title={'Avanzar'}
+                onPress={onChangetTypeOfMovement}
+                disabled={(typeSelected || typeSelected == 0) ? false : true}
+                loading={false}
+            />
         </View>
     );
 };

@@ -1,18 +1,17 @@
 import React, { useCallback, useContext, useState, useEffect, useMemo } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, View, FlatList } from 'react-native';
+import { SafeAreaView, Text, View, FlatList } from 'react-native';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import { ProductInventoryConfirmationCard } from '../../components/Cards/ProductInventoryConfirmationCard';
-import { buttonStyles } from '../../theme/UI/buttons';
 import { ConfirmationScreenStyles } from '../../theme/ConfirmationScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/auth/AuthContext';
-import DotLoader from '../../components/Ui/DotLaoder';
 import { ProductInterfaceBag } from '../../interface/product';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useProtectPage } from '../../hooks/useProtectPage';
 import { CombineNavigationProp } from '../../interface/navigation';
+import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 export const ConfirmationScreen = () => {
 
@@ -100,16 +99,14 @@ export const ConfirmationScreen = () => {
                 />
             </View>
             <View style={ConfirmationScreenStyles(theme, typeTheme).footer}>
-                <TouchableOpacity
-                    style={[buttonStyles(theme).button, buttonStyles(theme).black]}
+                <ButtonCustum
+                    title={'Confirmar'}
                     onPress={onPostInventary}
                     disabled={createInventaryLoading}
-                >
-                    <Text style={buttonStyles(theme).buttonText}>
-                        {createInventaryLoading ? <DotLoader /> : "Confirmar"}
-                    </Text>
-                </TouchableOpacity>
+                    loading={createInventaryLoading}
+                />
             </View>
+
         </SafeAreaView>
     )
         :
