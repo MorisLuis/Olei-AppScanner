@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { Text, View, TextInput, Platform, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { useForm } from '../../hooks/useForm';
@@ -15,22 +15,17 @@ import Logo from "../../assets/Logo.svg";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useTheme } from '../../context/ThemeContext';
 import { InputPassword } from '../../components/Ui/InputPassword';
-import ModalMiddle from '../../components/Modals/ModalMiddle';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 
 export const LoginDatabaseScreen = () => {
 
-    const { signInDB, errorMessage, removeError, loggingIn } = useContext(DbAuthContext);
+    const { signInDB, loggingIn } = useContext(DbAuthContext);
     const { user, password, onChange } = useForm({ user: '', password: '' });
     const { theme, typeTheme } = useTheme();
     const [loadingLogin, setLoadingLogin] = useState(false)
-    const [errorModal, setErrorModal] = useState(false);
-
-    useEffect(() => {
-        if (errorMessage.length === 0) return;
-        setErrorModal(true)
-    }, [errorMessage]);
+    const { handleError } = useErrorHandler()
 
     const onLogin = () => {
         setLoadingLogin(true)
@@ -38,7 +33,7 @@ export const LoginDatabaseScreen = () => {
             Keyboard.dismiss();
             signInDB({ IdUsuarioOLEI: user, PasswordOLEI: password });
         } catch (error) {
-            console.log({error})
+            handleError(error);
         } finally {
             setLoadingLogin(false)
         };
@@ -104,19 +99,6 @@ export const LoginDatabaseScreen = () => {
 
                 </View>
             </KeyboardAvoidingView>
-
-            <ModalMiddle
-                visible={errorModal}
-                onClose={() => {
-                    setErrorModal(false);
-                    removeError();
-                }}
-                title="Login incorrecto"
-            >
-                <View>
-                    <Text>{errorMessage}</Text>
-                </View>
-            </ModalMiddle>
         </>
     );
 };

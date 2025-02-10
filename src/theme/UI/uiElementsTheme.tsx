@@ -4,10 +4,8 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 
 export const uiNavigationStyles = (theme: Theme, typeTheme?: string) => StyleSheet.create({
-
     FooterScreen: {
         backgroundColor: theme.background_color,
-        padding: globalStyles(theme).globalPadding.padding,
         height: hp("20%"),
         maxHeight: 150,
         width: '100%',

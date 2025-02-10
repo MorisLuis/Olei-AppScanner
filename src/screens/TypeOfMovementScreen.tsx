@@ -4,11 +4,11 @@ import { Id_TipoMovInvInterface, getTypeOfMovements } from '../services/typeOfMo
 import { useNavigation } from '@react-navigation/native';
 import { TypeOfMovementSkeleton } from '../components/Skeletons/TypeOfMovementSkeleton';
 import { AuthContext } from '../context/auth/AuthContext';
-import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 import { useTheme } from '../context/ThemeContext';
 import useErrorHandler from '../hooks/useErrorHandler';
 import { AppNavigationProp } from '../interface/navigation';
 import FooterScreen from '../components/Navigation/Footer';
+import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 
 export const TypeOfMovementScreen = () => {
 

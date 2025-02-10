@@ -43,12 +43,12 @@ export type AppNavigationStackParamList = {
     "[ProductDetailsPage] - inventoryDetailsScreen": {
         selectedProduct: ProductInterface;
         fromUpdateCodebar?: boolean;
-        fromModal?: boolean
+        hideActions?: boolean
     };
     "[ProductDetailsPage] - productDetailsScreen": {
         selectedProduct: ProductInterface;
         fromUpdateCodebar?: boolean;
-        fromModal?: boolean
+        hideActions?: boolean
     };
     bagInventoryScreen: undefined;
     confirmationScreen: undefined;

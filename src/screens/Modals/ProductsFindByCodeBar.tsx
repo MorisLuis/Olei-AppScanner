@@ -2,11 +2,11 @@ import React from 'react'
 import { Text, View } from 'react-native'
 import ProductInterface from '../../interface/product';
 import { ProductInventoryCard } from '../../components/Cards/ProductInventoryCard';
-import ModalMiddle from '../../components/Modals/ModalMiddle';
 import { useNavigation } from '@react-navigation/native';
 import { ProductFindByCodebarInputStyles } from '../../theme/ModalRenders/ProductFindByCodebarInputTheme';
 import { useTheme } from '../../context/ThemeContext';
 import { AppNavigationProp } from '../../interface/navigation';
+import ModalBottom from '../../components/Modals/ModalBottom';
 
 interface ProductFindByCodeBarInterface {
     route?: {
@@ -30,7 +30,7 @@ export const ProductsFindByCodeBar = ({ route }: ProductFindByCodeBarInterface) 
     if (!products) return;
 
     return (
-        <ModalMiddle
+        <ModalBottom
             visible={true}
             onClose={() => navigation.goBack()}
         >
@@ -46,6 +46,6 @@ export const ProductsFindByCodeBar = ({ route }: ProductFindByCodeBarInterface) 
                     )
                 }
             </View>
-        </ModalMiddle>
+        </ModalBottom>
     )
 }

@@ -20,7 +20,6 @@ export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) => 
     },
     optionContainer: {
         padding: globalStyles(theme).globalPadding.padding / 1.5,
-        //marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
         borderWidth: 0.7,
         borderRadius: globalStyles(theme).borderRadius.borderRadius,
         borderColor: theme.color_border_tertiary,

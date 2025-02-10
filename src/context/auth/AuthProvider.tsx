@@ -12,7 +12,6 @@ import { DbAuthContext } from '../dbAuth/DbAuthContext';
 import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
 import useErrorHandler, { useCatchError } from '../../hooks/useErrorHandler';
 import { AppNavigationProp } from '../../interface/navigation';
-import { ApiError } from '../../interface/error';
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
@@ -63,7 +62,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const [loggingIn, setLoggingIn] = useState(false);
     const { addListener, reset, navigate } = useNavigation<AppNavigationProp>();
     const { status } = useContext(DbAuthContext);
-    const [currentScreen, setCurrentScreen] = React.useState('');
     const { handleError } = useErrorHandler()
 
     useEffect(() => {
@@ -83,7 +81,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         }
 
         if (statusLoginDatabase == 'dbNot-authenticated' && statusLogin == 'not-authenticated') {
-            if (currentScreen === 'LoginDatabaseScreen') return;
+            //if (currentScreen === 'LoginDatabaseScreen') return;
 
             return reset({
                 index: 0,
@@ -126,8 +124,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             await AsyncStorage.setItem('token', data.token);
 
         } catch (error) {
+            handleError(error);
             const { errorMessage } = useCatchError(error);
-
             dispatch({ type: '[Auth] - addError', payload: errorMessage })
         } finally {
             setLoggingIn(false)

@@ -70,7 +70,7 @@ const ScannerResult = ({
         navigation.navigate('[ProductDetailsPage] - productDetailsScreen',
             {
                 selectedProduct: product,
-                fromModal: true
+                hideActions: true
             }
         );
     }

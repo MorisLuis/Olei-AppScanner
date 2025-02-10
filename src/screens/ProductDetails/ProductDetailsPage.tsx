@@ -1,9 +1,8 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getProductDetails } from '../../services/products';
 import ProductInterface from '../../interface/product';
-import { RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { ProductDetailsSkeleton } from '../../components/Skeletons/ProductDetailsSkeleton';
-import { SettingsContext } from '../../context/settings/SettingsContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
 import { AppNavigationStackParamList } from '../../navigator/AppNavigation';
 import { AppNavigationProp } from '../../interface/navigation';
@@ -18,9 +17,8 @@ interface ProductDetailsPageInterface {
 
 export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
 
-    const { selectedProduct, fromModal, fromUpdateCodebar } = route.params ?? {};
+    const { selectedProduct, hideActions } = route.params ?? {};
     const { Codigo, Marca } = selectedProduct ?? {};
-    const { handleCameraAvailable } = useContext(SettingsContext);
     const shouldCleanUp = useRef(true);
     const { handleError } = useErrorHandler()
     const navigation = useNavigation<AppNavigationProp>();
@@ -72,23 +70,6 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
         handleGetProductDetails();
     }, [])
 
-    /* useFocusEffect(
-        useCallback(() => {
-            handleCameraAvailable(false);
-            handleGetProductDetails();
-
-            return () => {
-                if (shouldCleanUp.current) {
-                    setProductDetailsData(null);
-                }
-
-                if (fromUpdateCodebar) {
-                    shouldCleanUp.current = true;
-                }
-            };
-        }, [selectedProduct])
-    ); */
-
     if (isLoading) {
         return <ProductDetailsSkeleton />;
     }
@@ -102,7 +83,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
             productDetailsData={productDetailsData}
             handleOptionsToUpdateCodebar={handleOptionsToUpdateCodebar}
             handleAddToInventory={handleAddToInventory}
-            fromModal={fromModal}
+            hideActions={hideActions}
         />
     );
 };

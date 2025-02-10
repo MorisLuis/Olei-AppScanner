@@ -1,9 +1,9 @@
-import React from 'react'
-import { StyleSheet, View } from 'react-native'
-import { globalFont } from '../theme/appTheme'
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Toast, { BaseToast, BaseToastProps, ErrorToast } from 'react-native-toast-message';
+import Toast, { BaseToast, BaseToastProps, ErrorToast, ToastProps } from 'react-native-toast-message';
 import CustomText from './CustumText';
+import { globalFont } from '../theme/appTheme';
 
 const toastConfig = {
     success: (props: BaseToastProps) => (
@@ -28,6 +28,7 @@ const toastConfig = {
             }}
         />
     ),
+
     tomatoToast: ({ text1 }: BaseToastProps) => (
         <View style={styles.ToastMessage}>
             <Icon name="checkmark-circle" size={24} color="yellowgreen" style={styles.icon} />
@@ -36,14 +37,21 @@ const toastConfig = {
             </CustomText>
         </View>
     ),
-};
 
+    tomatoError: ({ text1 }: BaseToastProps) => (
+        <View style={styles.ToastMessage}>
+            <Icon name="close-circle" size={24} color="red" style={styles.icon} />
+            <CustomText numberOfLines={2} ellipsizeMode="tail" style={styles.message}>
+                {text1}
+            </CustomText>
+        </View>
+    )
+};
 
 
 export const ShowToastMessage = () => {
     return <Toast config={toastConfig} />
 }
-
 
 const styles = StyleSheet.create({
     ToastMessage: {

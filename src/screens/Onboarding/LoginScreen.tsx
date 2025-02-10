@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Text, View, TextInput, Platform, KeyboardAvoidingView, Keyboard, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -6,7 +6,6 @@ import { useTheme } from '../../context/ThemeContext';
 import { globalStyles } from '../../theme/appTheme';
 import { loginStyles } from '../../theme/loginTheme';
 import { inputStyles } from '../../theme/UI/inputs';
-import { buttonStyles } from '../../theme/UI/buttons';
 
 import { LoadingScreen } from '../LoadingScreen';
 import useKeyboardStatus from '../../hooks/useKeyboardStatus';
@@ -15,15 +14,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { InputPassword } from '../../components/Ui/InputPassword';
 import { useProtectPage } from '../../hooks/useProtectPage';
-import ModalMiddle from '../../components/Modals/ModalMiddle';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 export const LoginScreen = () => {
-    const { signIn, errorMessage, removeError, loggingIn, status } = useContext(AuthContext);
+    const { signIn, loggingIn, status } = useContext(AuthContext);
 
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black"
-    const [errorModal, setErrorModal] = useState(false);
     const [loadingLogin, setLoadingLogin] = useState(false)
     const navigation = useNavigation<any>();
 
@@ -32,18 +29,12 @@ export const LoginScreen = () => {
         password: ''
     });
 
-    useEffect(() => {
-        if (errorMessage.length === 0) return;
-        setErrorModal(true)
-    }, []);
-
     const onLogin = () => {
         setLoadingLogin(true)
         try {
             Keyboard.dismiss();
             signIn({ Id_Usuario: user, password });
         } catch (error) {
-            console.log({ error })
         } finally {
             setLoadingLogin(false)
         }
@@ -126,19 +117,6 @@ export const LoginScreen = () => {
                     </TouchableOpacity>
                 </SafeAreaView>
             </KeyboardAvoidingView>
-
-            <ModalMiddle
-                visible={errorModal}
-                onClose={() => {
-                    setErrorModal(false);
-                    removeError();
-                }}
-                title="Login incorrecto"
-            >
-                <View>
-                    <Text>{errorMessage}</Text>
-                </View>
-            </ModalMiddle>
         </>
     )
         :

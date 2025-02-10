@@ -3,11 +3,6 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import {Theme, globalFont, globalStyles } from "../appTheme";
 
 export const ModalMiddlenStyles = (theme: Theme, typeTheme: string) => StyleSheet.create({
-    ModalMiddle: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
-    },
     modalContent: {
         backgroundColor: theme.background_color,
         shadowColor: theme.color_secondary,

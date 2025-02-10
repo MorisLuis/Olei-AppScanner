@@ -88,6 +88,7 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
             await AsyncStorage.setItem('tokenDB', data.tokenDB);
 
         } catch (error) {
+            handleError(error);
             const { errorMessage } = useCatchError(error);
             dispatch({ type: '[DBAuth] - addError', payload: errorMessage })
         } finally {

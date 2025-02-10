@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { DbAuthContext } from '../context/dbAuth/DbAuthContext';
 import { AppNavigationProp } from '../interface/navigation';
 import { AxiosError } from 'axios';
+import { ShowToastMessage } from '../components/ToastMesage';
 
 const useErrorHandler = () => {
     const { user } = useContext(AuthContext);
@@ -13,23 +14,27 @@ const useErrorHandler = () => {
     const { logOut } = useContext(DbAuthContext);
 
     const handleError = async (error: any) => {
+
         const { status: statusCode, Message, Metodo } = error ?? {}
 
         const status = error?.response?.status || statusCode;
         const method = error?.response?.config?.method;
 
-        const message = error?.response?.data?.error
-            ? error?.response?.data?.error
-            : error?.response?.data?.message
-                ? error?.response?.data?.message
-                : error?.message
-                    ? error?.message
-                    : error;
+        let message;
+
+        if (error instanceof AxiosError && error.response) {
+            let erroBadRequest = error.response.data.errors[0].message
+            message = error.response.data.error || erroBadRequest || 'Error en el servidor';
+        } else {
+            message = error?.response?.data?.message ??
+                error?.message ??
+                error;
+        }
 
         if (status === 401) {
             navigation.navigate('sessionExpired');
             return logOut?.();
-        }
+        };
 
         await sendError({
             From: `mobil/${user?.Id_Usuario?.trim()}`,
@@ -40,8 +45,8 @@ const useErrorHandler = () => {
         });
 
         Toast.show({
-            type: 'error',
-            text1: 'Algo salió mal!'
+            type: 'tomatoError',
+            text1: message
         });
 
         // Verifica si es posible ir hacia atrás
@@ -60,7 +65,8 @@ const useCatchError = (errorValue: unknown) => {
     let errorMessage;
 
     if (errorValue instanceof AxiosError && errorValue.response) {
-        errorMessage = errorValue.response.data.error || 'Error en el servidor';
+        let erroBadRequest = errorValue.response.data.errors[0].message
+        errorMessage = errorValue.response.data.error || erroBadRequest || 'Error en el servidor';
     } else if (errorValue instanceof Error) {
         errorMessage = errorValue.message;
     } else {

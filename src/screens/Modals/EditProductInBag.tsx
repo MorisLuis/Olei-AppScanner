@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { editProductStyles } from '../../theme/ModalRenders/SearchCodebarWithInputTheme';
-import ModalMiddle from '../../components/Modals/ModalMiddle';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../context/ThemeContext';
 import { ProductInterfaceBag } from '../../interface/product';
@@ -10,6 +9,7 @@ import { Counter } from '../../components/Ui/Counter';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import { AppNavigationProp } from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
+import ModalBottom from '../../components/Modals/ModalBottom';
 
 type EditProductInBagInterface = {
     route?: {
@@ -55,7 +55,7 @@ export const EditProductInBag = ({ route }: EditProductInBagInterface) => {
     }, [])
 
     return (
-        <ModalMiddle
+        <ModalBottom
             visible={true}
             onClose={handleCloseModal}
         >
@@ -78,6 +78,6 @@ export const EditProductInBag = ({ route }: EditProductInBagInterface) => {
                 loading={loadingSearch}
                 extraStyles={{ marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom }}
             />
-        </ModalMiddle>
+        </ModalBottom>
     );
 };

@@ -4,7 +4,6 @@ import { getProductByCodeBar } from '../../services/products';
 import { globalStyles } from '../../theme/appTheme';
 import { inputStyles } from '../../theme/UI/inputs';
 import { modalRenderstyles } from '../../theme/ModalRenders/SearchCodebarWithInputTheme';
-import ModalMiddle from '../../components/Modals/ModalMiddle';
 import { useNavigation } from '@react-navigation/native';
 import { SettingsContext } from '../../context/settings/SettingsContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -12,6 +11,7 @@ import useErrorHandler from '../../hooks/useErrorHandler';
 import ProductInterface from '../../interface/product';
 import { AppNavigationProp } from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
+import ModalBottom from '../../components/Modals/ModalBottom';
 
 export const SearchCodebarWithInput = () => {
 
@@ -70,7 +70,7 @@ export const SearchCodebarWithInput = () => {
     }
 
     return (
-        <ModalMiddle
+        <ModalBottom
             visible={true}
             onClose={handleCloseModal}
         >
@@ -118,6 +118,6 @@ export const SearchCodebarWithInput = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </ModalMiddle>
+        </ModalBottom>
     );
 };
