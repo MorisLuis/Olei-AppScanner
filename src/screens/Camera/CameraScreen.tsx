@@ -17,6 +17,7 @@ import Warehouse from "../../assets/warehouse.svg";
 
 import { AppNavigationProp } from '../../interface/navigation';
 import { AuthContext } from '../../context/auth/AuthContext';
+import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 
 type PermissionStatus = 'unavailable' | 'denied' | 'limited' | 'granted' | 'blocked';
 
@@ -31,6 +32,8 @@ const CameraScreen: React.FC = () => {
     const { bag } = useContext(InventoryBagContext);
     const { handleCameraAvailable, limitProductsScanned, cameraAvailable, startScanning } = useContext(SettingsContext);
     const { user } = useContext(AuthContext)
+    const { user: userDB } = useContext(DbAuthContext)
+
     const { theme, typeTheme } = useTheme();
 
     const { navigate } = useNavigation<AppNavigationProp>();
@@ -170,14 +173,14 @@ const CameraScreen: React.FC = () => {
                     </TouchableOpacity>
                 </View>
 
-                {
+                {/*                 {
                     user.TodosAlmacenes === 1 &&
                     <View style={cameraStyles(theme).cog}>
                         <TouchableOpacity onPress={handleOpenAlmacenes}>
                             <Warehouse width={28} height={28} color={"white"} fill={"white"} />
                         </TouchableOpacity>
                     </View>
-                }
+                } */}
             </View>
 
             {
@@ -188,6 +191,9 @@ const CameraScreen: React.FC = () => {
                         ) : (
                             <Text style={cameraStyles(theme, typeTheme).textmessage}>Escanea un código de barras para agregarlo {getTypeOfMovementsName()}</Text>
                         )}
+                        {
+                            user.TodosAlmacenes === 1 && <Text style={cameraStyles(theme, typeTheme).textmessage}>Almacen: {userDB?.Id_Almacen}</Text>
+                        }
                     </View>
                     :
                     <View style={cameraStyles(theme).message}>

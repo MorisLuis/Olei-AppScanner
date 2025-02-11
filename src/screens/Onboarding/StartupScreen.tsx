@@ -1,38 +1,54 @@
-import React, { useContext } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { Image, View } from 'react-native'
 import { StartupScreenTheme } from '../../theme/UI/StartupScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 import { AuthContext } from '../../context/auth/AuthContext';
-import { useProtectPage } from '../../hooks/useProtectPage';
+import { NavigatePageType, useProtectPage } from '../../hooks/useProtectPage';
 import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
-import { AppNavigationStackParamList } from '../../navigator/AppNavigation';
+import { useFocusEffect } from '@react-navigation/native';
 
 export const StartupScreen = () => {
+
+    console.log("StartupScreen")
 
     const { theme } = useTheme();
     const { status, user } = useContext(AuthContext);
     const { status: statusDB } = useContext(DbAuthContext);
 
-    // Determine protection condition and navigation target
-    const passProtection = status == "checking" || statusDB === "dbChecking"
-    const isProtected = !passProtection ? status === 'not-authenticated' || status === 'authenticated' : false;
+    const middlewareStartupScreen = () => {
+        let condition = false;
+        let navigatePage: NavigatePageType = 'LoginPage';
+        console.log({ status, statusDB })
 
-    const targetPage = () => {
+        if (status === 'checking' || statusDB === 'dbChecking') {
+            condition = true;
+            navigatePage = 'StartupScreen';
 
-        if (status === 'authenticated' && user.TodosAlmacenes === 1) {
-            return 'almacenScreen'
-        } else if (status === 'authenticated') {
-            return 'typeOfMovementScreen'
-        } else {
-            return 'LoginPage'
+            return {
+                condition,
+                navigatePage
+            }
         }
 
+        if (status === 'authenticated' && statusDB === 'dbAuthenticated') {
+            condition = true;
+            navigatePage = user.TodosAlmacenes === 1 ? 'almacenScreen' : 'typeOfMovementScreen'
+        } else if (status === 'not-authenticated') {
+            condition = true;
+            navigatePage = 'LoginPage'
+        } else if (statusDB === 'dbNot-authenticated') {
+            condition = true;
+            navigatePage = 'LoginDatabaseScreen'
+        }
+
+        return {
+            condition,
+            navigatePage
+        }
     };
 
-    useProtectPage({
-        protectionCondition: isProtected,
-        navigatePage: targetPage()
-    });
+    
+    useProtectPage(middlewareStartupScreen());
 
     return (
         <View style={StartupScreenTheme(theme).StartupScreen}>

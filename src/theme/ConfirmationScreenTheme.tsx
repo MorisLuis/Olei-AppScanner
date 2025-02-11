@@ -64,5 +64,12 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => Sty
         display: "flex",
         borderTopWidth: 1,
         borderColor: typeTheme === 'light' ? theme.color_border_secondary : theme.background_color_secondary,
+    },
+    ConfirmationScreen__redirection: {
+        height: "100%",
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })

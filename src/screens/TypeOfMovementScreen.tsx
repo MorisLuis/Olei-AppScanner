@@ -11,6 +11,7 @@ import FooterScreen from '../components/Navigation/Footer';
 import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 
 export const TypeOfMovementScreen = () => {
+    console.log("TypeOfMovementScreen")
 
     const { updateTypeOfMovements } = useContext(AuthContext);
     const { theme, typeTheme } = useTheme();
@@ -86,8 +87,6 @@ export const TypeOfMovementScreen = () => {
     useEffect(() => {
         handleGetTypeOfMovements()
     }, []);
-
-
 
     return (
         <SafeAreaView style={TypeOfMovementScreenStyles(theme).TypeOfMovementScreen}>

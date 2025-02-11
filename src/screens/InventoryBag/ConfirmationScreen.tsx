@@ -62,9 +62,10 @@ export const ConfirmationScreen = () => {
         setPage(prevPage => prevPage + 1);
     };
 
-    const { protectThisPage } = useProtectPage({
-        numberOfItems: numberOfItems,
-        loading: createInventaryLoading,
+    const protectThisPage = (numberOfItems <= 0 && !createInventaryLoading) ? true : false;
+
+    useProtectPage({
+        condition: protectThisPage,
         navigatePage: 'BottomNavigation'
     });
 
@@ -117,7 +118,7 @@ export const ConfirmationScreen = () => {
     )
         :
         <SafeAreaView style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen}>
-            <View>
+            <View style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen__redirection}>
                 <Text>Redireccionando...</Text>
             </View>
         </SafeAreaView>

@@ -76,35 +76,41 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         const statusLogin = state.status;
         const statusLoginDatabase = status;
 
-        if (statusLoginDatabase == 'dbChecking' || statusLogin == 'checking') {
+        // Estado de carga o validación
+        if (statusLoginDatabase === 'dbChecking' || statusLogin === 'checking') {
             return;
         }
 
-        if (statusLoginDatabase == 'dbNot-authenticated' && statusLogin == 'not-authenticated') {
+        // Caso: No autenticado en ambas bases de datos y estado
+        if (statusLoginDatabase === 'dbNot-authenticated' && statusLogin === 'not-authenticated') {
             return reset({
                 index: 0,
                 routes: [{ name: 'LoginDatabaseScreen' }],
-            })
+            });
         }
 
-        if (statusLoginDatabase == 'dbAuthenticated' && statusLogin == 'authenticated') {
-            console.log({todos: state.user.TodosAlmacenes })
-            if(state.user.TodosAlmacenes === 1) {
-                return navigate('almacenScreen')
-            } else {
-                return navigate('typeOfMovementScreen')
-            }
+        // Caso: Autenticado en ambas bases de datos y estado
+        if (statusLoginDatabase === 'dbAuthenticated' && statusLogin === 'authenticated') {
+            return state.user.TodosAlmacenes === 1
+                ? navigate('almacenScreen')
+                : navigate('typeOfMovementScreen');
         }
 
-        if (statusLoginDatabase == 'dbAuthenticated' && statusLogin == 'not-authenticated') {
-            reset({
+        // Caso: Base de datos autenticada, pero estado no autenticado → Redirigir a login
+        if (statusLoginDatabase === 'dbAuthenticated' && statusLogin === 'not-authenticated') {
+            return reset({
                 index: 0,
                 routes: [{ name: 'LoginPage' }],
-            })
-            return;
+            });
         }
 
-    }, [state.status, status])
+        // Caso: Base de datos no autenticada, pero estado autenticado → Ir a BottomNavigation
+        if (statusLoginDatabase === 'dbNot-authenticated' && statusLogin === 'authenticated') {
+            return navigate('BottomNavigation');
+        }
+
+    }, [state.status, status]);
+
 
     useEffect(() => {
         checkToken();

@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { DbAuthContext } from '../context/dbAuth/DbAuthContext';
 import { AppNavigationProp } from '../interface/navigation';
 import { AxiosError } from 'axios';
-import { ShowToastMessage } from '../components/ToastMesage';
 
 const useErrorHandler = () => {
     const { user } = useContext(AuthContext);

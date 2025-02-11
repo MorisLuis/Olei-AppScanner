@@ -187,7 +187,19 @@ export const AppNavigation = () => {
             <Stack.Screen
                 name="succesMessageScreen"
                 component={SuccesMessage}
-                options={{ headerShown: false }}
+                //options={{ headerShown: false }}
+                options={({ navigation }) => ({
+                    header: props => (
+                        <CustomHeader
+                            {...props}
+                            title={"Confirmación"}
+                            navigation={navigation}
+                            backCustum={true}
+                            secondaryDesign={true}
+                            back={() => navigation.navigate('confirmationScreen')}
+                        />
+                    )
+                })}
             />
 
             <Stack.Screen

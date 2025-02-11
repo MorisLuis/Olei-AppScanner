@@ -11,6 +11,8 @@ import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 import { TypeOfMovementSkeleton } from '../../components/Skeletons/TypeOfMovementSkeleton';
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigationProp } from '../../interface/navigation';
+import useErrorHandler from '../../hooks/useErrorHandler';
+import { AuthContext } from '../../context/auth/AuthContext';
 
 interface AlmacenScreenInterface {
     route: any
@@ -29,16 +31,25 @@ export default function AlmacenScreen({
     const [value, setValue] = useState<AlmacenInterface>();
     const [valueDefaultLocal, setValueDefaultLocal] = useState<number>();
     const [almacenes, setAlmacenes] = useState<AlmacenInterface[]>();
-    //const [modalToTakeDecision, setModalToTakeDecision] = useState(false)
     const buttondisabled = (!value && !valueDefault) ? true : false;
+    const { handleError } = useErrorHandler()
+    const { status } = useContext(AuthContext);
 
     const handleSelectOption = (value: AlmacenInterface) => {
         setValue(value);
     };
 
     const handleGetAlmacenes = async () => {
-        const productData = await getAlmacenes();
-        setAlmacenes(productData)
+        try {
+            const productData = await getAlmacenes();
+            setAlmacenes(productData);
+            if (productData.error) {
+                handleError(productData.error);
+                return;
+            }
+        } catch (error) {
+            handleError(error);
+        }
     };
 
     const renderItem = ({ item }: { item: AlmacenInterface }) => {
