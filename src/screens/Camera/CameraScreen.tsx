@@ -62,7 +62,7 @@ const CameraScreen: React.FC = () => {
     };
 
     const handleOpenAlmacenes = () => {
-        navigate('[Modal] - almacenScreen', { valueDefault: 1 });
+        navigate('almacenScreen', { valueDefault: 1 });
     }
 
     const {

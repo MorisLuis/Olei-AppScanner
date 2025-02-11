@@ -17,6 +17,8 @@ import { useProtectPage } from '../../hooks/useProtectPage';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 export const LoginScreen = () => {
+    console.log("LoginScreen")
+
     const { signIn, loggingIn, status } = useContext(AuthContext);
 
     const { theme, typeTheme } = useTheme();

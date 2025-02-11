@@ -69,15 +69,17 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
         dispatch({ type: '[InventoryBag] - Clear Bag', payload: [] })
     }
 
-
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
     const postInventory = async (inventoryDetails: ProductInterfaceBag[]) => {
         try {
             const tipoMovInvId = user?.Id_TipoMovInv;
+
             const inventorybody = {
                 inventoryDetails: inventoryDetails,
                 typeOfMovement: tipoMovInvId
             };
+
             const inventory = await api.post(`/api/inventory`, inventorybody);
             dispatch({ type: '[InventoryBag] - Post Inventory', payload: inventory.data })
             setInventoryCreated(true)

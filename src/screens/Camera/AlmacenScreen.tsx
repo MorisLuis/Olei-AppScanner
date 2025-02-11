@@ -7,11 +7,10 @@ import CardSelect from '../../components/Cards/CardSelect';
 import { AlmacenInterface } from '../../interface/almacen';
 import { getAlmacenes, updateCurrentAlmacen } from '../../services/almacenes';
 import FooterScreen from '../../components/Navigation/Footer';
-import ModalDecision from '../../components/Modals/ModalDecision';
-import ButtonCustum from '../../components/Ui/ButtonCustum';
-import { globalStyles } from '../../theme/appTheme';
 import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 import { TypeOfMovementSkeleton } from '../../components/Skeletons/TypeOfMovementSkeleton';
+import { useNavigation } from '@react-navigation/native';
+import { AppNavigationProp } from '../../interface/navigation';
 
 interface AlmacenScreenInterface {
     route: any
@@ -23,12 +22,14 @@ export default function AlmacenScreen({
 
     const { valueDefault } = route.params ?? {};
     const { theme, typeTheme } = useTheme();
-    const { updateUserDB } = useContext(DbAuthContext)
+    const { updateUserDB } = useContext(DbAuthContext);
+    const { navigate } = useNavigation<AppNavigationProp>();
+
 
     const [value, setValue] = useState<AlmacenInterface>();
     const [valueDefaultLocal, setValueDefaultLocal] = useState<number>();
     const [almacenes, setAlmacenes] = useState<AlmacenInterface[]>();
-    const [modalToTakeDecision, setModalToTakeDecision] = useState(false)
+    //const [modalToTakeDecision, setModalToTakeDecision] = useState(false)
     const buttondisabled = (!value && !valueDefault) ? true : false;
 
     const handleSelectOption = (value: AlmacenInterface) => {
@@ -58,7 +59,7 @@ export default function AlmacenScreen({
                 Id_Almacen: almacenUpdated.Id_Almacen
             })
         };
-        setModalToTakeDecision(false)
+        navigate('typeOfMovementScreen')
     };
 
     const renderLoader = () => {
@@ -97,12 +98,12 @@ export default function AlmacenScreen({
 
             <FooterScreen
                 buttonTitle="Cambiar almacen"
-                buttonOnPress={() => setModalToTakeDecision(true)}
+                buttonOnPress={handleSave}
                 buttonDisabled={buttondisabled}
             />
 
             {/* Modal */}
-            <ModalDecision
+            {/* <ModalDecision
                 visible={modalToTakeDecision}
                 message="Seguro de cambiar almacen?"
             >
@@ -120,7 +121,7 @@ export default function AlmacenScreen({
                     buttonColor={'color_white'}
                     textColor={'text_color'}
                 />
-            </ModalDecision>
+            </ModalDecision> */}
         </SafeAreaView>
     )
 }

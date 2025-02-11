@@ -5,21 +5,33 @@ import { useTheme } from '../../context/ThemeContext';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { useProtectPage } from '../../hooks/useProtectPage';
 import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
+import { AppNavigationStackParamList } from '../../navigator/AppNavigation';
 
 export const StartupScreen = () => {
 
     const { theme } = useTheme();
-    const { status } = useContext(AuthContext);
+    const { status, user } = useContext(AuthContext);
     const { status: statusDB } = useContext(DbAuthContext);
 
     // Determine protection condition and navigation target
     const passProtection = status == "checking" || statusDB === "dbChecking"
     const isProtected = !passProtection ? status === 'not-authenticated' || status === 'authenticated' : false;
-    const targetPage = status === 'authenticated' ? 'typeOfMovementScreen' : 'LoginPage';
+
+    const targetPage = () => {
+
+        if (status === 'authenticated' && user.TodosAlmacenes === 1) {
+            return 'almacenScreen'
+        } else if (status === 'authenticated') {
+            return 'typeOfMovementScreen'
+        } else {
+            return 'LoginPage'
+        }
+
+    };
 
     useProtectPage({
         protectionCondition: isProtected,
-        navigatePage: targetPage
+        navigatePage: targetPage()
     });
 
     return (

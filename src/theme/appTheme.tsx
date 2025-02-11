@@ -41,7 +41,7 @@ export const lightTheme = {
     color_red: "#ff0000",
     color_white: "white",
     color_blue: "#068FFF",
-    color_green: "#1F8A70",
+    color_green: "yellowgreen",
     color_gray: "gray",
     color_yellow: "#EDBD42",
     color_black: "black",
@@ -98,7 +98,6 @@ export const globalStyles = (theme?: Theme) => StyleSheet.create({
         marginBottom:  hp("1.75%")
     },
     blur: {
-        //backdropFilter: "blur(10px)",
         backgroundColor: " rgba(255, 255, 255, 0.2)"
     },
     divider: {

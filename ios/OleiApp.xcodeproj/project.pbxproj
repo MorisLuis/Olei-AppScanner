@@ -485,10 +485,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = Y97P75P793;
+				DEVELOPMENT_TEAM = Y97P75P793;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = OleiApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Olei App";
@@ -506,7 +506,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.oleiapp.escaner;
 				PRODUCT_NAME = OleiApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Olei App Escaner";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -519,10 +518,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = Y97P75P793;
+				DEVELOPMENT_TEAM = Y97P75P793;
 				INFOPLIST_FILE = OleiApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Olei App";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
@@ -539,7 +538,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.oleiapp.escaner;
 				PRODUCT_NAME = OleiApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Olei App Escaner";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

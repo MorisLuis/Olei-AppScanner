@@ -53,14 +53,14 @@ export type AppNavigationStackParamList = {
     bagInventoryScreen: undefined;
     confirmationScreen: undefined;
     succesMessageScreen: undefined;
+    almacenScreen: {
+        valueDefault?: number;
+    },
     typeOfMovementScreen: undefined;
     searchProductScreen: undefined;
     sessionExpired: undefined;
 
     // Modal
-    "[Modal] - almacenScreen": {
-        valueDefault?: number;
-    },
     "[Modal] - scannerResultScreen": {
         product: ProductInterface;
         fromProductDetails?: boolean
@@ -128,6 +128,21 @@ export const AppNavigation = () => {
             />
 
             <Stack.Screen
+                name="almacenScreen"
+                component={AlmacenScreen}
+                options={({ navigation }) => ({
+                    header: (props) => (
+                        <CustomHeader
+                            {...props}
+                            title="Almacen"
+                            navigation={navigation}
+                            back={() => navigation.goBack()}
+                        />
+                    )
+                })}
+            />
+
+            <Stack.Screen
                 name="typeOfMovementScreen"
                 component={TypeOfMovementScreen}
                 options={{ headerShown: false }}
@@ -181,21 +196,6 @@ export const AppNavigation = () => {
                 options={commonOptions}
             />
 
-            <Stack.Screen
-                name="[Modal] - almacenScreen"
-                component={AlmacenScreen}
-                options={({ navigation }) => ({
-                    presentation: "modal",
-                    header: (props) => (
-                        <CustomHeader
-                            {...props}
-                            title="Almacen"
-                            navigation={navigation}
-                            back={() => navigation.goBack()}
-                        />
-                    )
-                })}
-            />
 
             <Stack.Screen
                 name="[ProductDetailsPage] - inventoryDetailsScreen"

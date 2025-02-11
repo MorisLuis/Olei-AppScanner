@@ -15,6 +15,7 @@ import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 
 export const ConfirmationScreen = () => {
 
+    console.log("ConfirmationScreen")
     const { typeTheme, theme } = useTheme();
     const { getTypeOfMovementsName, user } = useContext(AuthContext);
     const { bag, cleanBag, numberOfItems, postInventory } = useContext(InventoryBagContext);
@@ -92,9 +93,13 @@ export const ConfirmationScreen = () => {
                             <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationInfo}>
                                 <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationText}>Productos afectados {numberOfItems}</Text>
                                 <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationText}>Tipo de movimiento: {getTypeOfMovementsName()}</Text>
-                                <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationText}>Almacen: {userFromDB?.Id_Almacen}</Text>
+                                <Text style={[ConfirmationScreenStyles(theme, typeTheme).confirmationText, { color: theme.color_blue }]}>Almacen Origen: {userFromDB?.Id_Almacen}</Text>
+                                {
+                                    getTypeOfMovementsName() === 'Traspaso' &&
+                                    <Text style={[ConfirmationScreenStyles(theme, typeTheme).confirmationText, { color: theme.color_green }]}>Almacen Destino: {user.Id_TipoMovInv?.Id_AlmDest}</Text>
+                                }
                             </View>
-                            <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationProductsContent}>
+                            <View>
                                 <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationProductsContentHeader}>Productos</Text>
                             </View>
                         </>

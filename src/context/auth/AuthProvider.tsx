@@ -81,8 +81,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         }
 
         if (statusLoginDatabase == 'dbNot-authenticated' && statusLogin == 'not-authenticated') {
-            //if (currentScreen === 'LoginDatabaseScreen') return;
-
             return reset({
                 index: 0,
                 routes: [{ name: 'LoginDatabaseScreen' }],
@@ -90,7 +88,12 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         }
 
         if (statusLoginDatabase == 'dbAuthenticated' && statusLogin == 'authenticated') {
-            return navigate('typeOfMovementScreen')
+            console.log({todos: state.user.TodosAlmacenes })
+            if(state.user.TodosAlmacenes === 1) {
+                return navigate('almacenScreen')
+            } else {
+                return navigate('typeOfMovementScreen')
+            }
         }
 
         if (statusLoginDatabase == 'dbAuthenticated' && statusLogin == 'not-authenticated') {
@@ -121,6 +124,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                     user: data.userStorage
                 }
             });
+
             await AsyncStorage.setItem('token', data.token);
 
         } catch (error) {

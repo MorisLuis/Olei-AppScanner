@@ -5,7 +5,8 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => StyleSheet.create({
 
     ConfirmationScreen: {
-        flex: 1
+        flex: 1,
+        backgroundColor: theme.background_color_secondary
     },
     content:{
         padding: globalStyles(theme).globalPadding.padding
@@ -18,7 +19,7 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => Sty
     },
     confirmationHeader__icon: {
         position: 'relative',
-        marginBottom: 15
+        marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom
     },
     confirmationHeaderTitle: {
         fontSize: globalFont.font_normal,
@@ -30,9 +31,16 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => Sty
         borderColor: typeTheme === "light" ? theme.color_border_secondary : theme.color_border_tertiary,
         padding: globalStyles(theme).globalPadding.padding,
         borderRadius: globalStyles(theme).borderRadius.borderRadius,
-        marginBottom: globalStyles(theme).globalMarginBottom.marginBottom * 2,
-    },
-    confirmationProductsContent: {
+        marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+
+        // Sombra para iOS
+        shadowColor: theme.text_color, // O el color que desees para la sombra
+        shadowOffset: { width: 0, height: 4 }, // Desplazamiento de la sombra
+        shadowOpacity: 0.1, // Opacidad de la sombra
+        shadowRadius: 4, // Difusión de la sombra
+        
+        // Sombra para Android
+        elevation: 5, // Elevación de la vista para dar la sombra en Android
     },
     confirmationProductsContentHeader: {
         color: theme.text_color,
