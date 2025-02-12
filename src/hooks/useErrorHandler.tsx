@@ -23,7 +23,7 @@ const useErrorHandler = () => {
     const navigation = useNavigation<AppNavigationProp>();
     const { logOut } = useContext(DbAuthContext);
 
-    const handleError = async (error: unknown): Promise<void> => {
+    const handleError = async (error: unknown, avoidAPI?: boolean, avoidToast?: boolean): Promise<void> => {
         if (isAxiosError(error)) {
             // Supongamos que tienes valores por defecto en statusCode y Metodo definidos en otro lado.
             const status = error.response?.status;
@@ -41,18 +41,22 @@ const useErrorHandler = () => {
                 return logOut?.();
             };
 
-            await sendError({
-                From: `mobil/${user?.Id_Usuario?.trim()}`,
-                Message: message,
-                Id_Usuario: user?.Id_Usuario?.trim(),
-                Metodo: method || '',
-                code: status ? status.toString() : "500"
-            });
+            if(!avoidAPI){
+                await sendError({
+                    From: `mobil/${user?.Id_Usuario?.trim()}`,
+                    Message: message,
+                    Id_Usuario: user?.Id_Usuario?.trim(),
+                    Metodo: method || '',
+                    code: status ? status.toString() : "500"
+                });
+            }
 
-            Toast.show({
-                type: 'tomatoError',
-                text1: message
-            });
+            if(!avoidToast){
+                Toast.show({
+                    type: 'tomatoError',
+                    text1: message
+                });
+            }
 
             if (status === 500) {
                 navigation.navigate('sessionExpired');

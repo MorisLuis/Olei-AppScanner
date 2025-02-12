@@ -122,6 +122,7 @@ const ScannerResult = ({
                                         title={'Ver producto'}
                                         onPress={handleExpandProductDetails}
                                         disabled={false}
+                                        buttonSmall
                                     />
                                 </View>
                             }
@@ -150,7 +151,7 @@ const ScannerResult = ({
                             }}
                         />
 
-                        {
+                        {/* {
                             (codeBar && codeBar !== "") &&
                             <ButtonCustum
                                 title={'Asignar a un producto'}
@@ -160,7 +161,17 @@ const ScannerResult = ({
                                     marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
                                 }}
                             />
-                        }
+                        } */}
+                        <ButtonCustum
+                                title={'Asignar a un producto'}
+                                onPress={handleAssignCodeToProduct}
+                                disabled={false}
+                                extraStyles={{
+                                    marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
+                                }}
+                                buttonColor='color_yellow'
+                                textColor='text_color'
+                            />
                     </View>
             }
         </ModalBottom>

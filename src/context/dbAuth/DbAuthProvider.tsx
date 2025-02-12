@@ -65,7 +65,7 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
             });
 
         } catch (error) {
-            handleError(error)
+            handleError(error, true, true)
             return dispatch({ type: '[DBAuth] - notAuthenticated' });
         }
     }
@@ -88,7 +88,7 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
             await AsyncStorage.setItem('tokenDB', data.tokenDB);
 
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
             const { errorMessage } = useCatchError(error);
             dispatch({ type: '[DBAuth] - addError', payload: errorMessage })
         } finally {
@@ -97,12 +97,17 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
     };
 
     const logOut = async () => {
-        setLoggingIn(false);
-        await api.get('/api/auth/logoutAppDB');
-        dispatch({ type: '[DBAuth] - logout' });
-        setTimeout(() => {
-            AsyncStorage.removeItem('tokenDB');
-        }, 100);
+
+        try {
+            setLoggingIn(false);
+            await api.get('/api/auth/logoutAppDB');
+            dispatch({ type: '[DBAuth] - logout' });
+            setTimeout(() => {
+                AsyncStorage.removeItem('tokenDB');
+            }, 100);
+        } catch (error) {
+            handleError(error);
+        }
     };
 
     const removeError = () => {

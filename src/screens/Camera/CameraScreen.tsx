@@ -172,15 +172,6 @@ const CameraScreen: React.FC = () => {
                         <Icon name={"barcode-outline"} size={28} color="white" />
                     </TouchableOpacity>
                 </View>
-
-                {/*                 {
-                    user.TodosAlmacenes === 1 &&
-                    <View style={cameraStyles(theme).cog}>
-                        <TouchableOpacity onPress={handleOpenAlmacenes}>
-                            <Warehouse width={28} height={28} color={"white"} fill={"white"} />
-                        </TouchableOpacity>
-                    </View>
-                } */}
             </View>
 
             {

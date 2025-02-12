@@ -9,7 +9,7 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) => StyleSheet.cre
         height: hp("5%"),
         backgroundColor: theme.color_tertiary,
         borderWidth: 1,
-        borderColor: theme.color_border,
+        borderColor: theme.color_border_tertiary,
         borderRadius: globalStyles(theme).borderRadius.borderRadius,
         paddingHorizontal: globalStyles(theme).globalPadding.padding,
         width: "100%",
@@ -35,7 +35,7 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) => StyleSheet.cre
         paddingHorizontal: globalStyles(theme).globalPadding.padding,
         paddingVertical: globalStyles(theme).globalPadding.padding / 2,
         width: "100%",
-        color: theme.color_tertiary,
+        color: theme.text_color,
         display: "flex",
         gap: globalStyles(theme).globalMarginBottomSmall.marginBottom / 2
     },

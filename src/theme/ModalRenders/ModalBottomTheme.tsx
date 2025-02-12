@@ -66,6 +66,6 @@ export const ModalBottomStyles = (theme?: Theme, typeTheme?: string) => StyleShe
         minHeight: 40,
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: theme?.color_border
+        borderColor: theme?.color_border_tertiary
     }
 });

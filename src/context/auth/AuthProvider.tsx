@@ -134,7 +134,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             await AsyncStorage.setItem('token', data.token);
 
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
             const { errorMessage } = useCatchError(error);
             dispatch({ type: '[Auth] - addError', payload: errorMessage })
         } finally {
@@ -172,18 +172,21 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             });
 
         } catch (error) {
-            dispatch({ type: '[Auth] - notAuthenticated' });
-            return;
+            return dispatch({ type: '[Auth] - notAuthenticated' });
         }
     }
 
     const logOut = async (findSession?: boolean) => {
-        setLoggingIn(false);
-        if (findSession) {
-            await api.get('/api/auth/logoutApp');
+        try {            
+            setLoggingIn(false);
+            if (findSession) {
+                await api.get('/api/auth/logoutApp');
+            }
+            await AsyncStorage.removeItem('token');
+            dispatch({ type: '[Auth] - logout' });
+        } catch (error) {
+            handleError(error);
         }
-        await AsyncStorage.removeItem('token');
-        dispatch({ type: '[Auth] - logout' });
     };
 
     const removeError = () => {

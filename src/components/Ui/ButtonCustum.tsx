@@ -17,7 +17,9 @@ interface ButtonCustomProps {
     buttonColor?: keyof Theme;
     textColor?: keyof Theme;
     extraStyles?: StyleProp<ViewStyle>;
+
     butonSecondary?: boolean;
+    buttonSmall?: boolean;
 }
 
 const ButtonCustom: React.FC<ButtonCustomProps> = ({
@@ -30,7 +32,8 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
     loading = false,
     buttonColor,
     textColor,
-    butonSecondary
+    butonSecondary,
+    buttonSmall
 }) => {
     const { theme, typeTheme } = useTheme();
 
@@ -43,6 +46,7 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
 
         // button secondary
         butonSecondary && buttonStyles(theme, typeTheme).button_secondary,
+        buttonSmall && buttonStyles(theme, typeTheme).button_small,
     ], [theme, typeTheme, disabled, extraStyles, buttonColor]);
 
     const textStyle = useMemo(() => [
@@ -51,6 +55,7 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
 
         // button secondary
         butonSecondary && buttonStyles(theme, typeTheme).buttonTextSecondary,
+        buttonSmall && buttonStyles(theme, typeTheme).buttonTextSecondary,
     ], [theme, typeTheme, textColor]);
 
     return (
