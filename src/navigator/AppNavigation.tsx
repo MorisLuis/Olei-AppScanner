@@ -130,16 +130,7 @@ export const AppNavigation = () => {
             <Stack.Screen
                 name="almacenScreen"
                 component={AlmacenScreen}
-                options={({ navigation }) => ({
-                    header: (props) => (
-                        <CustomHeader
-                            {...props}
-                            title="Almacen"
-                            navigation={navigation}
-                            back={() => navigation.goBack()}
-                        />
-                    )
-                })}
+                options={{ headerShown: false }}
             />
 
             <Stack.Screen
@@ -187,19 +178,7 @@ export const AppNavigation = () => {
             <Stack.Screen
                 name="succesMessageScreen"
                 component={SuccesMessage}
-                //options={{ headerShown: false }}
-                options={({ navigation }) => ({
-                    header: props => (
-                        <CustomHeader
-                            {...props}
-                            title={"Confirmación"}
-                            navigation={navigation}
-                            backCustum={true}
-                            secondaryDesign={true}
-                            back={() => navigation.navigate('confirmationScreen')}
-                        />
-                    )
-                })}
+                options={{ headerShown: false }}
             />
 
             <Stack.Screen

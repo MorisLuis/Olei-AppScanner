@@ -12,7 +12,6 @@ import { TypeOfMovementSkeleton } from '../../components/Skeletons/TypeOfMovemen
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigationProp } from '../../interface/navigation';
 import useErrorHandler from '../../hooks/useErrorHandler';
-import { AuthContext } from '../../context/auth/AuthContext';
 
 interface AlmacenScreenInterface {
     route: any
@@ -33,7 +32,6 @@ export default function AlmacenScreen({
     const [almacenes, setAlmacenes] = useState<AlmacenInterface[]>();
     const buttondisabled = (!value && !valueDefault) ? true : false;
     const { handleError } = useErrorHandler()
-    const { status } = useContext(AuthContext);
 
     const handleSelectOption = (value: AlmacenInterface) => {
         setValue(value);
@@ -43,10 +41,7 @@ export default function AlmacenScreen({
         try {
             const productData = await getAlmacenes();
             setAlmacenes(productData);
-            if (productData.error) {
-                handleError(productData.error);
-                return;
-            }
+            if (productData.error) return handleError(productData.error);
         } catch (error) {
             handleError(error);
         }
@@ -67,7 +62,8 @@ export default function AlmacenScreen({
         const almacenUpdated = await updateCurrentAlmacen(value?.Id_Almacen);
         if (almacenUpdated.Id_Almacen) {
             updateUserDB({
-                Id_Almacen: almacenUpdated.Id_Almacen
+                Id_Almacen: almacenUpdated.Id_Almacen,
+                AlmacenNombre: almacenUpdated.Nombre.trim()
             })
         };
         navigate('typeOfMovementScreen')
@@ -112,27 +108,6 @@ export default function AlmacenScreen({
                 buttonOnPress={handleSave}
                 buttonDisabled={buttondisabled}
             />
-
-            {/* Modal */}
-            {/* <ModalDecision
-                visible={modalToTakeDecision}
-                message="Seguro de cambiar almacen?"
-            >
-                <ButtonCustum
-                    title="Confirmar"
-                    onPress={handleSave}
-                    extraStyles={{ ...globalStyles(theme).globalMarginBottomSmall }}
-                    disabled={false}
-                    buttonColor={'color_red_light'}
-                />
-                <ButtonCustum
-                    title="Cancelar"
-                    onPress={() => setModalToTakeDecision(false)}
-                    disabled={false}
-                    buttonColor={'color_white'}
-                    textColor={'text_color'}
-                />
-            </ModalDecision> */}
         </SafeAreaView>
     )
 }

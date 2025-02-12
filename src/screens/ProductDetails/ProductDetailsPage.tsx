@@ -30,10 +30,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
         try {
             setIsLoading(true);
             const productData = await getProductDetails(Codigo, Marca);
-            if (productData.error) {
-                handleError(productData.error);
-                return;
-            }
+            if (productData.error) return handleError(productData.error);
             setProductDetailsData(productData);
         } catch (error) {
             handleError(error)

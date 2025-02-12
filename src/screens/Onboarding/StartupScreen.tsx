@@ -5,11 +5,8 @@ import { useTheme } from '../../context/ThemeContext';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { NavigatePageType, useProtectPage } from '../../hooks/useProtectPage';
 import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
-import { useFocusEffect } from '@react-navigation/native';
 
 export const StartupScreen = () => {
-
-    console.log("StartupScreen")
 
     const { theme } = useTheme();
     const { status, user } = useContext(AuthContext);
@@ -18,7 +15,6 @@ export const StartupScreen = () => {
     const middlewareStartupScreen = () => {
         let condition = false;
         let navigatePage: NavigatePageType = 'LoginPage';
-        console.log({ status, statusDB })
 
         if (status === 'checking' || statusDB === 'dbChecking') {
             condition = true;

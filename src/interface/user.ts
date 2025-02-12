@@ -18,7 +18,6 @@ export default interface UserInterface {
 
     from: 'web' | 'mobil';
 
-    TodosAlmacenes: number;
 
     Id_TipoMovInv?: {
         Id_TipoMovInv: number,
@@ -26,9 +25,11 @@ export default interface UserInterface {
         Descripcion: string,
         Id_AlmDest?: number
     };
-    Id_Almacen: number;
     Nombre?: string;
     Id_Usuario: string;
     Company?: string;
 
+    TodosAlmacenes: number;
+    Id_Almacen: number;
+    AlmacenNombre?: string;
 }

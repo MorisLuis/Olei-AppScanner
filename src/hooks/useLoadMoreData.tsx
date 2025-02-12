@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import useErrorHandler from "./useErrorHandler";
 
 interface UseLoadMoreDataInterface<TFilters = unknown> {
     fetchInitialData: (filters?: TFilters) => Promise<[]>;
@@ -13,11 +14,13 @@ export const useLoadMoreData = ({
     fetchTotalCount,
     filters,
 }: UseLoadMoreDataInterface) => {
+
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const [isButtonLoading, setButtonIsLoading] = useState(false);
     const [total, setTotal] = useState<number | null>(null);
+    const { handleError } = useErrorHandler()
 
     const handleResetData = useCallback(async () => {
         setIsLoading(true);
@@ -31,7 +34,7 @@ export const useLoadMoreData = ({
                 setTotal(total);
             }
         } catch (error) {
-            // handleError(error as ErrorResponse)
+            handleError(error)
         } finally {
             setIsLoading(false);
         }
@@ -54,7 +57,7 @@ export const useLoadMoreData = ({
             setData((prevData) => [...prevData, ...moreData]);
             setPage((prevPage) => prevPage + 1); // Actualizar página de forma segura
         } catch (error) {
-            // handleError(error as ErrorResponse)
+            handleError(error)
         } finally {
             setButtonIsLoading(false);
         }

@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons';
 import { productDetailsStyles } from '../../theme/productDetailsTheme';
-import { buttonStyles } from '../../theme/UI/buttons';
 import { globalStyles } from '../../theme/appTheme';
 import { useNavigation } from '@react-navigation/native';
 import { updateCodbar } from '../../services/costos';
@@ -27,9 +25,8 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
 
     const navigation = useNavigation<CodebarUpdateNavigationProp>();
     const { updateBarCode, handleCodebarScannedProcces, handleGetCodebarType, codebarType, codeBar, codeBarStatus } = useContext(SettingsContext);
-    const { theme, typeTheme } = useTheme();
-    const iconColor = typeTheme === 'dark' ? "white" : "black"
-    const { handleError } = useErrorHandler()
+    const { theme } = useTheme();
+    const { handleError, handleErrorCustum } = useErrorHandler()
 
     const [openModalCamera, setOpenModalCamera] = useState(false)
     const [codebartypeSelected, setCodebartypeSelected] = useState<number>()
@@ -64,7 +61,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
     const hanldeUpdateCodebarWithCodeFound = async () => {
         try {
             if (!Codigo || !Id_Marca) {
-                handleError({
+                handleErrorCustum({
                     status: 400,
                     Message: "Codigo, Id_Marca  neccesary in hanldeUpdateCodebarWithCodeFound",
                     Metodo: "B-PUT"
@@ -82,10 +79,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
 
             navigation.goBack();
 
-            if (response.error) {
-                handleError(response.error);
-                return;
-            }
+            if (response.error) return  handleError(response.error);
         } catch (error) {
             handleError(error);
         }
@@ -95,7 +89,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
 
         try {
             if (!Codigo || !Id_Marca) {
-                handleError({
+                handleErrorCustum({
                     status: 400,
                     Message: "productDetails neccesary in hanldeUpdateCodebarWithCodeRandom",
                     Metodo: "B-PUT"
@@ -112,11 +106,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
             })
 
             navigation.goBack()
-
-            if (response.error) {
-                handleError(response.error);
-                return;
-            }
+            if (response.error) return handleError(response.error);
         } catch (error) {
             handleError(error)
         }

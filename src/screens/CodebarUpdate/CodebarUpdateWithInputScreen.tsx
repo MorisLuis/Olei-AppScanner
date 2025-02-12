@@ -23,7 +23,7 @@ export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdate
     const navigation = useNavigation<CodebarUpdateNavigationProp>();
     const { codebarType } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
-    const { handleError } = useErrorHandler()
+    const { handleError, handleErrorCustum } = useErrorHandler()
 
     const currentType = codebartypes.barcodes.find((code) => code.id === codebarType)
     const regex = new RegExp(currentType?.regex as string);
@@ -33,7 +33,7 @@ export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdate
 
         try {
             if (!Codigo || !Id_Marca) {
-                handleError({
+                handleErrorCustum({
                     status: 400,
                     Message: "Codigo, Id_Marca  neccesary in hanldeUpdateCodebarWithCodeRandom/CodebarUpdateWithInputScreen",
                     Metodo: "B-PUT"
@@ -49,10 +49,7 @@ export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdate
                 body: { CodBar: text }
             });
 
-            if (response.error) {
-                handleError(response.error);
-                return;
-            }
+            if (response.error) return handleError(response.error);
 
         } catch (error) {
             handleError(error);

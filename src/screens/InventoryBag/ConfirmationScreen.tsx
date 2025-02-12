@@ -15,7 +15,6 @@ import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 
 export const ConfirmationScreen = () => {
 
-    console.log("ConfirmationScreen")
     const { typeTheme, theme } = useTheme();
     const { getTypeOfMovementsName, user } = useContext(AuthContext);
     const { bag, cleanBag, numberOfItems, postInventory } = useContext(InventoryBagContext);

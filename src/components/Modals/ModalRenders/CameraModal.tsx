@@ -1,9 +1,8 @@
 import React, { useContext, useState } from 'react';
 
-import { View, Vibration, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Vibration, Text, ActivityIndicator } from 'react-native';
 import { globalStyles } from '../../../theme/appTheme';
 import { SettingsContext } from '../../../context/settings/SettingsContext';
-import { buttonStyles } from '../../../theme/UI/buttons';
 import { updateCodbar } from '../../../services/costos';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'react-native-camera-kit';
@@ -27,7 +26,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
     const { vibration, updateBarCode, codebarType, codeBar } = useContext(SettingsContext);
     const navigation = useNavigation<AppNavigationProp>();
     const { theme, typeTheme } = useTheme();
-    const { handleError } = useErrorHandler()
+    const { handleError, handleErrorCustum } = useErrorHandler()
 
     const [isScanningAllowed, setIsScanningAllowed] = useState(true);
     const [codeIsScanning, setCodeIsScanning] = useState(false);
@@ -49,21 +48,19 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
         }
 
         setCodeIsScanning(true)
+
         if (codes.length > 0 && isScanningAllowed) {
             setIsScanningAllowed(false);
             const codeValue = codes;
             if (!codeValue) return;
             try {
                 const response = await getProductByCodeBar({ codeBar: codeValue });
-                if (response.error) {
-                    handleError(response.error);
-                    return;
-                }
+                if (response.error) return handleError(response.error);
+
                 handleVibrate()
                 updateBarCode(codeValue)
-                if (response.length > 0) {
-                    setProductExistent(true)
-                }
+                if (response.length > 0) setProductExistent(true)
+
             } catch (error) {
                 handleError(error);
             } finally {
@@ -79,7 +76,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
     const handleUpdateCodebar = async () => {
 
         if (!Codigo || !Id_Marca) {
-            handleError({
+            handleErrorCustum({
                 status: 400,
                 Message: "productDetails neccesary in handleUpdateCodebar",
                 Metodo: "B-PUT"
@@ -96,10 +93,8 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
                 }
             })
 
-            if (response.error) {
-                handleError(response.error);
-                return;
-            }
+            if (response.error) return handleError(response.error);
+
         } catch (error) {
             handleError(error);
         } finally {

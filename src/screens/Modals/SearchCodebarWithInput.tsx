@@ -33,18 +33,12 @@ export const SearchCodebarWithInput = () => {
         try {
             if (typeOfSearch === 'code') {
                 response = await getProductByCodeBar({ codigo: Barcode });
-                if (response.error) {
-                    handleError(response.error);
-                    return;
-                }
+                if (response.error) handleError(response.error);
                 handleNavigatoToProduct(response);
             } else {
                 updateBarCode(Barcode)
                 response = await getProductByCodeBar({ codeBar: Barcode });
-                if (response.error) {
-                    handleError(response.error);
-                    return;
-                }
+                if (response.error) handleError(response.error);
                 handleNavigatoToProduct(response);
             }
         } catch (error) {

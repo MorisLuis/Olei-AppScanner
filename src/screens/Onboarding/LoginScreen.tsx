@@ -11,7 +11,7 @@ import { LoadingScreen } from '../LoadingScreen';
 import useKeyboardStatus from '../../hooks/useKeyboardStatus';
 import { useForm } from '../../hooks/useForm';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { InputPassword } from '../../components/Ui/InputPassword';
 import { useProtectPage } from '../../hooks/useProtectPage';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
@@ -25,7 +25,7 @@ export const LoginScreen = () => {
 
     useProtectPage({
         condition: status === 'authenticated' && statusDB === 'dbAuthenticated',
-        navigatePage: userAuth.TodosAlmacenes === 1 ? 'almacenScreen' : 'typeOfMovementScreen'
+        navigatePage: userAuth.TodosAlmacenes === 1 ? 'almacenScreen' : 'typeOfMovementScreen' //redireccion
     });
 
     const { theme, typeTheme } = useTheme();

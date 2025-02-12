@@ -11,8 +11,6 @@ import FooterScreen from '../components/Navigation/Footer';
 import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 
 export const TypeOfMovementScreen = () => {
-    console.log("TypeOfMovementScreen")
-
     const { updateTypeOfMovements } = useContext(AuthContext);
     const { theme, typeTheme } = useTheme();
     const { navigate } = useNavigation<AppNavigationProp>();
@@ -71,10 +69,7 @@ export const TypeOfMovementScreen = () => {
         try {
             setIsLoading(true);
             const types = await getTypeOfMovements();
-            if (types.error) {
-                handleError(types.error);
-                return;
-            }
+            if (types.error) return handleError(types.error);
             setTypeOfMovement(types);
         } catch (error) {
             handleError(error);

@@ -29,7 +29,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
     const { modal, isModal } = route?.params ?? {};
     const { codeBar } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
-    const { handleError } = useErrorHandler();
+    const { handleError} = useErrorHandler();
 
     const navigation = useNavigation<AppNavigationProp>();
     const [productsInInventory, setProductsInInventory] = useState<ProductInterface[]>([]);
@@ -41,10 +41,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
         try {
             setSearchingProducts(true);
             const products = await getSearchProductInStock(searchTerm ? searchTerm : "");
-            if (products.error) {
-                handleError(products.error);
-                return;
-            }
+            if (products.error) return handleError(products.error);
             setProductsInInventory(products);
         } catch (error) {
             handleError(error);
@@ -143,7 +140,6 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
                 visible={openModalAdvice}
                 onClose={() => setOpenModalAdvice(false)}
                 blurNotAvailable={true}
-                blurType="dark"
                 blurAmount={0}
             >
                 <View style={SearchProductScreenStyles(theme, typeTheme).searchAdvice}>

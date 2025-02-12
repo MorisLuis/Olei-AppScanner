@@ -49,10 +49,7 @@ export const SettingsScreen = () => {
     const handleGetTypeOfMovements = async () => {
         try {
             const types = await getTypeOfMovements();
-            if (types.error) {
-                handleError(types.error);
-                return;
-            }
+            if (types.error) return handleError(types.error);
             setTypeOfMovement(types)
         } catch (error) {
             handleError(error)
