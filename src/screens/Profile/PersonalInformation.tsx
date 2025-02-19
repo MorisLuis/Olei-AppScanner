@@ -81,10 +81,10 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
                     </View>
                 )}
 
-                {(user?.Id_Almacen || userFromDB?.Id_Almacen) && (
+                {( userFromDB?.AlmacenNombre || user?.Id_Almacen) && (
                     <View style={PersonalInformationStyles(theme).data}>
                         <Text style={PersonalInformationStyles(theme).label}>Almacen Origen:</Text>
-                        <Text style={{ color: theme.text_color }}>{userFromDB?.Id_Almacen}</Text>
+                        <Text style={{ color: theme.text_color }}>{userFromDB?.AlmacenNombre || user?.Id_Almacen}</Text>
                         <View style={PersonalInformationStyles(theme).separator} />
                     </View>
                 )}

@@ -10,7 +10,7 @@ interface CostosInterfaceExtend extends CostosInterface {
 
 interface updateCostosInterface {
     codigo: string;
-    Id_Marca: number;
+    Id_Marca: string;
     body?: Partial<CostosInterfaceExtend>
 }
 

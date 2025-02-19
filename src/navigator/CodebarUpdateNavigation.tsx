@@ -17,8 +17,8 @@ interface CodebarUpdateNavigationInterface {
 }
 
 export type CodebarUpdateNavigationStackParamList = {
-    "[CodebarUpdateNavigation] - UpdateCodeBarScreen": { Codigo: string; Id_Marca: number };
-    "[CodebarUpdateNavigation] - UpdateCodeBarWithInput": { Codigo: string; Id_Marca: number };
+    "[CodebarUpdateNavigation] - UpdateCodeBarScreen": { Codigo: string; Id_Marca: string };
+    "[CodebarUpdateNavigation] - UpdateCodeBarWithInput": { Codigo: string; Id_Marca: string };
 };
 
 export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterface) => {
@@ -26,6 +26,7 @@ export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterf
     const Stack = createStackNavigator<CodebarUpdateNavigationStackParamList>();
     const { Codigo, Id_Marca } = route?.params ?? {};
     const { theme } = useTheme();
+
 
     return (
         <Stack.Navigator initialRouteName="[CodebarUpdateNavigation] - UpdateCodeBarScreen">
@@ -39,7 +40,7 @@ export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterf
                         </View>
                 })}
             >
-                {props => <CodebarUpdateScreen {...props} Codigo={Codigo} Id_Marca={Number(Id_Marca)} />}
+                {props => <CodebarUpdateScreen {...props} Codigo={Codigo} Id_Marca={Id_Marca} />}
             </Stack.Screen>
 
             <Stack.Screen
@@ -48,15 +49,13 @@ export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterf
                     header: (props: StackHeaderProps) =>
                         <View style={{ paddingTop: globalStyles(theme).globalPadding.padding, backgroundColor: theme.background_color }}>
                             <CustomHeader
-                                //{...props}
-                                //title={props.route.params?.title || 'Actualizar código de barras'}
                                 title='Modificar'
                                 navigation={navigation}
                             />
                         </View>
                 })}
             >
-                {() => <CodebarUpdateWithInputScreen Codigo={Codigo} Id_Marca={Number(Id_Marca)} />}
+                {() => <CodebarUpdateWithInputScreen Codigo={Codigo} Id_Marca={Id_Marca} />}
             </Stack.Screen>
         </Stack.Navigator>
     );

@@ -17,7 +17,7 @@ import ButtonCustum from '../../Ui/ButtonCustum';
 
 interface CameraModalInterface {
     Codigo: string,
-    Id_Marca: number;
+    Id_Marca: string;
     onClose: () => void
 }
 
@@ -72,6 +72,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
         }
         setCodeIsScanning(false);
     };
+
 
     const handleUpdateCodebar = async () => {
 

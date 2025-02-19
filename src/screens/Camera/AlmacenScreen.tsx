@@ -91,7 +91,7 @@ export default function AlmacenScreen({
         <SafeAreaView style={{ backgroundColor: theme.background_color }} >
             <View style={almacenStyles(theme, typeTheme).AlmacenScreen}>
                 <View style={almacenStyles(theme, typeTheme).header}>
-                    <CustomText style={almacenStyles(theme, typeTheme).headerTitle}>Selecciona el producto.</CustomText>
+                    <CustomText style={almacenStyles(theme, typeTheme).headerTitle}>Selecciona el almacen.</CustomText>
                 </View>
 
                 <FlatList

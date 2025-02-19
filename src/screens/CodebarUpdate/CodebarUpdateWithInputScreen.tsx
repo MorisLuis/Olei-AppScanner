@@ -14,7 +14,7 @@ import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 interface CodebarUpdateWithInputScreenInterface {
     Codigo: string;
-    Id_Marca: number
+    Id_Marca: string
 }
 
 export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdateWithInputScreenInterface) => {
