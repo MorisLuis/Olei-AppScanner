@@ -32,7 +32,7 @@ type OptionsScreen = {
 export type AppNavigationStackParamList = {
     // Navigation
     BottomNavigation: undefined;
-    CodebarUpdateNavigation: { Codigo: string; Id_Marca: string };
+    CodebarUpdateNavigation: { Codigo: string; Id_Marca: number };
 
     // Login
     LoginPage: undefined;

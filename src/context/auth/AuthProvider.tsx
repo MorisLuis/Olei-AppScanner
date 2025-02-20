@@ -228,6 +228,10 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         return name
     }
 
+    const updateUser = (user: Partial<UserInterface>) => {
+        dispatch({ type: '[Auth] - updateUser', payload: user })
+    }
+
     return (
         <AuthContext.Provider value={{
             ...state,
@@ -236,7 +240,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             logOut,
             removeError,
             updateTypeOfMovements,
-            getTypeOfMovementsName
+            getTypeOfMovementsName,
+            updateUser
         }}>
             {children}
         </AuthContext.Provider>

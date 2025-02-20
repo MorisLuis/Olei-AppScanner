@@ -44,7 +44,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
 
         navigation.navigate('CodebarUpdateNavigation',
             {
-                Id_Marca: selectedProduct.Marca,
+                Id_Marca: selectedProduct.Id_Marca,
                 Codigo: selectedProduct.Codigo
             }
         );

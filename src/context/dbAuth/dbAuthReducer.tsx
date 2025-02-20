@@ -1,10 +1,9 @@
-import UserInterface from "../../interface/user";
+import UserInterface, { UserDBInterface } from "../../interface/user";
 import { DbAuthState } from "./DbAuthProvider";
 
 type AuthAction =
-    | { type: '[DBAuth] - signUp', payload: { tokenDB: string, user: UserInterface } }
+    | { type: '[DBAuth] - signUp', payload: { tokenDB: string, user: UserDBInterface } }
     | { type: '[DBAuth] - addError', payload: string }
-    | { type: '[DBAuth] - updateUser', payload: Partial<UserInterface> }
     | { type: '[DBAuth] - removeError' }
     | { type: '[DBAuth] - notAuthenticated' }
     | { type: '[DBAuth] - logout' }
@@ -50,13 +49,7 @@ type AuthAction =
                     status: 'dbNot-authenticated',
                     tokenDB: null
                 };
-    
-            case '[DBAuth] - updateUser':
-                return {
-                    ...state,
-                    user: state.user ? { ...state.user, ...action.payload } : { ...action.payload }
-                };
-    
+
             default:
                 return state;
         }

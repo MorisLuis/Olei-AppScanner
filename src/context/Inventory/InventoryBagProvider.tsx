@@ -92,22 +92,6 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const postInventoryDetails = async (products: ProductInterface[]) => {
-        try {
-            const tipoMovInvId = user?.Id_TipoMovInv?.Id_TipoMovInv;
-            const inventoryDetailsbody = {
-                products,
-                Id_TipoMovInv: tipoMovInvId
-            };
-
-            await api.post(`/api/inventory/inventoryDetails`, inventoryDetailsbody);
-            dispatch({ type: '[InventoryBag] - Post Inventory Details', payload: products })
-            setInventoryCreated(true)
-
-        } catch (error) {
-            handleError(error)
-        }
-    }
 
     // Cleanup timeout on component unmount
     useEffect(() => {
@@ -134,7 +118,6 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
             removeProduct,
             editProduct,
             postInventory,
-            postInventoryDetails,
             inventoryCreated,
             productAdded,
             cleanBag

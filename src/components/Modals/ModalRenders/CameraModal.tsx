@@ -17,7 +17,7 @@ import ButtonCustum from '../../Ui/ButtonCustum';
 
 interface CameraModalInterface {
     Codigo: string,
-    Id_Marca: string;
+    Id_Marca: number;
     onClose: () => void
 }
 

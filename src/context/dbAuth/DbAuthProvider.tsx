@@ -4,14 +4,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { dbAuthReducer } from './dbAuthReducer';
 import { DbAuthContext } from './DbAuthContext';
-import UserInterface from '../../interface/user';
+import UserInterface, { UserDBInterface } from '../../interface/user';
 import useErrorHandler, { useCatchError } from '../../hooks/useErrorHandler';
 
 export interface DbAuthState {
     status: 'dbChecking' | 'dbAuthenticated' | 'dbNot-authenticated';
     tokenDB: string | null;
     errorMessage: string;
-    user: Partial<UserInterface> | null
+    user: UserDBInterface | null
 }
 
 export interface LoginData {
@@ -23,7 +23,10 @@ const AUTH_INITIAL_STATE: DbAuthState = {
     status: 'dbChecking',
     tokenDB: null,
     errorMessage: '',
-    user: null
+    user: {
+        BaseSQL: '',
+        RazonSocial: ''
+    }
 }
 
 export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
@@ -114,18 +117,13 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
         dispatch({ type: '[DBAuth] - removeError' });
     };
 
-    const updateUserDB = (user: Partial<UserInterface>) => {
-        dispatch({ type: '[DBAuth] - updateUser', payload: user })
-    }
-
     return (
         <DbAuthContext.Provider value={{
             ...state,
             signInDB,
             loggingIn,
             logOut,
-            removeError,
-            updateUserDB
+            removeError
         }}>
             {children}
         </DbAuthContext.Provider>

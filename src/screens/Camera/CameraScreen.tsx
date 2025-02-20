@@ -182,9 +182,7 @@ const CameraScreen: React.FC = () => {
                         ) : (
                             <Text style={cameraStyles(theme, typeTheme).textmessage}>Escanea un código de barras para agregarlo {getTypeOfMovementsName()}</Text>
                         )}
-                        {
-                            user.TodosAlmacenes === 1 && <Text style={cameraStyles(theme, typeTheme).textmessage}>Almacen: {userDB?.AlmacenNombre}</Text>
-                        }
+                        <Text style={cameraStyles(theme, typeTheme).textmessage}>Almacen: {user?.AlmacenNombre}</Text>
                     </View>
                     :
                     <View style={cameraStyles(theme).message}>

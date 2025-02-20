@@ -16,6 +16,7 @@ type AuthAction =
     | { type: '[Auth] - addError', payload: string }
     | { type: '[Auth] - removeError' }
     | { type: '[Auth] - typeOfMovement', payload: { user: UserInterface } }
+    | { type: '[Auth] - updateUser', payload: Partial<UserInterface> }
 
 const clearAuthState = (): AuthState => ({
     status: 'not-authenticated',
@@ -61,6 +62,12 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
                 ...state,
                 user: action.payload.user
             }
+
+        case '[Auth] - updateUser':
+            return {
+                ...state,
+                user: { ...state.user, ...action.payload }
+            };
 
         default:
             return state;

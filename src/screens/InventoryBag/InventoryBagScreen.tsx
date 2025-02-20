@@ -1,8 +1,7 @@
 import React, { useCallback, useContext, useState, useRef } from 'react';
-import { FlatList, SafeAreaView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { FlatList, SafeAreaView, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import { ProductInventoryCard } from '../../components/Cards/ProductInventoryCard';
-import { buttonStyles } from '../../theme/UI/buttons';
 import { globalFont, globalStyles } from '../../theme/appTheme';
 import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
 import ModalDecision from '../../components/Modals/ModalDecision';
@@ -48,7 +47,6 @@ export const InventoryBagScreen = () => {
         setOpenModalDecision(false);
         cleanBag();
         setPage(1);
-        //setFilteredBag([]);
     };
 
     const renderItem = useCallback(({ item }: { item: ProductInterfaceBag }) => (
@@ -158,7 +156,6 @@ export const InventoryBagScreen = () => {
                     onPress={() => setOpenModalDecision(false)}
                     disabled={false}
                     loading={false}
-                    //buttonColor='color_white'
                     butonSecondary
                 />
 

@@ -12,6 +12,7 @@ import { TypeOfMovementSkeleton } from '../../components/Skeletons/TypeOfMovemen
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigationProp } from '../../interface/navigation';
 import useErrorHandler from '../../hooks/useErrorHandler';
+import { AuthContext } from '../../context/auth/AuthContext';
 
 interface AlmacenScreenInterface {
     route: any
@@ -23,7 +24,7 @@ export default function AlmacenScreen({
 
     const { valueDefault } = route.params ?? {};
     const { theme, typeTheme } = useTheme();
-    const { updateUserDB } = useContext(DbAuthContext);
+    const { updateUser } = useContext(AuthContext);
     const { navigate } = useNavigation<AppNavigationProp>();
 
 
@@ -61,7 +62,7 @@ export default function AlmacenScreen({
         if (!value?.Id_Almacen) return;
         const almacenUpdated = await updateCurrentAlmacen(value?.Id_Almacen);
         if (almacenUpdated.Id_Almacen) {
-            updateUserDB({
+            updateUser({
                 Id_Almacen: almacenUpdated.Id_Almacen,
                 AlmacenNombre: almacenUpdated.Nombre.trim()
             })

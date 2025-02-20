@@ -1,7 +1,6 @@
 import Toast from "react-native-toast-message";
 import { api } from "../api/api";
 import CostosInterface from "../interface/costos";
-import { AxiosError } from "axios";
 
 
 interface CostosInterfaceExtend extends CostosInterface {
@@ -10,7 +9,7 @@ interface CostosInterfaceExtend extends CostosInterface {
 
 interface updateCostosInterface {
     codigo: string;
-    Id_Marca: string;
+    Id_Marca: number;
     body?: Partial<CostosInterfaceExtend>
 }
 
@@ -27,8 +26,8 @@ const updateCodbar = async ({
             text1: 'Se actualizó el codigo de barras!'
         })
         return { ok: true }
-    } catch (error ) {
-        return { error: error as AxiosError };
+    } catch (error) {
+        return { error: error };
     }
 }
 

@@ -33,3 +33,9 @@ export default interface UserInterface {
     Id_Almacen: number;
     AlmacenNombre?: string;
 }
+
+export interface UserDBInterface {
+    BaseSQL: string;
+    RazonSocial: string;
+}
+

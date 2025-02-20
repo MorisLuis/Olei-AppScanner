@@ -11,7 +11,6 @@ type ContextProps = {
     signInDB: (loginData: LoginData) => void;
     logOut: () => void;
     removeError: () => void;
-    updateUserDB: (user: Partial<UserInterface>) => void;
 }
 
 

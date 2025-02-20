@@ -11,7 +11,6 @@ import { ProductInterfaceBag } from '../../interface/product';
 import { useProtectPage } from '../../hooks/useProtectPage';
 import { CombineNavigationProp } from '../../interface/navigation';
 import FooterScreen from '../../components/Navigation/Footer';
-import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 
 export const ConfirmationScreen = () => {
 
@@ -19,7 +18,6 @@ export const ConfirmationScreen = () => {
     const { getTypeOfMovementsName, user } = useContext(AuthContext);
     const { bag, cleanBag, numberOfItems, postInventory } = useContext(InventoryBagContext);
     const { navigate } = useNavigation<CombineNavigationProp>();
-    const { user: userFromDB } = useContext(DbAuthContext);
 
     const iconColor = theme.color_tertiary;
     const [createInventaryLoading, setCreateInventaryLoading] = useState(false);
@@ -93,7 +91,7 @@ export const ConfirmationScreen = () => {
                             <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationInfo}>
                                 <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationText}>Productos afectados {numberOfItems}</Text>
                                 <Text style={ConfirmationScreenStyles(theme, typeTheme).confirmationText}>Tipo de movimiento: {getTypeOfMovementsName()}</Text>
-                                <Text style={[ConfirmationScreenStyles(theme, typeTheme).confirmationText, { color: theme.color_blue }]}>Almacen Origen: {userFromDB?.Id_Almacen}</Text>
+                                <Text style={[ConfirmationScreenStyles(theme, typeTheme).confirmationText, { color: theme.color_blue }]}>Almacen Origen: {user?.AlmacenNombre}</Text>
                                 {
                                     getTypeOfMovementsName() === 'Traspaso' &&
                                     <Text style={[ConfirmationScreenStyles(theme, typeTheme).confirmationText, { color: theme.color_green }]}>Almacen Destino: {user.Id_TipoMovInv?.Id_AlmDest}</Text>

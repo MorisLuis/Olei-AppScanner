@@ -5,7 +5,6 @@ import { CodebarUpdateWithInputScreen } from '../screens/CodebarUpdate/CodebarUp
 import { StackHeaderProps, createStackNavigator } from '@react-navigation/stack';
 import { CustomHeader } from '../components/Ui/CustomHeader';
 import { globalStyles } from '../theme/appTheme';
-import ProductInterface from '../interface/product';
 import { useTheme } from '../context/ThemeContext';
 import { RouteProp } from '@react-navigation/native';
 import { AppNavigationStackParamList } from './AppNavigation';
@@ -17,8 +16,8 @@ interface CodebarUpdateNavigationInterface {
 }
 
 export type CodebarUpdateNavigationStackParamList = {
-    "[CodebarUpdateNavigation] - UpdateCodeBarScreen": { Codigo: string; Id_Marca: string };
-    "[CodebarUpdateNavigation] - UpdateCodeBarWithInput": { Codigo: string; Id_Marca: string };
+    "[CodebarUpdateNavigation] - UpdateCodeBarScreen": { Codigo: string; Id_Marca: number };
+    "[CodebarUpdateNavigation] - UpdateCodeBarWithInput": { Codigo: string; Id_Marca: number };
 };
 
 export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterface) => {
@@ -40,7 +39,7 @@ export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterf
                         </View>
                 })}
             >
-                {props => <CodebarUpdateScreen {...props} Codigo={Codigo} Id_Marca={Id_Marca} />}
+                {props => <CodebarUpdateScreen {...props} Codigo={Codigo} Id_Marca={Number(Id_Marca)} />}
             </Stack.Screen>
 
             <Stack.Screen
@@ -55,7 +54,7 @@ export const CodebarUpdateNavigation = ({ route }: CodebarUpdateNavigationInterf
                         </View>
                 })}
             >
-                {() => <CodebarUpdateWithInputScreen Codigo={Codigo} Id_Marca={Id_Marca} />}
+                {() => <CodebarUpdateWithInputScreen Codigo={Codigo} Id_Marca={Number(Id_Marca)} />}
             </Stack.Screen>
         </Stack.Navigator>
     );

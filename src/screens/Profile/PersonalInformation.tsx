@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
-import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
-import { buttonStyles } from '../../theme/UI/buttons';
 import { PersonalInformationStyles } from '../../theme/PersonalInformationTheme';
 import { useTheme } from '../../context/ThemeContext';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
@@ -47,7 +46,7 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
             { cancelable: false } // Puedes ponerlo en true para permitir cerrar el diálogo tocando fuera de él
         );
 
-    }
+    };
 
     return (
         <View style={PersonalInformationStyles(theme).PersonalInformation}>
@@ -81,10 +80,10 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
                     </View>
                 )}
 
-                {( userFromDB?.AlmacenNombre || user?.Id_Almacen) && (
+                {(user?.AlmacenNombre) && (
                     <View style={PersonalInformationStyles(theme).data}>
                         <Text style={PersonalInformationStyles(theme).label}>Almacen Origen:</Text>
-                        <Text style={{ color: theme.text_color }}>{userFromDB?.AlmacenNombre || user?.Id_Almacen}</Text>
+                        <Text style={{ color: theme.text_color }}>{user.AlmacenNombre}</Text>
                         <View style={PersonalInformationStyles(theme).separator} />
                     </View>
                 )}

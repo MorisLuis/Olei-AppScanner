@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import ProductInterface, { ProductInterfaceBag } from "../../interface/product";
+import { ProductInterfaceBag } from "../../interface/product";
 import { inventoryDataInterface } from "./InventoryBagProvider";
 
 
@@ -8,7 +8,6 @@ interface ContextProps {
     removeProduct: (product: ProductInterfaceBag) => void;
     editProduct: (product: ProductInterfaceBag) => void;
     postInventory: (inventoryDetails: ProductInterfaceBag[]) => Promise<void>;
-    postInventoryDetails: (products: ProductInterface[]) => Promise<void>;
     cleanBag: () => void;
     bag: ProductInterfaceBag[];
     inventoryCreated: boolean;

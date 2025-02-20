@@ -14,6 +14,7 @@ interface ContextProps {
     removeError: () => void;
     updateTypeOfMovements: (value: Id_TipoMovInvInterface) => void;
     getTypeOfMovementsName: () => string;
+    updateUser: (user: Partial<UserInterface>) => void;
 }
 
 
