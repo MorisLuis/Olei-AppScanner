@@ -7,7 +7,6 @@ export const uiNavigationStyles = (theme: Theme, typeTheme?: string) => StyleShe
     FooterScreen: {
         backgroundColor: theme.background_color,
         height: hp("20%"),
-        maxHeight: 150,
         width: '100%',
         position: "absolute",
         bottom: 0,

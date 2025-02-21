@@ -31,24 +31,30 @@ export const AUTH_INITIAL_STATE: AuthState = {
     status: 'not-authenticated',
     token: null,
     user: {
-        serverclientes: '',
-        baseclientes: '',
+        ServidorSQL: '',
+        BaseSQL: '',
         PasswordSQL: '',
         UsuarioSQL: '',
+
         IdUsuarioOLEI: '',
+
         RazonSocial: '',
         SwImagenes: '',
         Vigencia: '',
         from: 'mobil',
+
         TodosAlmacenes: 0,
+        Id_Almacen: 0,
+        AlmacenNombre: '',
+
         Id_TipoMovInv: {
             Id_TipoMovInv: 0,
             Accion: 0,
             Descripcion: '',
             Id_AlmDest: 0
         },
-        Id_Almacen: 0,
-        Id_Usuario: ''
+
+        Id_Usuario: '',
     },
     errorMessage: '',
     codeBar: "",

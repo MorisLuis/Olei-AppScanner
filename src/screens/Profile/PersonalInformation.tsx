@@ -48,51 +48,41 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
 
     };
 
+    const PersonalInformationData = [
+        { label: "Razón Social:", value: userFromDB?.RazonSocial },
+        { label: "Usuario:", value: user.Id_Usuario },
+        { label: "Almacen Origen:", value: user.AlmacenNombre },
+        { label: "Base de datos:", value: userFromDB?.BaseSQL }
+    ]
+
     return (
         <View style={PersonalInformationStyles(theme).PersonalInformation}>
             <View style={PersonalInformationStyles(theme).profile}>
                 <View style={PersonalInformationStyles(theme).circle}>
                     <View style={PersonalInformationStyles(theme).circleContent}>
                         <Text style={PersonalInformationStyles(theme).circleText}>
-                            {user?.Nombre?.slice(0, 1) || userFromDB?.RazonSocial?.slice(0, 1)}
+                            {userFromDB?.RazonSocial?.slice(0, 1)}
                         </Text>
                     </View>
                 </View>
 
                 <View>
-                    <Text style={PersonalInformationStyles(theme).name}>{user?.Nombre || userFromDB?.Nombre}</Text>
-                    <Text style={{ color: theme.text_color }}>{user?.Company}</Text>
+                    <Text style={PersonalInformationStyles(theme).name}>{user?.RazonSocial || userFromDB?.RazonSocial}</Text>
                 </View>
             </View>
 
             <View style={PersonalInformationStyles(theme, typeTheme).information}>
-                <View style={PersonalInformationStyles(theme).data}>
-                    <Text style={PersonalInformationStyles(theme).label}>Razón Social:</Text>
-                    <Text style={{ color: theme.text_color }}>{user?.RazonSocial || userFromDB?.RazonSocial}</Text>
-                    <View style={PersonalInformationStyles(theme).separator} />
-                </View>
-
-                {(user?.Id_Usuario || userFromDB?.Id_Usuario) && (
-                    <View style={PersonalInformationStyles(theme).data}>
-                        <Text style={PersonalInformationStyles(theme).label}>Usuario:</Text>
-                        <Text style={{ color: theme.text_color }}>{user?.Id_Usuario || userFromDB?.Id_Usuario}</Text>
-                        <View style={PersonalInformationStyles(theme).separator} />
-                    </View>
-                )}
-
-                {(user?.AlmacenNombre) && (
-                    <View style={PersonalInformationStyles(theme).data}>
-                        <Text style={PersonalInformationStyles(theme).label}>Almacen Origen:</Text>
-                        <Text style={{ color: theme.text_color }}>{user.AlmacenNombre}</Text>
-                        <View style={PersonalInformationStyles(theme).separator} />
-                    </View>
-                )}
-
-
-                <View style={PersonalInformationStyles(theme).data}>
-                    <Text style={PersonalInformationStyles(theme).label}>Base de datos:</Text>
-                    <Text style={{ color: theme.text_color }}>{user?.baseclientes || userFromDB?.BaseSQL}</Text>
-                </View>
+                {
+                    PersonalInformationData.map((item, index) => {
+                        return item.value && (
+                            <View style={PersonalInformationStyles(theme).data} key={index}>
+                                <Text style={PersonalInformationStyles(theme).label}>{item.label}</Text>
+                                <Text style={{ color: theme.text_color }}>{item.value}</Text>
+                                <View style={PersonalInformationStyles(theme).separator} />
+                            </View>
+                        )
+                    })
+                }
             </View>
 
 

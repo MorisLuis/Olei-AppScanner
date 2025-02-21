@@ -4,7 +4,6 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 export const productDetailsStyles = (theme: Theme, typeTheme?: string) => StyleSheet.create({
     ProductDetailsPage: {
-        flex: 1
     },
     content:{
         padding: globalStyles(theme).globalPadding.padding
@@ -66,8 +65,7 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) => StyleS
         backgroundColor: theme.background_color_secondary,
         borderWidth: 1,
         borderColor: typeTheme ==='light' ? theme.color_border_secondary : theme.background_color_tertiary,
-        borderRadius: 5,
-        marginBottom: globalStyles(theme).globalMarginBottom.marginBottom * 2
+        borderRadius: 5
     },
     codebarIdentify: {
         paddingBottom: globalStyles(theme).globalPadding.padding / 2

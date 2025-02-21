@@ -89,11 +89,11 @@ export default function AlmacenScreen({
     }, []);
 
     return (
-        <SafeAreaView style={{ backgroundColor: theme.background_color }} >
-            <View style={almacenStyles(theme, typeTheme).AlmacenScreen}>
-                <View style={almacenStyles(theme, typeTheme).header}>
+        <View style={almacenStyles(theme, typeTheme).AlmacenScreen}>
+            <View style={almacenStyles(theme, typeTheme).content}>
+                <SafeAreaView style={almacenStyles(theme, typeTheme).header}>
                     <CustomText style={almacenStyles(theme, typeTheme).headerTitle}>Selecciona el almacen.</CustomText>
-                </View>
+                </SafeAreaView>
 
                 <FlatList
                     data={almacenes}
@@ -109,6 +109,6 @@ export default function AlmacenScreen({
                 buttonOnPress={handleSave}
                 buttonDisabled={buttondisabled}
             />
-        </SafeAreaView>
+        </View>
     )
 }

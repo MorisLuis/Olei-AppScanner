@@ -32,7 +32,7 @@ const FooterScreen = ({
     const { typeTheme, theme } = useTheme();
 
     return visible && (
-        <SafeAreaView style={uiNavigationStyles(theme, typeTheme).FooterScreen}>
+        <View style={uiNavigationStyles(theme, typeTheme).FooterScreen}>
             <View style={uiNavigationStyles(theme, typeTheme).FooterScreenContainer}>
                 <ButtonCustum
                     title={buttonTitle}
@@ -46,7 +46,7 @@ const FooterScreen = ({
                     textColor={buttonProperties?.textColor}
                 />
             </View>
-        </SafeAreaView>
+        </View>
     )
 }
 

@@ -84,11 +84,11 @@ export const TypeOfMovementScreen = () => {
     }, []);
 
     return (
-        <SafeAreaView style={TypeOfMovementScreenStyles(theme).TypeOfMovementScreen}>
+        <View style={TypeOfMovementScreenStyles(theme).TypeOfMovementScreen}>
             <View style={TypeOfMovementScreenStyles(theme, typeTheme).content}>
-                <View style={TypeOfMovementScreenStyles(theme).header}>
+                <SafeAreaView style={TypeOfMovementScreenStyles(theme).header}>
                     <Text style={TypeOfMovementScreenStyles(theme).title}>Selecciona que movimiento haras?</Text>
-                </View>
+                </SafeAreaView>
 
                 <FlatList
                     data={typeOfMovement}
@@ -105,6 +105,6 @@ export const TypeOfMovementScreen = () => {
                 buttonOnPress={onChangetTypeOfMovement}
                 buttonDisabled={(typeSelected || typeSelected == 0) ? false : true}
             />
-        </SafeAreaView>
+        </View>
     );
 };

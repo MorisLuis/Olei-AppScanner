@@ -7,7 +7,9 @@ export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) => 
         flex: 1
     },
     content: {
-        padding: globalStyles(theme).globalPadding.padding
+        height: "100%",
+        padding: globalStyles(theme).globalPadding.padding,
+        paddingBottom: hp("20%")
     },
     header: {
         marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,

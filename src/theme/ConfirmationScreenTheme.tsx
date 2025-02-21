@@ -9,7 +9,9 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => Sty
         backgroundColor: theme.background_color_secondary
     },
     content:{
-        padding: globalStyles(theme).globalPadding.padding
+        height: "100%",
+        padding: globalStyles(theme).globalPadding.padding,
+        paddingBottom: hp("20%")
     },
     confirmationHeader: {
         height: hp("20%"),
@@ -48,22 +50,9 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) => Sty
         textTransform: "uppercase",
         marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom / 2
     },
-
     confirmationText: {
         fontSize: globalFont.font_normal,
         color: theme.text_color
-    },
-    footer: {
-        backgroundColor: theme.background_color,
-        padding: globalStyles(theme).globalPadding.padding,
-        height: hp("25%"),
-        maxHeight: 150,
-        width: "100%",
-        position: "absolute",
-        bottom: 0,
-        display: "flex",
-        borderTopWidth: 1,
-        borderColor: typeTheme === 'light' ? theme.color_border_secondary : theme.background_color_secondary,
     },
     ConfirmationScreen__redirection: {
         height: "100%",

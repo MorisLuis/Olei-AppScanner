@@ -67,7 +67,7 @@ export const ConfirmationScreen = () => {
     });
 
     return !protectThisPage ? (
-        <SafeAreaView style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen}>
+        <View style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen}>
             <View style={ConfirmationScreenStyles(theme, typeTheme).content}>
                 <FlatList
                     data={filteredBag}
@@ -76,7 +76,6 @@ export const ConfirmationScreen = () => {
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
                     ItemSeparatorComponent={() => <View style={{ height: 20 }} />} // Espaciado de 10px
-                    contentContainerStyle={{ paddingBottom: 150 }} // Ajusta según la altura del FooterScreen
                     ListHeaderComponent={
                         <>
                             <View style={ConfirmationScreenStyles(theme, typeTheme).confirmationHeader}>
@@ -111,7 +110,7 @@ export const ConfirmationScreen = () => {
                 buttonDisabled={createInventaryLoading}
                 buttonLoading={createInventaryLoading}
             />
-        </SafeAreaView>
+        </View>
     )
         :
         <SafeAreaView style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen}>

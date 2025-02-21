@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { ProductDetailItem } from "./ProductDetailsItem";
 import ButtonCustum from "../../components/Ui/ButtonCustum";
 import FooterScreen from "../../components/Navigation/Footer";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { globalStyles } from "../../theme/appTheme";
 
 interface ProductDetailsContentInterface {
     productDetailsData: ProductInterface;
@@ -30,8 +32,8 @@ export const ProductDetailsContent = React.memo(({
     const getIconColor = () => (typeTheme === 'dark' ? "white" : "black");
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={!hideActions && { paddingBottom: 150 }}>
+        <View style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={!hideActions && { paddingBottom: hp("20%") }}>
                 <View style={productDetailsStyles(theme).ProductDetailsPage}>
                     <View style={productDetailsStyles(theme).content}>
                         {/* Imagen del Producto */}
@@ -78,6 +80,7 @@ export const ProductDetailsContent = React.memo(({
                                 title="Crear código de barras"
                                 onPress={memoizedHandleOptionsToUpdateCodebar}
                                 disabled={false}
+                                extraStyles={{ marginTop: globalStyles().globalMarginBottom.marginBottom }}
                             />
                         )}
                     </View>
@@ -96,7 +99,7 @@ export const ProductDetailsContent = React.memo(({
                     }}
                 />
             )}
-        </SafeAreaView>
+        </View>
     );
 
 
