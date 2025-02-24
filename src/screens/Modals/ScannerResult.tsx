@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
 import ProductInterface, { ProductInterfaceBag } from '../../interface/product';
 import { Counter } from '../../components/Ui/Counter';
@@ -14,6 +14,8 @@ import ModalBottom from '../../components/Modals/ModalBottom';
 import { useTheme } from '../../context/ThemeContext';
 import { AppNavigationProp } from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
+import { AuthContext } from '../../context/auth/AuthContext';
+import CustomText from '../../components/CustumText';
 
 interface ScannerResultInterface {
     fromInput?: boolean;
@@ -33,9 +35,12 @@ const ScannerResult = ({
 }: ScannerResultInterface) => {
 
     const { product, fromProductDetails } = route?.params || {}
-    const { theme, typeTheme } = useTheme();
+    const { theme } = useTheme();
     const { addProduct } = useContext(InventoryBagContext)
     const { handleCameraAvailable, codeBar } = useContext(SettingsContext);
+    const { user: { SalidaSinExistencias, Id_TipoMovInv } } = useContext(AuthContext);
+    const showLimit = Id_TipoMovInv?.Id_TipoMovInv === 2 && SalidaSinExistencias === 0;
+    const doNotAllowProductOutputs = showLimit && (product?.Existencia ?? 0) < 1;
     const navigation = useNavigation<AppNavigationProp>();
 
     const [loadingAddProduct, setLoadingAddProduct] = useState(false)
@@ -90,90 +95,101 @@ const ScannerResult = ({
                 }
             )
         }, 500);
+    };
+
+    const renderDoesntExistProduct = () => {
+        return (
+            <View>
+                <EmptyMessageCard title={fromInput ? `No existe producto con este codigo.` : `No existe producto con codigo de barras:`} message={`${codeBar}`} icon='help-circle' />
+
+                <ButtonCustum
+                    title={'Buscar producto'}
+                    onPress={handleSearchByCode}
+                    disabled={false}
+                    extraStyles={{
+                        marginVertical: globalStyles(theme).globalMarginBottomSmall.marginBottom
+                    }}
+                />
+
+                <ButtonCustum
+                    title={'Asignar a un producto'}
+                    onPress={handleAssignCodeToProduct}
+                    disabled={false}
+                    extraStyles={{
+                        marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
+                    }}
+                    buttonColor='color_yellow'
+                    textColor='text_color'
+                />
+            </View>
+        )
     }
+
+    console.log({ product: JSON.stringify(product, null, 2) });
+    console.log({ doNotAllowProductOutputs })
 
     return (
         <ModalBottom
             visible={true}
             onClose={() => navigation.goBack()}
         >
-            {
-                (product) ?
-                    <View style={modalRenderstyles(theme).ScannerResult}>
-                        <View style={modalRenderstyles(theme).product}>
-                            <View style={modalRenderstyles(theme).productText}>
-                                <View style={modalRenderstyles(theme).productMessage}>
-                                    <Text style={modalRenderstyles(theme).codeLabel}>Codigo: </Text>
-                                    <Text style={modalRenderstyles(theme).codeValue}>{product?.Codigo}</Text>
-                                    <View style={modalRenderstyles(theme).otherInfo}>
-                                        <Text style={{ color: theme.text_color }}>{product?.CodBar ? product?.CodBar : "Sin Codigo de barras"}</Text>
-                                        <Text style={{ color: theme.text_color }}>/</Text>
-                                        <Text style={{ color: theme.text_color }}>{product?.Marca}</Text>
+            {product ? (
+                <View style={modalRenderstyles(theme).ScannerResult}>
+                    <View style={modalRenderstyles(theme).product}>
+                        <View style={modalRenderstyles(theme).productText}>
+                            <View style={modalRenderstyles(theme).productMessage}>
+                                <CustomText style={modalRenderstyles(theme).codeLabel}>Codigo: </CustomText>
+                                <CustomText style={modalRenderstyles(theme).codeValue}>{product?.Codigo}</CustomText>
+                                <View style={modalRenderstyles(theme).otherInfo}>
+                                    <CustomText>{product?.CodBar ? product?.CodBar : "Sin Codigo de barras"}</CustomText>
+                                    <CustomText>/</CustomText>
+                                    <CustomText>{product?.Marca}</CustomText>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+
+                    {
+                        !doNotAllowProductOutputs ?
+                            <>
+                                <View style={modalRenderstyles(theme).counterContainer}>
+                                    {
+                                        (seeProductDetails && !fromProductDetails) &&
+                                        <View style={{ width: wp("42.5%") }}>
+                                            <ButtonCustum
+                                                title={'Ver producto'}
+                                                onPress={handleExpandProductDetails}
+                                                disabled={false}
+                                                buttonSmall
+                                            />
+                                        </View>
+                                    }
+
+                                    <View style={{ width: fromProductDetails ? "100%" : wp("42.5%") }}>
+                                        <Counter
+                                            counter={counterProduct}
+                                            setCounter={setCounterProduct}
+                                            limit={showLimit ? product.Existencia : undefined}
+                                        />
                                     </View>
                                 </View>
-                            </View>
-                        </View>
 
-                        <View style={modalRenderstyles(theme).counterContainer}>
-                            {
-                                (seeProductDetails && !fromProductDetails) &&
-                                <View style={{ width: wp("42.5%") }}>
-                                    <ButtonCustum
-                                        title={'Ver producto'}
-                                        onPress={handleExpandProductDetails}
-                                        disabled={false}
-                                        buttonSmall
-                                    />
-                                </View>
-                            }
-
-                            <View style={{ width: fromProductDetails ? "100%" : wp("42.5%") }}>
-                                <Counter counter={counterProduct} setCounter={setCounterProduct} />
-                            </View>
-                        </View>
-
-                        <ButtonCustum
-                            title={'Agregar al inventario'}
-                            onPress={handleAddToInventory}
-                            disabled={buttondisabled}
-                        />
-                    </View>
-                    :
-                    <View>
-                        <EmptyMessageCard title={fromInput ? `No existe producto con este codigo.` : `No existe producto con codigo de barras:`} message={`${codeBar}`} icon='help-circle' />
-
-                        <ButtonCustum
-                            title={'Buscar producto'}
-                            onPress={handleSearchByCode}
-                            disabled={false}
-                            extraStyles={{
-                                marginVertical: globalStyles(theme).globalMarginBottomSmall.marginBottom
-                            }}
-                        />
-
-                        {/* {
-                            (codeBar && codeBar !== "") &&
-                            <ButtonCustum
-                                title={'Asignar a un producto'}
-                                onPress={handleAssignCodeToProduct}
-                                disabled={false}
-                                extraStyles={{
-                                    marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
-                                }}
+                                <ButtonCustum
+                                    title={'Agregar al inventario'}
+                                    onPress={handleAddToInventory}
+                                    disabled={buttondisabled}
+                                />
+                            </>
+                            :
+                            <EmptyMessageCard
+                                title='Necesario permisos'
+                                message='No se permiten salidas de productos sin existencia.'
                             />
-                        } */}
-                        <ButtonCustum
-                                title={'Asignar a un producto'}
-                                onPress={handleAssignCodeToProduct}
-                                disabled={false}
-                                extraStyles={{
-                                    marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
-                                }}
-                                buttonColor='color_yellow'
-                                textColor='text_color'
-                            />
-                    </View>
-            }
+                    }
+                </View>
+            ) : (
+                renderDoesntExistProduct()
+            )}
         </ModalBottom>
     )
 }

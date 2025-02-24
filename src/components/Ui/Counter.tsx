@@ -4,21 +4,31 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { counterStyles } from '../../theme/UI/counterStyles';
 import { useTheme } from '../../context/ThemeContext';
+import Toast from 'react-native-toast-message';
 
 interface CounterInterface {
     counter: number,
-    setCounter: React.Dispatch<React.SetStateAction<number>> | ((value: number) => void)
+    setCounter: React.Dispatch<React.SetStateAction<number>> | ((value: number) => void);
+    limit?: number
 }
 
 export const Counter = ({
     counter,
-    setCounter
+    setCounter,
+    limit
 }: CounterInterface) => {
 
     const { theme, typeTheme } = useTheme();
     const iconColor = typeTheme === 'dark' ? "white" : "black"
 
     const addProduct = () => {
+        if(counter === limit) {
+            Toast.show({
+                type: 'tomatoError',
+                text1: 'Este es el limite de productos que pueden salir'
+            })
+            return;
+        };
         setCounter(counter + 1)
     }
 

@@ -5,16 +5,16 @@ const { height } = Dimensions.get('window');
 
 
 export const modalRenderstyles = (theme:Theme) => StyleSheet.create({
+    ScannerResult: {
+        paddingBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+        backgroundColor: theme.background_color
+    },
     container: {
         flex: 1,
         justifyContent: 'flex-end',
     },
     modalContainer: {
         height: height / 3,
-        backgroundColor: theme.background_color
-    },
-    ScannerResult: {
-        paddingBottom: globalStyles(theme).globalMarginBottom.marginBottom,
         backgroundColor: theme.background_color
     },
     product: {
@@ -31,7 +31,6 @@ export const modalRenderstyles = (theme:Theme) => StyleSheet.create({
         flexDirection: "row"
     },
     productMessage: {
-        marginLeft: 10
     },
     code: {
         marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
@@ -93,5 +92,10 @@ export const modalRenderstyles = (theme:Theme) => StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         gap: wp("5%")
+    },
+    doNotAllowProductOutputs: {
+        backgroundColor: 'red',
+        padding: globalStyles(theme).globalPadding.padding,
+
     }
 });

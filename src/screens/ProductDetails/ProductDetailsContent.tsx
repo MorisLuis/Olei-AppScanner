@@ -1,7 +1,7 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { useTheme } from "../../context/ThemeContext";
 import ProductInterface from "../../interface/product";
-import { Image, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { productDetailsStyles } from "../../theme/productDetailsTheme";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ProductDetailItem } from "./ProductDetailsItem";
@@ -9,6 +9,7 @@ import ButtonCustum from "../../components/Ui/ButtonCustum";
 import FooterScreen from "../../components/Navigation/Footer";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { globalStyles } from "../../theme/appTheme";
+import { AuthContext } from "../../context/auth/AuthContext";
 
 interface ProductDetailsContentInterface {
     productDetailsData: ProductInterface;
@@ -25,6 +26,9 @@ export const ProductDetailsContent = React.memo(({
 }: ProductDetailsContentInterface) => {
 
     const { theme, typeTheme } = useTheme();
+    const { user: { SalidaSinExistencias, Id_TipoMovInv } } = useContext(AuthContext);
+    const showLimit = Id_TipoMovInv?.Id_TipoMovInv === 2 && SalidaSinExistencias === 0;
+    const dontShowAddButton = showLimit && productDetailsData.Existencia < 1;
 
     const memoizedHandleOptionsToUpdateCodebar = useCallback(handleOptionsToUpdateCodebar, []);
     const memoizedHandleAddToInventory = useCallback(handleAddToInventory, []);
@@ -88,13 +92,13 @@ export const ProductDetailsContent = React.memo(({
             </ScrollView>
 
             {/* Footer */}
-            {!hideActions && (
+            {(!hideActions) && (
                 <FooterScreen
-                    buttonTitle="Agregar a inventario"
+                    buttonTitle={dontShowAddButton ? "No hay existencias" : "Agregar a inventario"}
                     buttonOnPress={memoizedHandleAddToInventory}
-                    buttonDisabled={false}
+                    buttonDisabled={dontShowAddButton}
                     buttonProperties={{
-                        buttonColor: 'color_yellow',
+                        buttonColor: dontShowAddButton ? 'color_red_light' : 'color_yellow',
                         textColor: 'text_color',
                     }}
                 />

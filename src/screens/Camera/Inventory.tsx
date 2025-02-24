@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { ActivityIndicator, FlatList, SafeAreaView, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, Text, View } from 'react-native';
 
 import { getProductsByStock, getTotalProductsByStock } from '../../services/products';
 import { ProductInventoryCardComponent } from '../../components/Cards/ProductInventoryCard';
@@ -108,7 +108,6 @@ export const Inventory = () => {
                         data={data}
                         renderItem={renderItem}
                         keyExtractor={product => product.Codigo}
-                        //keyExtractor={product => `${product.Codigo}-${product.Id_Marca}-${product.Marca?.trim()}-${product.Id_Almacen}-${product.Id_ListaPrecios}`}
                         ListFooterComponent={renderFooter}
                         onEndReached={handleLoadMore}
                         onEndReachedThreshold={0.5}

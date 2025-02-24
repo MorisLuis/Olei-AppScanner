@@ -47,6 +47,8 @@ export const AUTH_INITIAL_STATE: AuthState = {
         Id_Almacen: 0,
         AlmacenNombre: '',
 
+        SalidaSinExistencias: 0,
+
         Id_TipoMovInv: {
             Id_TipoMovInv: 0,
             Accion: 0,

@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Toast, { BaseToast, BaseToastProps, ErrorToast, ToastProps } from 'react-native-toast-message';
+import Toast, { BaseToast, BaseToastProps } from 'react-native-toast-message';
 import CustomText from './CustumText';
-import { globalFont } from '../theme/appTheme';
+import { globalFont, globalStyles } from '../theme/appTheme';
 
 const toastConfig = {
     success: (props: BaseToastProps) => (
@@ -14,17 +14,6 @@ const toastConfig = {
             text1Style={{
                 fontSize: 15,
                 fontWeight: '400'
-            }}
-        />
-    ),
-    error: (props: BaseToastProps) => (
-        <ErrorToast
-            {...props}
-            text1Style={{
-                fontSize: 17
-            }}
-            text2Style={{
-                fontSize: 15
             }}
         />
     ),
@@ -60,11 +49,15 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderWidth: 1,
         borderColor: "white",
-        borderRadius: 15,
+        borderRadius: globalStyles().borderRadius.borderRadius,
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 10,
+        padding: globalStyles().globalPadding.padding,
         maxWidth: "90%",
+        position: 'absolute',
+        top: 20,
+        zIndex: 999999999,
+        elevation: 999999999,     // Para Android
     },
     icon: {
         marginRight: 10,
@@ -73,5 +66,6 @@ const styles = StyleSheet.create({
         fontSize: globalFont.font_normal,
         flexShrink: 1,
         marginRight: 10,
+
     }
 });
