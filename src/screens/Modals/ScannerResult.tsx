@@ -125,9 +125,6 @@ const ScannerResult = ({
         )
     }
 
-    console.log({ product: JSON.stringify(product, null, 2) });
-    console.log({ doNotAllowProductOutputs })
-
     return (
         <ModalBottom
             visible={true}
