@@ -185,7 +185,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
 
     const logOut = async (findSession?: boolean) => {
-        try {            
+        try {
             setLoggingIn(false);
             if (findSession) {
                 await api.get('/api/auth/logoutApp');

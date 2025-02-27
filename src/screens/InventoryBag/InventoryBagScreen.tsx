@@ -141,7 +141,7 @@ export const InventoryBagScreen = () => {
 
                 <ButtonCustum
                     title={'Limpiar carrito'}
-                    onPress={() => setOpenModalDecision(true)}
+                    onPress={() => handleCleanTemporal()}
                     disabled={false}
                     loading={false}
                     buttonColor='color_red_light'
