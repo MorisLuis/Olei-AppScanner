@@ -22,7 +22,7 @@ export const Counter = ({
     const iconColor = typeTheme === 'dark' ? "white" : "black"
 
     const addProduct = () => {
-        if(counter === limit) {
+        if (counter === limit) {
             Toast.show({
                 type: 'tomatoError',
                 text1: 'Este es el limite de productos que pueden salir'
@@ -34,6 +34,13 @@ export const Counter = ({
 
     const handleInputChange = (value: string) => {
         const numericValue = parseInt(value) || 0;
+        if (limit && (numericValue > limit)) {
+            Toast.show({
+                type: 'tomatoError',
+                text1: 'Este es el limite de productos que pueden salir'
+            })
+            return;
+        };
         setCounter(numericValue);
     }
 
