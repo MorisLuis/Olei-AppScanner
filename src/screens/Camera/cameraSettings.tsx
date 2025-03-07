@@ -92,7 +92,7 @@ export const cameraSettings = ({
                 handleVibrate()
                 updateBarCode(codeValue)
             } catch (error) {
-                handleError(error)
+                handleError(error, true)
                 setCodeDetected(false)
                 handleCameraAvailable(true)
             } finally {

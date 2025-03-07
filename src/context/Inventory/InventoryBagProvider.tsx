@@ -45,7 +45,7 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
             dispatch({ type: '[InventoryBag] - Add Product', payload: { ...product, key: newKey } })
             setProductAdded(true);
         } catch (error) {
-            handleError(error)
+            handleError(error, true)
         } finally {
             timeoutRef.current = setTimeout(() => {
                 setProductAdded(false);
@@ -84,7 +84,7 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
             dispatch({ type: '[InventoryBag] - Post Inventory', payload: inventory.data })
             setInventoryCreated(true)
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         } finally {
             timeoutRef.current = setTimeout(() => {
                 setInventoryCreated(false);

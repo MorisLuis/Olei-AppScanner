@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useReducer, useEffect, useState } from 'react';
 
 import { api } from '../../api/api';
@@ -8,7 +8,6 @@ import { AuthContext } from './AuthContext';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { DbAuthContext } from '../dbAuth/DbAuthContext';
 import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
 import useErrorHandler, { useCatchError } from '../../hooks/useErrorHandler';
 import { AppNavigationProp } from '../../interface/navigation';
@@ -28,7 +27,7 @@ export interface LoginData {
 }
 
 export const AUTH_INITIAL_STATE: AuthState = {
-    status: 'not-authenticated',
+    status: 'checking',
     token: null,
     user: {
         ServidorSQL: '',
@@ -68,8 +67,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
 
     const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
     const [loggingIn, setLoggingIn] = useState(false);
-    const { addListener, reset, navigate } = useNavigation<AppNavigationProp>();
-    const { status } = useContext(DbAuthContext);
+    const { addListener } = useNavigation<AppNavigationProp>();
     const { handleError } = useErrorHandler()
 
     useEffect(() => {
@@ -79,46 +77,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
 
         return unsubscribe;
     }, []);
-
-    useEffect(() => {
-        const statusLogin = state.status;
-        const statusLoginDatabase = status;
-
-        // Estado de carga o validación
-        if (statusLoginDatabase === 'dbChecking' || statusLogin === 'checking') {
-            return;
-        }
-
-        // Caso: No autenticado en ambas bases de datos y estado
-        if (statusLoginDatabase === 'dbNot-authenticated' && statusLogin === 'not-authenticated') {
-            return reset({
-                index: 0,
-                routes: [{ name: 'LoginDatabaseScreen' }],
-            });
-        }
-
-        // Caso: Autenticado en ambas bases de datos y estado
-        if (statusLoginDatabase === 'dbAuthenticated' && statusLogin === 'authenticated') {
-            return state.user.TodosAlmacenes === 1
-                ? navigate('almacenScreen')
-                : navigate('typeOfMovementScreen');
-        }
-
-        // Caso: Base de datos autenticada, pero estado no autenticado → Redirigir a login
-        if (statusLoginDatabase === 'dbAuthenticated' && statusLogin === 'not-authenticated') {
-            return reset({
-                index: 0,
-                routes: [{ name: 'LoginPage' }],
-            });
-        }
-
-        // Caso: Base de datos no autenticada, pero estado autenticado → Ir a BottomNavigation
-        if (statusLoginDatabase === 'dbNot-authenticated' && statusLogin === 'authenticated') {
-            return navigate('BottomNavigation');
-        }
-
-    }, [state.status, status]);
-
 
     useEffect(() => {
         checkToken();
@@ -193,7 +151,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             await AsyncStorage.removeItem('token');
             dispatch({ type: '[Auth] - logout' });
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         }
     };
 
@@ -218,7 +176,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 }
             });
         } catch (error) {
-            handleError(error)
+            handleError(error, true)
         }
     }
 

@@ -34,7 +34,7 @@ export const useLoadMoreData = ({
                 setTotal(total);
             }
         } catch (error) {
-            handleError(error)
+            handleError(error, true)
         } finally {
             setIsLoading(false);
         }
@@ -57,7 +57,7 @@ export const useLoadMoreData = ({
             setData((prevData) => [...prevData, ...moreData]);
             setPage((prevPage) => prevPage + 1); // Actualizar página de forma segura
         } catch (error) {
-            handleError(error)
+            handleError(error, true)
         } finally {
             setButtonIsLoading(false);
         }

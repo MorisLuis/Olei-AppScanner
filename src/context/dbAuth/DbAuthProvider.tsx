@@ -1,10 +1,10 @@
-import React, { useReducer, useEffect, useState } from 'react';
+import React, { useReducer, useEffect, useState, useContext } from 'react';
 import { api } from '../../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { dbAuthReducer } from './dbAuthReducer';
 import { DbAuthContext } from './DbAuthContext';
-import UserInterface, { UserDBInterface } from '../../interface/user';
+import { UserDBInterface } from '../../interface/user';
 import useErrorHandler, { useCatchError } from '../../hooks/useErrorHandler';
 
 export interface DbAuthState {
@@ -37,7 +37,34 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
 
     useEffect(() => {
         checkToken();
-    }, [])
+    }, []);
+
+
+    const signInDB = async ({ IdUsuarioOLEI, PasswordOLEI }: LoginData) => {
+        setLoggingIn(true)
+        try {
+            state.status = "dbChecking"
+            const { data } = await api.post('/api/auth/loginDB', { IdUsuarioOLEI, PasswordOLEI });
+            await AsyncStorage.removeItem('token'); // Just to confirm that doesnt exist a token of login.
+
+            dispatch({
+                type: '[DBAuth] - signUp',
+                payload: {
+                    tokenDB: data.tokenDB,
+                    user: data.user
+                }
+            });
+
+            await AsyncStorage.setItem('tokenDB', data.tokenDB);
+
+        } catch (error) {
+            handleError(error, true);
+            const { errorMessage } = useCatchError(error);
+            dispatch({ type: '[DBAuth] - addError', payload: errorMessage })
+        } finally {
+            setLoggingIn(false);
+        }
+    };
 
     const checkToken = async () => {
         try {
@@ -73,32 +100,6 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
         }
     }
 
-    const signInDB = async ({ IdUsuarioOLEI, PasswordOLEI }: LoginData) => {
-        setLoggingIn(true)
-        try {
-            state.status = "dbChecking"
-            const { data } = await api.post('/api/auth/loginDB', { IdUsuarioOLEI, PasswordOLEI });
-            await AsyncStorage.removeItem('token'); // Just to confirm that doesnt exist a token of login.
-
-            dispatch({
-                type: '[DBAuth] - signUp',
-                payload: {
-                    tokenDB: data.tokenDB,
-                    user: data.user
-                }
-            });
-
-            await AsyncStorage.setItem('tokenDB', data.tokenDB);
-
-        } catch (error) {
-            handleError(error, true);
-            const { errorMessage } = useCatchError(error);
-            dispatch({ type: '[DBAuth] - addError', payload: errorMessage })
-        } finally {
-            setLoggingIn(false);
-        }
-    };
-
     const logOut = async () => {
 
         try {
@@ -109,7 +110,7 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
                 AsyncStorage.removeItem('tokenDB');
             }, 100);
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         }
     };
 

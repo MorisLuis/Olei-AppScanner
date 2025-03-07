@@ -48,7 +48,7 @@ export const TypeOfMovementScreen = () => {
             if (typeSelected === undefined || typeSelected === null) return
             updateTypeOfMovements(typeSelected);
         } catch (error) {
-            handleError(error)
+            handleError(error, true)
         } finally {
             navigate('BottomNavigation');
         }
@@ -72,7 +72,7 @@ export const TypeOfMovementScreen = () => {
             if (types.error) return handleError(types.error);
             setTypeOfMovement(types);
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         } finally {
             setIsLoading(false);
         }

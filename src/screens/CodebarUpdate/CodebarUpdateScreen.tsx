@@ -81,7 +81,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
 
             if (response.error) return  handleError(response.error);
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         }
     }
 
@@ -108,7 +108,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
             navigation.goBack()
             if (response.error) return handleError(response.error);
         } catch (error) {
-            handleError(error)
+            handleError(error, true)
         }
     }
 

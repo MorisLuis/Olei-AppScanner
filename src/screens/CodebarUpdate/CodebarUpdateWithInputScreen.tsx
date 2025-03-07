@@ -52,7 +52,7 @@ export const CodebarUpdateWithInputScreen = ({ Codigo, Id_Marca }: CodebarUpdate
             if (response.error) return handleError(response.error);
 
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         } finally {
             navigation.goBack()
             navigation.goBack()

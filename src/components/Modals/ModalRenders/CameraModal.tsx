@@ -62,7 +62,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
                 if (response.length > 0) setProductExistent(true)
 
             } catch (error) {
-                handleError(error);
+                handleError(error, true);
             } finally {
                 setCodebarTest(true);
                 setTimeout(() => {
@@ -97,7 +97,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
             if (response.error) return handleError(response.error);
 
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         } finally {
             onClose();
             navigation.goBack();

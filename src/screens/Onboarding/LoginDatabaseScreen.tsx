@@ -33,7 +33,7 @@ export const LoginDatabaseScreen = () => {
             Keyboard.dismiss();
             signInDB({ IdUsuarioOLEI: user, PasswordOLEI: password });
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         } finally {
             setLoadingLogin(false)
         };

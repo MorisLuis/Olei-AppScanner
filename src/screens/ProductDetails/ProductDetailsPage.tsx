@@ -33,7 +33,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
             if (productData.error) return handleError(productData.error);
             setProductDetailsData(productData);
         } catch (error) {
-            handleError(error)
+            handleError(error, true)
         } finally {
             setIsLoading(false);
         }

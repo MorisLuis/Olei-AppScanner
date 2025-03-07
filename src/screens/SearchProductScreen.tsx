@@ -44,7 +44,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
             if (products.error) return handleError(products.error);
             setProductsInInventory(products);
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         } finally {
             setSearchingProducts(false);
         }

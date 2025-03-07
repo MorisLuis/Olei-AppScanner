@@ -52,7 +52,7 @@ export const SettingsScreen = () => {
             if (types.error) return handleError(types.error);
             setTypeOfMovement(types)
         } catch (error) {
-            handleError(error)
+            handleError(error, true)
         }
     }
 

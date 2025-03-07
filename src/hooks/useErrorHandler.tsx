@@ -21,11 +21,22 @@ const isAxiosError = (error: unknown): error is CustomAxiosError => {
 const useErrorHandler = () => {
     const { user } = useContext(AuthContext);
     const navigation = useNavigation<AppNavigationProp>();
-    const { logOut } = useContext(DbAuthContext);
+    const { logOut, status: statusDB } = useContext(DbAuthContext);
+    const { logOut: logOutAuth, status: statusAuth } = useContext(AuthContext)
 
-    const handleError = async (error: unknown, avoidAPI?: boolean, avoidToast?: boolean): Promise<void> => {
+
+    /**
+     * Procesa errores recibidos, principalmente de llamadas Axios.
+     * Envía logs, muestra notificaciones y maneja acciones de logout o redirección según corresponda.
+     *
+     * @param error - Error recibido (puede ser de Axios o cualquier otro).
+     * @param avoidAPI - Si es true, evita enviar el error a la API.
+     * @param avoidToast - Si es true, evita mostrar la notificación (Toast).
+     */
+    const handleError = async (error: unknown, save?: boolean, avoidToast?: boolean): Promise<void> => {
+
         if (isAxiosError(error)) {
-            // Supongamos que tienes valores por defecto en statusCode y Metodo definidos en otro lado.
+            // Extrae información relevante del error de Axios.
             const status = error.response?.status;
             const method = error.response?.config?.method;
 
@@ -36,12 +47,27 @@ const useErrorHandler = () => {
 
             console.log({ status, method, message });
 
+            // Si la sesión ha terminado, se maneja la redirección o logout.
+            if (message === 'Sesion terminada') {
+
+                // Si esta en loginDB > retorna, por que ya estan cerradas las sesiones.
+                if (statusDB === undefined && statusAuth === undefined) return
+
+                // Si esta en login > cierra sesion.
+                if (statusAuth === undefined) {
+                    logOut?.()
+                    return;
+                };
+
+                return navigation.navigate('sessionExpired')
+            }
+
             if (status === 401) {
-                //navigation.navigate('sessionExpired');
-                return logOut?.();
+                logOutAuth?.();
+                logOut?.();
             };
 
-            if(!avoidAPI){
+            if (save) {
                 await sendError({
                     From: `mobil/${user?.Id_Usuario?.trim()}`,
                     Message: message,
@@ -51,7 +77,7 @@ const useErrorHandler = () => {
                 });
             }
 
-            if(!avoidToast){
+            if (!avoidToast) {
                 Toast.show({
                     type: 'tomatoError',
                     text1: message
@@ -59,8 +85,7 @@ const useErrorHandler = () => {
             }
 
             if (status === 500) {
-                navigation.navigate('sessionExpired');
-                logOut?.();
+                logOutAuth?.();
                 return;
             };
 
@@ -72,13 +97,11 @@ const useErrorHandler = () => {
     const handleErrorCustum = async (error: ErrorCustum) => {
         const { status, Message, Metodo } = error ?? {};
 
-        console.error({ status, Metodo, Message });
 
         if (status === 401) {
-            navigation.navigate('sessionExpired');
-            return logOut?.();
+            logOutAuth?.();
+            logOut?.();
         };
-
 
         await sendError({
             From: `mobil/${user?.Id_Usuario?.trim()}`,
@@ -94,16 +117,10 @@ const useErrorHandler = () => {
         });
 
         if (status === 500) {
-            navigation.navigate('sessionExpired');
-            logOut?.();
+            logOutAuth?.();
             return;
         };
 
-        setTimeout(() => {
-            if (navigation?.canGoBack()) {
-                navigation.goBack();
-            }
-        }, 300);
     };
 
     const handleErrorApi = async (error: AxiosError) => {
@@ -118,22 +135,23 @@ const useErrorHandler = () => {
 };
 
 const useCatchError = (errorValue: unknown) => {
-
-    let errorMessage;
+    let errorMessage = "Error desconocido";
 
     if (errorValue instanceof AxiosError && errorValue.response) {
-        let erroBadRequest = errorValue.response.data.errors[0].message
-        errorMessage = errorValue.response.data.error || erroBadRequest || 'Error en el servidor';
+        const { response } = errorValue;
+
+        // Validamos que `response.data` existe antes de acceder a `errors`
+        const errorsArray = response.data?.errors;
+        const erroBadRequest = Array.isArray(errorsArray) && errorsArray.length > 0 ? errorsArray[0]?.message : null;
+
+        // Si `response.data.error` o `erroBadRequest` existen, los usamos
+        errorMessage = response.data?.error || erroBadRequest || "Error en el servidor";
     } else if (errorValue instanceof Error) {
         errorMessage = errorValue.message;
-    } else {
-        errorMessage = 'Error desconocido';
     }
 
-    return {
-        errorMessage
-    }
-}
+    return { errorMessage };
+};
 
 export default useErrorHandler;
 

@@ -1,15 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Text, View } from 'react-native'
 import { useTheme } from '../context/ThemeContext';
 import { globalFont, globalStyles } from '../theme/appTheme';
-import { useNavigation } from '@react-navigation/native';
-import { AppNavigationProp } from '../interface/navigation';
 import ButtonCustum from '../components/Ui/ButtonCustum';
+import { DbAuthContext } from '../context/dbAuth/DbAuthContext';
+import { AuthContext } from '../context/auth/AuthContext';
 
 export const SessionExpiredScreen = () => {
 
     const { theme } = useTheme();
-    const navigation = useNavigation<AppNavigationProp>();
+    const { logOut } = useContext(DbAuthContext);
+    const { logOut: logOutAuth } = useContext(AuthContext)
+
+    const handleBack = () => {
+        logOut?.();
+        logOutAuth?.();
+    }
 
     return (
         <View style={{
@@ -31,7 +37,7 @@ export const SessionExpiredScreen = () => {
 
             <ButtonCustum
                 title={'Volver'}
-                onPress={() => navigation.navigate('LoginDatabaseScreen')}
+                onPress={handleBack}
                 disabled={false}
                 loading={false}
             />

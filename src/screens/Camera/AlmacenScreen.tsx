@@ -44,7 +44,7 @@ export default function AlmacenScreen({
             setAlmacenes(productData);
             if (productData.error) return handleError(productData.error);
         } catch (error) {
-            handleError(error);
+            handleError(error, true);
         }
     };
 

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProductInterface, { ProductInterfaceBag } from '../interface/product';
 import { BottomNavigation } from './BottomNavigation';
@@ -23,6 +23,9 @@ import { ConfirmationScreen } from '../screens/InventoryBag/ConfirmationScreen';
 import { EditProductInBag } from '../screens/Modals/EditProductInBag';
 import { SessionExpiredScreen } from '../screens/SessionExpired';
 import AlmacenScreen from '../screens/Camera/AlmacenScreen';
+import { DbAuthContext } from '../context/dbAuth/DbAuthContext';
+import { AppNavigationProp } from '../interface/navigation';
+import { useNavigation } from '@react-navigation/native';
 
 type OptionsScreen = {
     headerBackTitle: 'Atrás',
@@ -83,12 +86,58 @@ const Stack = createNativeStackNavigator<AppNavigationStackParamList>();
 
 export const AppNavigation = () => {
     const { handleCameraAvailable, updateBarCode } = useContext(SettingsContext);
-    const { getTypeOfMovementsName } = useContext(AuthContext);
+    const { getTypeOfMovementsName, status: statusAuth } = useContext(AuthContext);
+    const { status, user } = useContext(DbAuthContext);
+    const { navigate, reset } = useNavigation<AppNavigationProp>();
 
     const commonOptions: OptionsScreen = {
         headerBackTitle: 'Atrás',
         headerTitleAlign: 'center'
     };
+
+    useEffect(() => {
+        const statusLogin = statusAuth;
+        const statusLoginDatabase = status;
+
+        // Aquí va la lógica para redirigir dependiendo del estado
+        if (statusLogin === 'checking' || statusLoginDatabase === 'dbChecking') {
+            return; // En espera o validando
+        }
+
+        // Caso: No autenticado en ambas bases de datos y estado
+        if (statusLoginDatabase === 'dbNot-authenticated' && statusLogin === 'not-authenticated') {
+            return reset({
+                index: 0,
+                routes: [{ name: 'LoginDatabaseScreen' }],
+            });
+        }
+
+        // Caso: Autenticado en ambas bases de datos y estado
+        if (statusLoginDatabase === 'dbAuthenticated' && statusLogin === 'authenticated') {
+            if (user?.TodosAlmacenes === 1) {
+                // Redirigir a Almacen
+                return navigate('almacenScreen');
+            } else {
+                // Redirigir a Type of Movement
+                return navigate('typeOfMovementScreen');
+            }
+        }
+
+        // Caso: Base de datos autenticada, pero estado no autenticado → Redirigir a login
+        if (statusLoginDatabase === 'dbAuthenticated' && statusLogin === 'not-authenticated') {
+            return reset({
+                index: 0,
+                routes: [{ name: 'LoginPage' }],
+            });
+        }
+
+        // Caso: Base de datos no autenticada, pero estado autenticado → Ir a BottomNavigation
+        if (statusLoginDatabase === 'dbNot-authenticated' && statusLogin === 'authenticated') {
+            return navigate('BottomNavigation');
+        }
+
+    }, [status, statusAuth, user]);
+
 
     const stackScreens = useMemo(() => (
         <>

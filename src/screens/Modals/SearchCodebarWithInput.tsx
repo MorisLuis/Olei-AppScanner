@@ -42,7 +42,7 @@ export const SearchCodebarWithInput = () => {
                 handleNavigatoToProduct(response);
             }
         } catch (error) {
-            handleError(error)
+            handleError(error, true)
         } finally {
             setLoadingSearch(false);
         }
