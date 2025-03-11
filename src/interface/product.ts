@@ -17,6 +17,7 @@ export default interface ProductInterface {
 
     CodBar?: string
     UniqueKey?: string;
+    SKU?: string
 }
 
 export interface ProductInterfaceBag {

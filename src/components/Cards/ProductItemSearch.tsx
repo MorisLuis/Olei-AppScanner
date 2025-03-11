@@ -26,8 +26,16 @@ export const ProductItemSearch = ({
                 <Text style={ProductItemSearchStyles(theme, typeTheme).description}>{product.Descripcion.trim()}</Text>
                 <View style={ProductItemSearchStyles(theme, typeTheme).otherInformation}>
                     <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>Codigo: {product.Codigo.trim()}</Text>
+                    {
+                        product.SKU &&
+                        <>
+                            <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>-</Text>
+                            <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>SKU: {product.SKU.trim()}</Text>
+                        </>
+                    }
                     <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>-</Text>
                     <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>Marca: {product.Marca.trim()}</Text>
+
                 </View>
                 {
                     fromModal &&
