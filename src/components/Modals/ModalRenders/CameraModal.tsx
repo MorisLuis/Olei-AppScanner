@@ -23,7 +23,7 @@ interface CameraModalInterface {
 
 const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
 
-    const { vibration, updateBarCode, codebarType, codeBar } = useContext(SettingsContext);
+    const { vibration, updateCodeBarProvider, codebarType, codeBar } = useContext(SettingsContext);
     const navigation = useNavigation<AppNavigationProp>();
     const { theme, typeTheme } = useTheme();
     const { handleError, handleErrorCustum } = useErrorHandler()
@@ -58,7 +58,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
                 if (response.error) return handleError(response.error);
 
                 handleVibrate()
-                updateBarCode(codeValue)
+                updateCodeBarProvider(codeValue)
                 if (response.length > 0) setProductExistent(true)
 
             } catch (error) {
@@ -105,7 +105,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface) => {
     };
 
     const handleTryAgain = () => {
-        updateBarCode("")
+        updateCodeBarProvider("")
         setProductExistent(false)
     };
 

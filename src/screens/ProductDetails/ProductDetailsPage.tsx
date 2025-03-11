@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { getProductDetails } from '../../services/products';
 import ProductInterface from '../../interface/product';
 import { RouteProp, useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import useErrorHandler from '../../hooks/useErrorHandler';
 import { AppNavigationStackParamList } from '../../navigator/AppNavigation';
 import { AppNavigationProp } from '../../interface/navigation';
 import { ProductDetailsContent } from './ProductDetailsContent';
+import { SettingsContext } from '../../context/settings/SettingsContext';
 
 type ProductDetailsPageRouteProp = RouteProp<AppNavigationStackParamList, '[ProductDetailsPage] - productDetailsScreen'>;
 type ProductDetailsInventorySectionPageRouteProp = RouteProp<AppNavigationStackParamList, '[ProductDetailsPage] - inventoryDetailsScreen'>;
@@ -22,6 +23,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
     const shouldCleanUp = useRef(true);
     const { handleError } = useErrorHandler()
     const navigation = useNavigation<AppNavigationProp>();
+    const { codeBarStatus } = useContext(SettingsContext);
 
     const [isLoading, setIsLoading] = useState(true);
     const [productDetailsData, setProductDetailsData] = useState<ProductInterface | null>(null);
@@ -40,16 +42,20 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
     };
 
     const handleOptionsToUpdateCodebar = useCallback(() => {
-        if (!selectedProduct) return;
+
+        if(!productDetailsData?.Codigo || !productDetailsData?.Id_Marca) {
+            console.log("Falta Codigo y Id_Marca in handleOptionsToUpdateCodebar");
+            return
+        };
 
         navigation.navigate('CodebarUpdateNavigation',
             {
-                Id_Marca: selectedProduct.Id_Marca,
-                Codigo: selectedProduct.Codigo
+                Id_Marca: productDetailsData?.Id_Marca,
+                Codigo: productDetailsData?.Codigo
             }
         );
 
-    }, [navigation, selectedProduct]);
+    }, [navigation, selectedProduct, productDetailsData]);
 
     const handleAddToInventory = useCallback(() => {
         if (!selectedProduct) return;
@@ -65,7 +71,7 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
 
     useEffect(() => {
         handleGetProductDetails();
-    }, [])
+    }, [codeBarStatus])
 
     if (isLoading) {
         return <ProductDetailsSkeleton />;

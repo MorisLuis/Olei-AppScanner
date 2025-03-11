@@ -72,6 +72,7 @@ export type AppNavigationStackParamList = {
     "[Modal] - searchProductModal": {
         modal: boolean,
         isModal?: boolean
+        withCodebar: boolean
     };
     "[Modal] - productsFindByCodeBarModal": {
         products: ProductInterface[];
@@ -85,7 +86,7 @@ export type AppNavigationStackParamList = {
 const Stack = createNativeStackNavigator<AppNavigationStackParamList>();
 
 export const AppNavigation = () => {
-    const { handleCameraAvailable, updateBarCode } = useContext(SettingsContext);
+    const { handleCameraAvailable, updateCodeBarProvider } = useContext(SettingsContext);
     const { getTypeOfMovementsName, status: statusAuth } = useContext(AuthContext);
     const { status, user } = useContext(DbAuthContext);
     const { navigate, reset } = useNavigation<AppNavigationProp>();
@@ -236,7 +237,6 @@ export const AppNavigation = () => {
                 options={commonOptions}
             />
 
-
             <Stack.Screen
                 name="[ProductDetailsPage] - inventoryDetailsScreen"
                 component={ProductDetailsPage}
@@ -251,7 +251,7 @@ export const AppNavigation = () => {
                                     screen: 'BottomNavigation - Scanner',
                                     params: { screen: '[ScannerNavigation] - inventory' },
                                 });
-                                updateBarCode('');
+                                updateCodeBarProvider('');
                             }}
                         />
                     )
@@ -271,7 +271,7 @@ export const AppNavigation = () => {
                             backCustum={true}
                             back={() => {
                                 navigation.goBack();
-                                updateBarCode('');
+                                updateCodeBarProvider('');
 
                                 if (route.params?.selectedProduct) {
                                     setTimeout(() => {
@@ -316,7 +316,7 @@ export const AppNavigation = () => {
                 options={{ presentation: 'transparentModal', headerShown: false }}
             />
         </>
-    ), [handleCameraAvailable, updateBarCode]);
+    ), [handleCameraAvailable, updateCodeBarProvider]);
 
     return (
         <Stack.Navigator>

@@ -15,6 +15,7 @@ import { CodebarUpdateOptionCard } from '../../components/Cards/CodebarUpdateOpt
 import useErrorHandler from '../../hooks/useErrorHandler';
 import { CodebarUpdateNavigationProp } from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
+import { Alert } from 'react-native';
 
 interface CodebarUpdateScreenInterface {
     Codigo: string;
@@ -24,7 +25,7 @@ interface CodebarUpdateScreenInterface {
 export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInterface) => {
 
     const navigation = useNavigation<CodebarUpdateNavigationProp>();
-    const { updateBarCode, handleCodebarScannedProcces, handleGetCodebarType, codebarType, codeBar, codeBarStatus } = useContext(SettingsContext);
+    const { updateCodeBarProvider, handleCodebarScannedProcces, handleGetCodebarType, codebarType, codeBar } = useContext(SettingsContext);
     const { theme } = useTheme();
     const { handleError, handleErrorCustum } = useErrorHandler()
 
@@ -42,11 +43,15 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
         if (optionSelected === 1) {
             hanldeUpdateCodebarWithCodeFound()
         } else if (optionSelected === 2) {
-            updateBarCode('')
+            updateCodeBarProvider('')
             setOpenModalCamera(true)
         } else if (optionSelected === 3) {
             hanldeUpdateCodebarWithCodeRandom()
         } else if (optionSelected === 4) {
+            if(!Codigo || !Id_Marca) {
+                console.log("Falta Codigo y Id_Marca in handleGoToNextStep");
+                return
+            }
             navigation.navigate(
                 '[CodebarUpdateNavigation] - UpdateCodeBarWithInput',
                 {
@@ -69,19 +74,23 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
                 return;
             };
 
+            handleCodebarScannedProcces(true)
+
             const response = await updateCodbar({
                 codigo: Codigo,
                 Id_Marca: Id_Marca,
                 body: {
                     CodBar: codeBar
                 }
-            })
+            });
 
             navigation.goBack();
 
             if (response.error) return  handleError(response.error);
         } catch (error) {
             handleError(error, true);
+        } finally {
+            handleCodebarScannedProcces(false)
         }
     }
 
@@ -97,6 +106,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
                 return;
             };
 
+            handleCodebarScannedProcces(true)
             const response = await updateCodbar({
                 codigo: Codigo,
                 Id_Marca: Id_Marca,
@@ -109,6 +119,8 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
             if (response.error) return handleError(response.error);
         } catch (error) {
             handleError(error, true)
+        } finally {
+            handleCodebarScannedProcces(false)
         }
     }
 
@@ -159,7 +171,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
                         icon="barcode-outline"
                         onClick={() => setOptionSelected(1)}
                         active={optionSelected === 1}
-                        visible={codeBarStatus}
+                        visible={codeBar ? true : false}
                     />
 
                     <CodebarUpdateOptionCard
@@ -200,7 +212,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
                 visible={openModalCamera}
                 onClose={() => {
                     setOpenModalCamera(false);
-                    updateBarCode('')
+                    updateCodeBarProvider('')
                     handleCodebarScannedProcces(false)
                 }}
             >
@@ -209,7 +221,7 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
                     Id_Marca={Id_Marca}
                     onClose={() => {
                         handleCodebarScannedProcces(false)
-                        updateBarCode('')
+                        updateCodeBarProvider('')
                         setOpenModalCamera(false)
                     }}
                 />

@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             await AsyncStorage.setItem('token', data.token);
 
         } catch (error) {
-            handleError(error, true);
+            handleError(error);
             const { errorMessage } = useCatchError(error);
             dispatch({ type: '[Auth] - addError', payload: errorMessage })
         } finally {
@@ -138,6 +138,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             });
 
         } catch (error) {
+            handleError(error, true, true)
             return dispatch({ type: '[Auth] - notAuthenticated' });
         }
     }
@@ -151,7 +152,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             await AsyncStorage.removeItem('token');
             dispatch({ type: '[Auth] - logout' });
         } catch (error) {
-            handleError(error, true);
+            handleError(error);
         }
     };
 

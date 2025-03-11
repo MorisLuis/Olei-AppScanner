@@ -91,7 +91,8 @@ const ScannerResult = ({
             navigation.goBack()
             navigation.navigate('[Modal] - searchProductModal',
                 {
-                    modal: true
+                    modal: true,
+                    withCodebar: false
                 }
             )
         }, 500);
@@ -103,21 +104,11 @@ const ScannerResult = ({
                 <EmptyMessageCard title={fromInput ? `No existe producto con este codigo.` : `No existe producto con codigo de barras:`} message={`${codeBar}`} icon='help-circle' />
 
                 <ButtonCustum
-                    title={'Buscar producto'}
-                    onPress={handleSearchByCode}
-                    disabled={false}
-                    extraStyles={{
-                        marginVertical: globalStyles(theme).globalMarginBottomSmall.marginBottom
-                    }}
-                />
-
-                <ButtonCustum
                     title={'Asignar a un producto'}
                     onPress={handleAssignCodeToProduct}
                     disabled={false}
                     extraStyles={{
-                        marginBottom: globalStyles(theme).globalMarginBottom.marginBottom
-                    }}
+                        marginVertical: globalStyles(theme).globalMarginBottomSmall.marginBottom                    }}
                     buttonColor='color_yellow'
                     textColor='text_color'
                 />

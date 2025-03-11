@@ -33,7 +33,7 @@ export const ProductItemSearch = ({
                     fromModal &&
                     <View style={[product.CodBar ? ProductItemSearchStyles(theme, typeTheme).codebarAvailable : ProductItemSearchStyles(theme, typeTheme).codebarNotAvailable]}>
                         <Text style={product.CodBar ? ProductItemSearchStyles(theme, typeTheme).textAvailable : ProductItemSearchStyles(theme, typeTheme).textNotAvailable}>
-                            {product.CodBar ? "Tiene código" : "No tiene código"}
+                            {product?.CodBar?.trim() !== "" ? "Tiene código" : "No tiene código"}
                         </Text>
                     </View>
 

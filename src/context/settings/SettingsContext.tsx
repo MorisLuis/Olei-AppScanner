@@ -10,7 +10,7 @@ interface ContextProps {
     handleCodebarScannedProcces: (value: boolean) => void;
     handleGetCodebarType: (value?: number) => void;
     handleStartScanning: (value: boolean) => void;
-    updateBarCode: (value: string) => void;
+    updateCodeBarProvider: (value: string) => void;
 
     vibration?: boolean;
     cameraAvailable?: boolean;

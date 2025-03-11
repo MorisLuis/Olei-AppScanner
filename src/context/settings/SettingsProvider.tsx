@@ -47,6 +47,7 @@ export const SettingsProvider = ({ children }: { children: JSX.Element }) => {
     }
 
     const handleCodebarScannedProcces = (value: boolean) => {
+        console.log("handleCodebarScannedProcces")
         dispatch({ type: '[Settings] - codeBarStatus', codeBarStatus: value });
     }
 
@@ -55,7 +56,8 @@ export const SettingsProvider = ({ children }: { children: JSX.Element }) => {
         dispatch({ type: '[Settings] - codebarType', codebarType: codebarType });
     }
 
-    const updateBarCode = async (value: string) => {
+    const updateCodeBarProvider = async (value: string) => {
+        console.log("updateCodeBarProvider")
         try {
             handleCodebarScannedProcces(true)
             dispatch({ type: '[Settings] - codeBar', codeBar: value });
@@ -82,7 +84,7 @@ export const SettingsProvider = ({ children }: { children: JSX.Element }) => {
             handleCodebarScannedProcces,
             handleGetCodebarType,
             handleStartScanning,
-            updateBarCode
+            updateCodeBarProvider
             
         }}
         >

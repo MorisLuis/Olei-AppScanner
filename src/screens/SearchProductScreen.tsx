@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useLayoutEffect, useState, useCallback } 
 import { FlatList, NativeSyntheticEvent, SafeAreaView, Text, TextInputChangeEventData, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { debounce } from 'lodash';
-import { getSearchProductInStock } from '../services/Search/products';
+import { getSearchProductInStock, getSearchProductInStockWithoutCodebar } from '../services/Search/products';
 import ProductInterface from '../interface/product';
 import { ProductItemSearch } from '../components/Cards/ProductItemSearch';
 import { CustomBackButton } from '../components/Ui/CustomHeader';
@@ -21,12 +21,15 @@ type SearchProductScreenInterface = {
         params: {
             modal: boolean;
             isModal?: boolean;
+
+            // handle if we get products with codebas or not
+            withCodebar: boolean
         };
     };
 };
 
 export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => {
-    const { modal, isModal } = route?.params ?? {};
+    const { modal, isModal, withCodebar = true } = route?.params ?? {};
     const { codeBar } = useContext(SettingsContext);
     const { theme, typeTheme } = useTheme();
     const { handleError} = useErrorHandler();
@@ -40,7 +43,13 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
     const getSearchData = async (searchTerm: string) => {
         try {
             setSearchingProducts(true);
-            const products = await getSearchProductInStock(searchTerm ? searchTerm : "");
+            let products;
+            if( withCodebar ) {
+                products = await getSearchProductInStock(searchTerm ? searchTerm : "");
+            } else {
+                products = await getSearchProductInStockWithoutCodebar(searchTerm ? searchTerm : "");
+            };
+
             if (products.error) return handleError(products.error);
             setProductsInInventory(products);
         } catch (error) {

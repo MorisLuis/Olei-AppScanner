@@ -97,6 +97,7 @@ const useErrorHandler = () => {
     const handleErrorCustum = async (error: ErrorCustum) => {
         const { status, Message, Metodo } = error ?? {};
 
+        console.log({ status, Metodo, Message });
 
         if (status === 401) {
             logOutAuth?.();

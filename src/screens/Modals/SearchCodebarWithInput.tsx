@@ -15,7 +15,7 @@ import ModalBottom from '../../components/Modals/ModalBottom';
 
 export const SearchCodebarWithInput = () => {
 
-    const { updateBarCode } = useContext(SettingsContext);
+    const { updateCodeBarProvider } = useContext(SettingsContext);
     const navigation = useNavigation<AppNavigationProp>();
     const { theme, typeTheme } = useTheme();
     const { handleError } = useErrorHandler()
@@ -26,7 +26,7 @@ export const SearchCodebarWithInput = () => {
     const buttondisabled = Barcode.length < 1 || loadingSearch;
 
     const handleSearchProductByCodebarInput = async () => {
-        updateBarCode('')
+        updateCodeBarProvider('')
         setLoadingSearch(true)
 
         let response;
@@ -36,7 +36,7 @@ export const SearchCodebarWithInput = () => {
                 if (response.error) handleError(response.error);
                 handleNavigatoToProduct(response);
             } else {
-                updateBarCode(Barcode)
+                updateCodeBarProvider(Barcode)
                 response = await getProductByCodeBar({ codeBar: Barcode });
                 if (response.error) handleError(response.error);
                 handleNavigatoToProduct(response);
