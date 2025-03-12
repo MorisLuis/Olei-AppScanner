@@ -13,6 +13,8 @@ import { AppNavigationProp } from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 import ModalBottom from '../../components/Modals/ModalBottom';
 
+type typeOfSearch = "code" | 'barcode' | 'sku'
+
 export const SearchCodebarWithInput = () => {
 
     const { updateCodeBarProvider } = useContext(SettingsContext);
@@ -21,7 +23,7 @@ export const SearchCodebarWithInput = () => {
     const { handleError } = useErrorHandler()
 
     const [Barcode, onChangeBarcode] = useState('');
-    const [typeOfSearch, setTypeOfSearch] = useState('code')
+    const [typeOfSearch, setTypeOfSearch] = useState<typeOfSearch>('code')
     const [loadingSearch, setLoadingSearch] = useState(false)
     const buttondisabled = Barcode.length < 1 || loadingSearch;
 
@@ -33,6 +35,11 @@ export const SearchCodebarWithInput = () => {
         try {
             if (typeOfSearch === 'code') {
                 response = await getProductByCodeBar({ codigo: Barcode });
+                if (response.error) handleError(response.error);
+                handleNavigatoToProduct(response);
+            } else if (typeOfSearch === 'sku') {
+                updateCodeBarProvider(Barcode)
+                response = await getProductByCodeBar({ sku: Barcode });
                 if (response.error) handleError(response.error);
                 handleNavigatoToProduct(response);
             } else {
@@ -83,7 +90,7 @@ export const SearchCodebarWithInput = () => {
                     onPress={handleSearchProductByCodebarInput}
                     disabled={buttondisabled}
                     loading={loadingSearch}
-                    extraStyles={{ marginBottom:  globalStyles(theme).globalMarginBottomSmall.marginBottom }}
+                    extraStyles={{ marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom }}
                 />
 
                 <View style={modalRenderstyles(theme).optionsContainer}>
@@ -108,6 +115,18 @@ export const SearchCodebarWithInput = () => {
                                 modalRenderstyles(theme, typeTheme).optionTextActive : modalRenderstyles(theme, typeTheme).optionText
                         }>
                             Codigo de barras
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[modalRenderstyles(theme).option, typeOfSearch === 'sku' && modalRenderstyles(theme).optionActive]}
+                        onPress={() => setTypeOfSearch('sku')}
+                    >
+                        <Text style={
+                            typeOfSearch === 'sku' ?
+                                modalRenderstyles(theme, typeTheme).optionTextActive : modalRenderstyles(theme, typeTheme).optionText
+                        }>
+                            SKU
                         </Text>
                     </TouchableOpacity>
                 </View>

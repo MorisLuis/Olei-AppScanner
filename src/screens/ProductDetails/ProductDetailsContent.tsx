@@ -68,6 +68,8 @@ export const ProductDetailsContent = React.memo(({
                             <ProductDetailItem theme={theme} label="Existencia:" value={productDetailsData.Existencia} />
                             <ProductDetailItem theme={theme} label="Familia:" value={productDetailsData.Familia} />
                             <ProductDetailItem theme={theme} label="Marca:" value={productDetailsData.Marca} />
+                            {/* <ProductDetailItem theme={theme} label="Marca:" value={productDetailsData.Id_Marca} /> */}
+
                             {productDetailsData.CodBar && (
                                 <ProductDetailItem
                                     theme={theme}

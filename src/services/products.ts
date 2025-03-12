@@ -13,14 +13,14 @@ const getProductDetails = async (id: string, marca: string) => {
 }
 
 interface getProductByCodeBarInterface {
-    codeBar?: string, codigo?: string
+    codeBar?: string, codigo?: string, sku?: string
 }
 
-const getProductByCodeBar = async ({ codeBar, codigo }: getProductByCodeBarInterface) => {
+const getProductByCodeBar = async ({ codeBar, codigo, sku }: getProductByCodeBarInterface) => {
 
     let product;
     try {
-        const getProduct = await api.get(`/api/product/byStockAndCodeBar?CodBar=${codeBar}&Codigo=${codigo}`);
+        const getProduct = await api.get(`/api/product/byStockAndCodeBar?CodBar=${codeBar}&Codigo=${codigo}&SKU=${sku}`);
         product = getProduct.data;
     } catch (error) {
         return { error: error };
