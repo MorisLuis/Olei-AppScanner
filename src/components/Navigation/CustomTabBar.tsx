@@ -1,7 +1,7 @@
 import React, { ReactNode, useContext, useEffect, useRef } from 'react';
 import { SafeAreaView, Text, TouchableOpacity, View, Platform, Animated } from 'react-native';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
-import { ParamListBase, Route, useNavigation } from '@react-navigation/native';
+import { Route, useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { BlurView } from '@react-native-community/blur';
 import { SettingsContext } from '../../context/settings/SettingsContext';
@@ -33,11 +33,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }: MaterialTopTabB
 
         const onPress = () => {
 
-            if (route?.name === "[ScannerNavigation] - camera") {
-                handleCameraAvailable(true)
-            } else {
-                handleCameraAvailable(false)
-            }
+            handleCameraAvailable(false)
 
             const event = navigation.emit({
                 type: 'tabPress',

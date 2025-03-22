@@ -45,6 +45,8 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
         try {
             state.status = "dbChecking"
             const { data } = await api.post('/api/auth/loginDB', { IdUsuarioOLEI, PasswordOLEI });
+            console.log({resp: JSON.stringify(data, null, 2)})
+
             await AsyncStorage.removeItem('token'); // Just to confirm that doesnt exist a token of login.
 
             dispatch({
@@ -81,11 +83,13 @@ export const DbAuthProvider = ({ children }: { children: JSX.Element }) => {
                 }
             });
 
+            //console.log("resp checkToken dbauth", resp.data)
+
             if (resp.status !== 200) {
                 return dispatch({ type: '[DBAuth] - notAuthenticated' });
             }
 
-            await AsyncStorage.setItem('tokenDB', resp.data.token);
+            await AsyncStorage.setItem('tokenDB', resp.data.tokenDB);
             dispatch({
                 type: '[DBAuth] - signUp',
                 payload: {

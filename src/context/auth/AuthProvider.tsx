@@ -7,10 +7,8 @@ import { authReducer } from './authReducer';
 import { AuthContext } from './AuthContext';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
 import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
 import useErrorHandler, { useCatchError } from '../../hooks/useErrorHandler';
-import { AppNavigationProp } from '../../interface/navigation';
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
@@ -67,16 +65,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
 
     const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
     const [loggingIn, setLoggingIn] = useState(false);
-    const { addListener } = useNavigation<AppNavigationProp>();
     const { handleError } = useErrorHandler()
-
-    useEffect(() => {
-        const unsubscribe = addListener('state', () => {
-            //setCurrentScreen(navigation.getCurrentRoute().name); // MODIFY
-        });
-
-        return unsubscribe;
-    }, []);
 
     useEffect(() => {
         checkToken();
@@ -92,12 +81,12 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
             dispatch({
                 type: '[Auth] - signUp',
                 payload: {
-                    token: data.token,
+                    //token: data.token,
                     user: data.userStorage
                 }
             });
 
-            await AsyncStorage.setItem('token', data.token);
+            //await AsyncStorage.setItem('token', data.token);
 
         } catch (error) {
             handleError(error);
@@ -111,7 +100,9 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const checkToken = async () => {
 
         try {
-            const token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('tokenDB');
+
+            console.log({token})
 
             // No token, no autenticado
             if (!token) return dispatch({ type: '[Auth] - notAuthenticated' });
@@ -124,15 +115,20 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 }
             });
 
+            console.log("resp checkToken auth", JSON.stringify(resp.data, null, 2))
             if (resp.status !== 200) {
+                return dispatch({ type: '[Auth] - notAuthenticated' });
+            };
+
+            if (resp.data.userConected === false) {
                 return dispatch({ type: '[Auth] - notAuthenticated' });
             }
 
-            await AsyncStorage.setItem('token', resp.data.token);
+            //await AsyncStorage.setItem('token', resp.data.token);
             dispatch({
                 type: '[Auth] - signUp',
                 payload: {
-                    token: resp.data.token,
+                    //token: resp.data.token,
                     user: resp.data.user
                 }
             });

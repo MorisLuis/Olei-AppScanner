@@ -23,7 +23,7 @@ export const cameraSettings = ({
     setCameraPermission
 }: cameraSettingsInterface) => {
 
-    const { handleCameraAvailable, cameraAvailable, vibration, updateCodeBarProvider, handleStartScanning } = useContext(SettingsContext);
+    const { handleCameraAvailable, vibration, updateCodeBarProvider, handleStartScanning } = useContext(SettingsContext);
     const [codeDetected, setCodeDetected] = useState(false)
     const { handleError } = useErrorHandler()
 
@@ -65,41 +65,30 @@ export const cameraSettings = ({
         handleCameraAvailable(false);
         setProductsScanned(undefined);
 
-        if (!cameraAvailable) {
-            handleCameraAvailable(true)
-            return;
-        };
-
         if (!productsScanned && codes?.length > 0) {
 
             setCodeDetected(true)
-            if (codeDetected) {
-                handleCameraAvailable(true)
-                return;
-            };
-
+            if (codeDetected) return;
             const codeValue = codes;
-
-            if (!codeValue) {
-                handleCameraAvailable(true)
-                return;
-            };
 
             try {
                 const response = await getProductByCodeBar({ codeBar: codeValue.trim() });
+
                 if (response.error) return handleError(response.error);
                 handleOpenProductsFoundByCodebar(response);
                 handleVibrate()
-                updateCodeBarProvider(codeValue)
+                updateCodeBarProvider(codeValue);
+                handleStartScanning(false)
             } catch (error) {
                 handleError(error, true)
                 setCodeDetected(false)
-                handleCameraAvailable(true)
             } finally {
                 handleStartScanning(false)
+                setCodeDetected(false)
             }
         } else {
-            handleCameraAvailable(true)
+            handleStartScanning(false)
+            setCodeDetected(false)
         }
     }
 

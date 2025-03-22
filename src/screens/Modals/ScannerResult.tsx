@@ -64,7 +64,6 @@ const ScannerResult = ({
         };
 
         addProduct(productData);
-        handleCameraAvailable(true)
         setLoadingAddProduct(false)
         navigation.goBack()
     }

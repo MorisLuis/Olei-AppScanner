@@ -3,14 +3,14 @@ import { AUTH_INITIAL_STATE } from "./AuthProvider";
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
-    token: string | null;
+    //token: string | null;
     errorMessage: string;
     user: UserInterface;
     codeBar?: string;
 }
 
 type AuthAction =
-    | { type: '[Auth] - signUp', payload: { token: string, user: UserInterface } }
+    | { type: '[Auth] - signUp', payload: { user: UserInterface } }
     | { type: '[Auth] - logout' }
     | { type: '[Auth] - notAuthenticated' }
     | { type: '[Auth] - addError', payload: string }
@@ -20,7 +20,7 @@ type AuthAction =
 
 const clearAuthState = (): AuthState => ({
     status: 'not-authenticated',
-    token: null,
+    //token: null,
     user: AUTH_INITIAL_STATE.user,
     errorMessage: '',
     codeBar: ''
@@ -45,7 +45,7 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
                 ...state,
                 errorMessage: '',
                 status: 'authenticated',
-                token: action.payload.token,
+                //token: action.payload.token,
                 user: action.payload.user
             }
 
