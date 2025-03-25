@@ -8,7 +8,7 @@ module.exports = {
         moduleName: '@env',
         path: '.env',
       },
-    ]
+    ],
     //["transform-remove-console"],
-  ]
+  ],
 };

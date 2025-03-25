@@ -1,28 +1,32 @@
-import { StyleSheet } from "react-native";
-import { Theme, globalStyles } from "../appTheme";
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {StyleSheet} from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
+import {Theme, globalStyles} from '../appTheme';
 
-export const StartupScreenTheme = (theme: Theme) =>  StyleSheet.create({
+export const StartupScreenTheme = (theme: Theme) =>
+  StyleSheet.create({
     StartupScreen: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: theme.background_color,
-        height: "100%"
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.background_color,
+      height: '100%',
     },
     imageContainer: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: 'center',
-        width: "100%",
-        minHeight: hp("10%"),
-        maxHeight: hp("20%"),
-        marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      minHeight: hp('10%'),
+      maxHeight: hp('20%'),
+      marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom,
     },
     logo: {
-        objectFit: "scale-down",
-        height: 160,
-        width: 200
+      objectFit: 'scale-down',
+      height: 160,
+      width: 200,
     },
-})
+  });

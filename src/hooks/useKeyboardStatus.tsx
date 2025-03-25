@@ -1,31 +1,31 @@
-import { useEffect, useState } from 'react';
-import { Keyboard } from 'react-native';
+import {useEffect, useState} from 'react';
+import {Keyboard} from 'react-native';
 
 const useKeyboardStatus = () => {
-    const [keyboardActive, setKeyboardActive] = useState(false);
+  const [keyboardActive, setKeyboardActive] = useState(false);
 
-    useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            () => {
-                setKeyboardActive(true);
-            }
-        );
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardActive(true);
+      },
+    );
 
-        const keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            () => {
-                setKeyboardActive(false);
-            }
-        );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardActive(false);
+      },
+    );
 
-        return () => {
-            keyboardDidShowListener.remove();
-            keyboardDidHideListener.remove();
-        };
-    }, []);
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
-    return keyboardActive;
+  return keyboardActive;
 };
 
 export default useKeyboardStatus;

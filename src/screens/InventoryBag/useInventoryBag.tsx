@@ -1,27 +1,31 @@
-import { useState, useCallback, useEffect } from 'react';
-import { ProductInterfaceBag } from '../../interface/product';
+import {useState, useCallback, useEffect} from 'react';
 
-export const useInventoryBag = (bag: ProductInterfaceBag[], pageSize: number) => {
-    const [searchText, setSearchText] = useState<string>('');
-    const [filteredBag, setFilteredBag] = useState<ProductInterfaceBag[]>([]);
-    const [page, setPage] = useState(1);
+import {ProductInterfaceBag} from '../../interface/product';
 
-    const updateProductBySearch = useCallback(() => {
-        const filteredData = bag.filter(product =>
-            product?.Descripcion?.toLowerCase().includes(searchText.toLowerCase())
-        );
-        setFilteredBag(filteredData.slice(0, page * pageSize));
-    }, [searchText, bag, page, pageSize]);
+export const useInventoryBag = (
+  bag: ProductInterfaceBag[],
+  pageSize: number,
+) => {
+  const [searchText, setSearchText] = useState<string>('');
+  const [filteredBag, setFilteredBag] = useState<ProductInterfaceBag[]>([]);
+  const [page, setPage] = useState(1);
 
-    useEffect(() => {
-        updateProductBySearch();
-    }, [searchText, page, updateProductBySearch]);
+  const updateProductBySearch = useCallback(() => {
+    const filteredData = bag.filter((product) =>
+      product?.Descripcion?.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    setFilteredBag(filteredData.slice(0, page * pageSize));
+  }, [searchText, bag, page, pageSize]);
 
-    return {
-        searchText,
-        setSearchText,
-        filteredBag,
-        page,
-        setPage,
-    };
+  useEffect(() => {
+    updateProductBySearch();
+  }, [searchText, page, updateProductBySearch]);
+
+  return {
+    searchText,
+    setSearchText,
+    filteredBag,
+    page,
+    setPage,
+  };
 };

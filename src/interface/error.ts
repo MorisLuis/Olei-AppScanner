@@ -1,21 +1,20 @@
-import { AxiosError } from "axios";
-
+import {AxiosError} from 'axios';
 
 export interface ErrorCustum {
-    status: number;
-    Message: string;
-    Metodo: string;
+  status: number;
+  Message: string;
+  Metodo: string;
 }
 export interface ErrorResponseData {
-    error?: string;
-    message?: string;
+  error?: string;
+  message?: string;
 }
 
 export type CustomAxiosError = AxiosError<ErrorResponseData, unknown>;
 
 export interface BackendErrorDetail {
-    errors: Array<{
-        message: string;
-        context: Record<string, unknown>;
-    }>;
+  errors: Array<{
+    message: string;
+    context: Record<string, unknown>;
+  }>;
 }
