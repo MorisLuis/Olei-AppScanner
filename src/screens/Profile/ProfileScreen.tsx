@@ -1,12 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 
 import { Alert, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { globalStyles } from '../../theme/appTheme';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { buttonStyles } from '../../theme/UI/buttons';
-import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 import { ProfileScreenStyles } from '../../theme/ProfileScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 import DeviceInfo from 'react-native-device-info';
@@ -17,10 +15,9 @@ import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 export const ProfileScreen = () => {
 
-    const { logOut } = useContext(AuthContext);
+    const { logOutUser, logOutServer } = useContext(AuthContext);
     const version = DeviceInfo.getVersion(); // Esto obtiene la versión de la aplicación
 
-    const { logOut: logOutDB } = useContext(DbAuthContext);
     const { theme, typeTheme } = useTheme();
     const { navigate } = useNavigation<ProfileNavigationProp>();
     const { cleanBag } = useContext(InventoryBagContext);
@@ -31,7 +28,7 @@ export const ProfileScreen = () => {
 
         const Accept = async () => {
             cleanBag();
-            await logOut(true);
+            await logOutUser(true);
         }
 
         Alert.alert(
@@ -55,8 +52,7 @@ export const ProfileScreen = () => {
 
         const Accept = async () => {
             cleanBag();
-            await logOutDB();
-            await logOut();
+            await logOutServer();
         }
 
         Alert.alert(

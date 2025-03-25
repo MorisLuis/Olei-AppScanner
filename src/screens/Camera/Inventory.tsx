@@ -107,7 +107,7 @@ export const Inventory = () => {
                     <FlatList
                         data={data}
                         renderItem={renderItem}
-                        keyExtractor={product => product.Codigo}
+                        keyExtractor={product => `${product.Codigo}-${product.Id_Marca}`}
                         ListFooterComponent={renderFooter}
                         onEndReached={handleLoadMore}
                         onEndReachedThreshold={0.5}

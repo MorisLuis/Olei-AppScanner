@@ -21,7 +21,6 @@ const getProductByCodeBar = async ({ codeBar, codigo, sku }: getProductByCodeBar
     let product;
     try {
         const getProduct = await api.get(`/api/product/byStockAndCodeBar?CodBar=${codeBar ?? ''}&Codigo=${codigo ?? ''}&SKU=${sku ?? ''}`);
-        console.log({getProduct: getProduct.config})
         product = getProduct.data;
     } catch (error) {
         return { error: error };

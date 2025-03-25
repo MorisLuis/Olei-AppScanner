@@ -32,6 +32,9 @@ export default interface UserInterface {
     Nombre?: string;
     Id_Usuario: string;
     Company?: string;
+
+    serverConected: boolean;
+    userConected: boolean;
 }
 
 export interface UserDBInterface {

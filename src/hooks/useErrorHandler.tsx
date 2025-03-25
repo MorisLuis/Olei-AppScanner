@@ -2,9 +2,6 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/auth/AuthContext';
 import { sendError } from '../services/errors';
 import Toast from 'react-native-toast-message';
-import { useNavigation } from '@react-navigation/native';
-import { DbAuthContext } from '../context/dbAuth/DbAuthContext';
-import { AppNavigationProp } from '../interface/navigation';
 import { AxiosError } from 'axios';
 import { CustomAxiosError, ErrorCustum } from '../interface/error';
 
@@ -19,11 +16,7 @@ const isAxiosError = (error: unknown): error is CustomAxiosError => {
 
 
 const useErrorHandler = () => {
-    const { user } = useContext(AuthContext);
-    const navigation = useNavigation<AppNavigationProp>();
-    const { logOut, status: statusDB } = useContext(DbAuthContext);
-    const { logOut: logOutAuth, status: statusAuth } = useContext(AuthContext)
-
+    const { user, logOutServer } = useContext(AuthContext);
 
     /**
      * Procesa errores recibidos, principalmente de llamadas Axios.
@@ -45,29 +38,16 @@ const useErrorHandler = () => {
                 error.response?.data?.message ??
                 "Error desconocido";
 
-            console.log({ status, method, message });
-
-            // Si la sesión ha terminado, se maneja la redirección o logout.
-            if (message === 'Sesion terminada') {
-
-                // Si esta en loginDB > retorna, por que ya estan cerradas las sesiones.
-                if (statusDB === undefined && statusAuth === undefined) return
-
-                // Si esta en login > cierra sesion.
-                if (statusAuth === undefined) {
-                    logOut?.()
-                    return;
-                };
-
-                return navigation.navigate('sessionExpired')
-            }
+            console.log({ "handleError": true, status, method, message });
 
             if (status === 401) {
-                logOutAuth?.();
-                logOut?.();
+                console.log("pass 1")
+                //logOutServer?.();
             };
 
             if (save) {
+                console.log("pass 2")
+
                 await sendError({
                     From: `mobil/${user?.Id_Usuario?.trim()}`,
                     Message: message,
@@ -85,7 +65,8 @@ const useErrorHandler = () => {
             }
 
             if (status === 500) {
-                logOutAuth?.();
+                console.log("pass 3")
+                logOutServer?.();
                 return;
             };
 
@@ -97,11 +78,10 @@ const useErrorHandler = () => {
     const handleErrorCustum = async (error: ErrorCustum) => {
         const { status, Message, Metodo } = error ?? {};
 
-        console.log({ status, Metodo, Message });
+        console.log({ "handleErrorCustum": true, status, Metodo, Message });
 
         if (status === 401) {
-            logOutAuth?.();
-            logOut?.();
+            logOutServer?.();
         };
 
         await sendError({
@@ -118,7 +98,7 @@ const useErrorHandler = () => {
         });
 
         if (status === 500) {
-            logOutAuth?.();
+            logOutServer?.();
             return;
         };
 
@@ -135,29 +115,6 @@ const useErrorHandler = () => {
     };
 };
 
-const useCatchError = (errorValue: unknown) => {
-    let errorMessage = "Error desconocido";
-
-    if (errorValue instanceof AxiosError && errorValue.response) {
-        const { response } = errorValue;
-
-        // Validamos que `response.data` existe antes de acceder a `errors`
-        const errorsArray = response.data?.errors;
-        const erroBadRequest = Array.isArray(errorsArray) && errorsArray.length > 0 ? errorsArray[0]?.message : null;
-
-        // Si `response.data.error` o `erroBadRequest` existen, los usamos
-        errorMessage = response.data?.error || erroBadRequest || "Error en el servidor";
-    } else if (errorValue instanceof Error) {
-        errorMessage = errorValue.message;
-    }
-
-    return { errorMessage };
-};
 
 export default useErrorHandler;
-
-export {
-    useCatchError
-}
-
 

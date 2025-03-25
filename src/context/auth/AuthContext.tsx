@@ -5,12 +5,14 @@ import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
 
 interface ContextProps {
     errorMessage: string;
-    //token: string | null;
+    token: string | null;
     user: UserInterface;
     status: 'checking' | 'authenticated' | 'not-authenticated';
     loggingIn: boolean;
-    signIn: (loginData: LoginData) => void;
-    logOut: (findSession?: boolean) => void;
+    loginServer: (loginData: LoginData) => void;
+    login: (loginData: LoginData) => void;
+    logOutUser: () => void;
+    logOutServer: () => void;
     removeError: () => void;
     updateTypeOfMovements: (value: Id_TipoMovInvInterface) => void;
     getTypeOfMovementsName: () => string;

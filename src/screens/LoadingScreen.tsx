@@ -17,6 +17,7 @@ export const LoadingScreen = ({
 
     const { theme } = useTheme();
     const iconColor = theme.color_tertiary;
+
     return (
         <View style={{
             flex: 1,

@@ -49,7 +49,6 @@ export const CodebarUpdateScreen = ({ Codigo, Id_Marca }: CodebarUpdateScreenInt
             hanldeUpdateCodebarWithCodeRandom()
         } else if (optionSelected === 4) {
             if(!Codigo || !Id_Marca) {
-                console.log("Falta Codigo y Id_Marca in handleGoToNextStep");
                 return
             }
             navigation.navigate(

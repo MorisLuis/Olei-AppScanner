@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { DbAuthProvider } from './src/context/dbAuth/DbAuthProvider';
 import { AuthProvider } from './src/context/auth/AuthProvider';
 import { ThemeProvider } from './src/context/ThemeContext';
 import { SettingsProvider } from './src/context/settings/SettingsProvider';
@@ -10,12 +9,12 @@ import { ShowToastMessage } from './src/components/ToastMesage';
 
 const App = () => {
   return (
-      <NavigationContainer>
-        <AppState>
-          <AppNavigation />
-        </AppState>
-        <ShowToastMessage />
-      </NavigationContainer>
+    <NavigationContainer>
+      <AppState>
+        <AppNavigation />
+      </AppState>
+      <ShowToastMessage />
+    </NavigationContainer>
   );
 };
 
@@ -25,17 +24,15 @@ interface AppStateProps {
 
 const AppState: React.FC<AppStateProps> = ({ children }) => {
   return (
-    <DbAuthProvider>
-      <AuthProvider>
-        <ThemeProvider>
-          <SettingsProvider>
-            <InventoryProvider>
-              {children}
-            </InventoryProvider>
-          </SettingsProvider>
-        </ThemeProvider>
-      </AuthProvider>
-    </DbAuthProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <SettingsProvider>
+          <InventoryProvider>
+            {children}
+          </InventoryProvider>
+        </SettingsProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 };
 

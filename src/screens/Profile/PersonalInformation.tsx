@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { Alert, Text, View } from 'react-native';
 import { AuthContext } from '../../context/auth/AuthContext';
-import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 import { PersonalInformationStyles } from '../../theme/PersonalInformationTheme';
 import { useTheme } from '../../context/ThemeContext';
 import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
@@ -17,8 +16,7 @@ interface PersonalInformationInterface {
 
 export const PersonalInformation = ({ route }: PersonalInformationInterface) => {
 
-    const { user } = useContext(AuthContext);
-    const { user: userFromDB, logOut } = useContext(DbAuthContext);
+    const { user, logOutServer } = useContext(AuthContext);
     const { fromLogIn } = route.params ?? {};
     const { theme, typeTheme } = useTheme();
     const { cleanBag } = useContext(InventoryBagContext);
@@ -27,7 +25,7 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
 
         const Accept = async () => {
             cleanBag();
-            await logOut();
+            await logOutServer();
         }
 
         Alert.alert(
@@ -49,10 +47,10 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
     };
 
     const PersonalInformationData = [
-        { label: "Razón Social:", value: userFromDB?.RazonSocial },
+        { label: "Razón Social:", value: user?.RazonSocial },
         { label: "Usuario:", value: user.Id_Usuario },
         { label: "Almacen Origen:", value: user.AlmacenNombre },
-        { label: "Base de datos:", value: userFromDB?.BaseSQL }
+        { label: "Base de datos:", value: user?.BaseSQL }
     ]
 
     return (
@@ -61,13 +59,13 @@ export const PersonalInformation = ({ route }: PersonalInformationInterface) => 
                 <View style={PersonalInformationStyles(theme).circle}>
                     <View style={PersonalInformationStyles(theme).circleContent}>
                         <Text style={PersonalInformationStyles(theme).circleText}>
-                            {userFromDB?.RazonSocial?.slice(0, 1)}
+                            {user?.RazonSocial?.slice(0, 1)}
                         </Text>
                     </View>
                 </View>
 
                 <View>
-                    <Text style={PersonalInformationStyles(theme).name}>{user?.RazonSocial || userFromDB?.RazonSocial}</Text>
+                    <Text style={PersonalInformationStyles(theme).name}>{user?.RazonSocial}</Text>
                 </View>
             </View>
 

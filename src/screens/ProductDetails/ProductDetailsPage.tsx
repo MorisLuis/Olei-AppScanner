@@ -44,7 +44,6 @@ export const ProductDetailsPage = ({ route }: ProductDetailsPageInterface) => {
     const handleOptionsToUpdateCodebar = useCallback(() => {
 
         if(!productDetailsData?.Codigo || !productDetailsData?.Id_Marca) {
-            console.log("Falta Codigo y Id_Marca in handleOptionsToUpdateCodebar");
             return
         };
 

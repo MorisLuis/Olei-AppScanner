@@ -3,18 +3,15 @@ import { Text, View } from 'react-native'
 import { useTheme } from '../context/ThemeContext';
 import { globalFont, globalStyles } from '../theme/appTheme';
 import ButtonCustum from '../components/Ui/ButtonCustum';
-import { DbAuthContext } from '../context/dbAuth/DbAuthContext';
 import { AuthContext } from '../context/auth/AuthContext';
 
 export const SessionExpiredScreen = () => {
 
     const { theme } = useTheme();
-    const { logOut } = useContext(DbAuthContext);
-    const { logOut: logOutAuth } = useContext(AuthContext)
+    const { logOut } = useContext(AuthContext)
 
     const handleBack = () => {
         logOut?.();
-        logOutAuth?.();
     }
 
     return (

@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: globalStyles().globalPadding.padding,
-        maxWidth: "90%",
         position: 'absolute',
         top: 20,
         zIndex: 999999999,

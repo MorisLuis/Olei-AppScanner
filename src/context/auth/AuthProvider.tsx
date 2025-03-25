@@ -8,7 +8,7 @@ import { AuthContext } from './AuthContext';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
-import useErrorHandler, { useCatchError } from '../../hooks/useErrorHandler';
+import useErrorHandler from '../../hooks/useErrorHandler';
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
@@ -20,7 +20,7 @@ export interface AuthState {
 }
 
 export interface LoginData {
-    Id_Usuario: string;
+    usuario: string;
     password: string;
 }
 
@@ -34,7 +34,6 @@ export const AUTH_INITIAL_STATE: AuthState = {
         UsuarioSQL: '',
 
         IdUsuarioOLEI: '',
-
         RazonSocial: '',
         SwImagenes: '',
         Vigencia: '',
@@ -54,10 +53,12 @@ export const AUTH_INITIAL_STATE: AuthState = {
         },
 
         Id_Usuario: '',
+        serverConected: false,
+        userConected: false
     },
     errorMessage: '',
     codeBar: "",
-    codeBarStatus: false
+    codeBarStatus: false,
 };
 
 
@@ -68,54 +69,69 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const { handleError } = useErrorHandler()
 
     useEffect(() => {
-        checkToken();
+        refreshToken();
     }, [])
 
-    const signIn = async ({ Id_Usuario, password }: LoginData) => {
+    const loginServer = async ({ usuario, password }: LoginData) => {
         setLoggingIn(true)
 
         try {
             state.status = "checking"
-            const { data } = await api.post('/api/auth/login', { Id_Usuario, password });
+            const { data } = await api.post('/api/auth/loginServer', { IdUsuarioOLEI: usuario, PasswordOLEI: password });
 
             dispatch({
-                type: '[Auth] - signUp',
+                type: '[Auth] - logInServer',
                 payload: {
-                    //token: data.token,
-                    user: data.userStorage
+                    token: data.token,
+                    user: data.user
                 }
             });
 
-            //await AsyncStorage.setItem('token', data.token);
+            await AsyncStorage.setItem('token', data.token);
+            await AsyncStorage.setItem('refreshToken', data.refreshToken);
 
         } catch (error) {
             handleError(error);
-            const { errorMessage } = useCatchError(error);
-            dispatch({ type: '[Auth] - addError', payload: errorMessage })
         } finally {
             setLoggingIn(false)
         }
     };
 
-    const checkToken = async () => {
+    const login = async ({ usuario, password }: LoginData) => {
+        setLoggingIn(true)
 
         try {
-            const token = await AsyncStorage.getItem('tokenDB');
+            state.status = "checking"
+            const { data } = await api.post('/api/auth/login', { Id_Usuario: usuario, password });
 
-            console.log({token})
-
-            // No token, no autenticado
-            if (!token) return dispatch({ type: '[Auth] - notAuthenticated' });
-
-            // Hay token
-            const resp = await api.get('/api/auth/renewLogin', {
-                headers: {
-                    'Content-type': 'application/json',
-                    'x-token': token || ''
+            dispatch({
+                type: '[Auth] - logIn',
+                payload: {
+                    user: data.user
                 }
             });
+        } catch (error) {
+            handleError(error);
+        } finally {
+            setLoggingIn(false)
+        }
+    };
 
-            console.log("resp checkToken auth", JSON.stringify(resp.data, null, 2))
+    const refreshToken = async () => {
+
+        try {
+            const refreshToken = await AsyncStorage.getItem('refreshToken');
+            if (!refreshToken) return dispatch({ type: '[Auth] - notAuthenticated' });
+
+            // Hay token
+            const resp = await api.post('/api/auth/refresh',
+                { refreshToken },
+                {
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                });
+
             if (resp.status !== 200) {
                 return dispatch({ type: '[Auth] - notAuthenticated' });
             };
@@ -124,11 +140,12 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
                 return dispatch({ type: '[Auth] - notAuthenticated' });
             }
 
-            //await AsyncStorage.setItem('token', resp.data.token);
+            await AsyncStorage.setItem('token', resp.data.token);
+            await AsyncStorage.setItem('refreshToken', resp.data.refreshToken);
+
             dispatch({
-                type: '[Auth] - signUp',
+                type: '[Auth] - logIn',
                 payload: {
-                    //token: resp.data.token,
                     user: resp.data.user
                 }
             });
@@ -139,14 +156,29 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         }
     }
 
-    const logOut = async (findSession?: boolean) => {
+    const logOutServer = async () => {
+        console.log("logOutServer!")
         try {
             setLoggingIn(false);
-            if (findSession) {
-                await api.get('/api/auth/logoutApp');
-            }
+            await api.get('/api/auth/logoutServer');
             await AsyncStorage.removeItem('token');
-            dispatch({ type: '[Auth] - logout' });
+            dispatch({ type: '[Auth] - logOutServer' });
+        } catch (error) {
+            handleError(error);
+        };
+    };
+
+    const logOutUser = async () => {
+        try {
+            setLoggingIn(false);
+            const user = await api.get('/api/auth/logoutUser');
+
+            dispatch({
+                type: '[Auth] - logOutUser',
+                payload: {
+                    user: user.data.user
+                }
+            });
         } catch (error) {
             handleError(error);
         }
@@ -198,9 +230,11 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     return (
         <AuthContext.Provider value={{
             ...state,
-            signIn,
+            loginServer,
             loggingIn,
-            logOut,
+            login,
+            logOutUser,
+            logOutServer,
             removeError,
             updateTypeOfMovements,
             getTypeOfMovementsName,

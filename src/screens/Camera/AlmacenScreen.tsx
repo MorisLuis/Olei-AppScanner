@@ -7,7 +7,6 @@ import CardSelect from '../../components/Cards/CardSelect';
 import { AlmacenInterface } from '../../interface/almacen';
 import { getAlmacenes, updateCurrentAlmacen } from '../../services/almacenes';
 import FooterScreen from '../../components/Navigation/Footer';
-import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 import { TypeOfMovementSkeleton } from '../../components/Skeletons/TypeOfMovementSkeleton';
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigationProp } from '../../interface/navigation';

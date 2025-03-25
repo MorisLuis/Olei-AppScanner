@@ -23,7 +23,6 @@ import { ConfirmationScreen } from '../screens/InventoryBag/ConfirmationScreen';
 import { EditProductInBag } from '../screens/Modals/EditProductInBag';
 import { SessionExpiredScreen } from '../screens/SessionExpired';
 import AlmacenScreen from '../screens/Camera/AlmacenScreen';
-import { DbAuthContext } from '../context/dbAuth/DbAuthContext';
 import { AppNavigationProp } from '../interface/navigation';
 import { useNavigation } from '@react-navigation/native';
 
@@ -87,8 +86,7 @@ const Stack = createNativeStackNavigator<AppNavigationStackParamList>();
 
 export const AppNavigation = () => {
     const { handleCameraAvailable, updateCodeBarProvider } = useContext(SettingsContext);
-    const { getTypeOfMovementsName, status: statusAuth } = useContext(AuthContext);
-    const { status, user } = useContext(DbAuthContext);
+    const { getTypeOfMovementsName, status, user } = useContext(AuthContext);
     const { navigate, reset } = useNavigation<AppNavigationProp>();
 
     const commonOptions: OptionsScreen = {
@@ -97,16 +95,19 @@ export const AppNavigation = () => {
     };
 
     useEffect(() => {
-        const statusLogin = statusAuth;
-        const statusLoginDatabase = status;
+
+        console.log('------------------------------------')
+        console.log({userConected: JSON.stringify(user?.userConected, null, 2)});
+        console.log({serverConected: JSON.stringify(user?.serverConected, null, 2)});
+        console.log({status})
 
         // Aquí va la lógica para redirigir dependiendo del estado
-        if (statusLogin === 'checking' || statusLoginDatabase === 'dbChecking') {
+        if (status === 'checking') {
             return; // En espera o validando
         }
 
         // Caso: No autenticado en ambas bases de datos y estado
-        if (statusLoginDatabase === 'dbNot-authenticated' && statusLogin === 'not-authenticated') {
+        if (status === 'not-authenticated' && user.serverConected === false ) {
             return reset({
                 index: 0,
                 routes: [{ name: 'LoginDatabaseScreen' }],
@@ -114,7 +115,7 @@ export const AppNavigation = () => {
         }
 
         // Caso: Autenticado en ambas bases de datos y estado
-        if (statusLoginDatabase === 'dbAuthenticated' && statusLogin === 'authenticated') {
+        if (status === 'authenticated' && user?.userConected === true) {
             if (user?.TodosAlmacenes === 1) {
                 // Redirigir a Almacen
                 return navigate('almacenScreen');
@@ -125,19 +126,14 @@ export const AppNavigation = () => {
         }
 
         // Caso: Base de datos autenticada, pero estado no autenticado → Redirigir a login
-        if (statusLoginDatabase === 'dbAuthenticated' && statusLogin === 'not-authenticated') {
+        if (status === 'authenticated' && user?.userConected === false) {
             return reset({
                 index: 0,
                 routes: [{ name: 'LoginPage' }],
             });
         }
 
-        // Caso: Base de datos no autenticada, pero estado autenticado → Ir a BottomNavigation
-        if (statusLoginDatabase === 'dbNot-authenticated' && statusLogin === 'authenticated') {
-            return navigate('BottomNavigation');
-        }
-
-    }, [status, statusAuth, user]);
+    }, [status, user?.userConected, user?.serverConected]);
 
 
     const stackScreens = useMemo(() => (
@@ -303,7 +299,7 @@ export const AppNavigation = () => {
                     headerTitle: "Buscar Producto",
                     ...commonOptions
                 }}
-                initialParams={{ isModal: true }}
+                initialParams={{ isModal: true, withCodebar: false }}
             />
             <Stack.Screen
                 name="[Modal] - productsFindByCodeBarModal"

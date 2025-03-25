@@ -9,7 +9,6 @@ import { inputStyles } from '../../theme/UI/inputs';
 import { globalStyles } from '../../theme/appTheme';
 import { loginDBStyles } from '../../theme/loginTheme';
 
-import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 import Banner from "../../assets/OLEIAPP.svg";
 import Logo from "../../assets/Logo.svg";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -17,11 +16,12 @@ import { useTheme } from '../../context/ThemeContext';
 import { InputPassword } from '../../components/Ui/InputPassword';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 import useErrorHandler from '../../hooks/useErrorHandler';
+import { AuthContext } from '../../context/auth/AuthContext';
 
 
 export const LoginDatabaseScreen = () => {
 
-    const { signInDB, loggingIn } = useContext(DbAuthContext);
+    const { loginServer } = useContext(AuthContext);
     const { user, password, onChange } = useForm({ user: '', password: '' });
     const { theme, typeTheme } = useTheme();
     const [loadingLogin, setLoadingLogin] = useState(false)
@@ -31,7 +31,7 @@ export const LoginDatabaseScreen = () => {
         setLoadingLogin(true)
         try {
             Keyboard.dismiss();
-            signInDB({ IdUsuarioOLEI: user, PasswordOLEI: password });
+            loginServer({ usuario: user, password: password });
         } catch (error) {
             handleError(error, true);
         } finally {
@@ -42,7 +42,7 @@ export const LoginDatabaseScreen = () => {
 
     const keyboardActive = useKeyboardStatus();
 
-    if (loggingIn) return <LoadingScreen message='Iniciando sesion...' state={loggingIn} />;
+    //if (loggingIn) return <LoadingScreen message='Iniciando sesion...' state={loggingIn} />;
 
     return (
         <>

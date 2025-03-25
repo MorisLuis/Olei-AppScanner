@@ -3,15 +3,17 @@ import { AUTH_INITIAL_STATE } from "./AuthProvider";
 
 export interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
-    //token: string | null;
+    token: string | null;
     errorMessage: string;
     user: UserInterface;
     codeBar?: string;
 }
 
 type AuthAction =
-    | { type: '[Auth] - signUp', payload: { user: UserInterface } }
-    | { type: '[Auth] - logout' }
+    | { type: '[Auth] - logInServer', payload: { user: UserInterface, token: string } }
+    | { type: '[Auth] - logIn', payload: { user: UserInterface } }
+    | { type: '[Auth] - logOutServer' }
+    | { type: '[Auth] - logOutUser', payload: { user: UserInterface } }
     | { type: '[Auth] - notAuthenticated' }
     | { type: '[Auth] - addError', payload: string }
     | { type: '[Auth] - removeError' }
@@ -20,7 +22,7 @@ type AuthAction =
 
 const clearAuthState = (): AuthState => ({
     status: 'not-authenticated',
-    //token: null,
+    token: null,
     user: AUTH_INITIAL_STATE.user,
     errorMessage: '',
     codeBar: ''
@@ -40,17 +42,34 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
                 errorMessage: ''
             };
 
-        case '[Auth] - signUp':
+
+        case '[Auth] - logInServer':
             return {
                 ...state,
                 errorMessage: '',
                 status: 'authenticated',
-                //token: action.payload.token,
+                token: action.payload.token,
                 user: action.payload.user
             }
 
-        case '[Auth] - logout':
+        case '[Auth] - logIn':
+            return {
+                ...state,
+                errorMessage: '',
+                status: 'authenticated',
+                user: action.payload.user
+            }
+
+        case '[Auth] - logOutServer':
             return clearAuthState();
+
+        case '[Auth] - logOutUser':
+            return {
+                ...state,
+                errorMessage: '',
+                user: action.payload.user
+            }
+
 
         case '[Auth] - notAuthenticated':
             return {

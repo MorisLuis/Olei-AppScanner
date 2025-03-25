@@ -15,17 +15,15 @@ import { useNavigation } from '@react-navigation/native';
 import { InputPassword } from '../../components/Ui/InputPassword';
 import { useProtectPage } from '../../hooks/useProtectPage';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
-import { DbAuthContext } from '../../context/dbAuth/DbAuthContext';
 
 export const LoginScreen = () => {
 
 
-    const { signIn, loggingIn, status, user: userAuth } = useContext(AuthContext);
-    const { status: statusDB } = useContext(DbAuthContext);
+    const { login, status, user: userAuth } = useContext(AuthContext);
 
     useProtectPage({
-        condition: status === 'authenticated' && statusDB === 'dbAuthenticated',
-        navigatePage: userAuth.TodosAlmacenes === 1 ? 'almacenScreen' : 'typeOfMovementScreen' //redireccion
+        condition: status === 'authenticated',
+        navigatePage: userAuth?.TodosAlmacenes === 1 ? 'almacenScreen' : 'typeOfMovementScreen' //redireccion
     });
 
     const { theme, typeTheme } = useTheme();
@@ -43,7 +41,7 @@ export const LoginScreen = () => {
         setLoadingLogin(true)
         try {
             Keyboard.dismiss();
-            signIn({ Id_Usuario: user, password });
+            login({ usuario: user, password });
         } catch (error) {
         } finally {
             setLoadingLogin(false)
@@ -64,7 +62,7 @@ export const LoginScreen = () => {
     };
 
 
-    if (loggingIn) return <LoadingScreen message='Iniciando sesion...' state={loggingIn} />;
+    //if (loggingIn) return <LoadingScreen message='Iniciando sesion...' state={loggingIn} />;
 
     return (
         <KeyboardAvoidingView
