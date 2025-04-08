@@ -5,7 +5,7 @@ import {Theme, globalFont, globalStyles} from './appTheme';
 export const PersonalInformationStyles = (theme: Theme, typeTheme?: string) =>
   StyleSheet.create({
     PersonalInformation: {
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
       backgroundColor: theme.background_color,
       height: '100%',
     },
@@ -17,7 +17,7 @@ export const PersonalInformationStyles = (theme: Theme, typeTheme?: string) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: 20,
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
 
     circle: {
@@ -63,7 +63,7 @@ export const PersonalInformationStyles = (theme: Theme, typeTheme?: string) =>
           ? theme.color_border_secondary
           : theme.background_color_secondary,
       borderRadius: 5,
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     data: {
       display: 'flex',

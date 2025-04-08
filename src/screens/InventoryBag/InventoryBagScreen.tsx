@@ -22,35 +22,41 @@ import {AppNavigationProp} from '../../interface/navigation';
 import {useInventoryBag} from './useInventoryBag';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 
-export const InventoryBagScreen = () => {
-  const {bag, cleanBag, numberOfItems, removeProduct} =
-    useContext(InventoryBagContext);
+
+const INITITAL_PAGE = 1;
+const BAG_EMPTY = 0;
+const ITEMS_EMPTY = 0;
+const PAGE_SIZE_INITIAL = 5;
+
+export const InventoryBagScreen = () : JSX.Element => {
+
+  const {bag, cleanBag, numberOfItems, removeProduct} = useContext(InventoryBagContext);
   const {navigate, goBack} = useNavigation<AppNavigationProp>();
   const {theme, typeTheme} = useTheme();
 
   const [openModalDecision, setOpenModalDecision] = useState(false);
-  const [pageSize] = useState(5);
+  const [pageSize] = useState(PAGE_SIZE_INITIAL);
   const inputRef = useRef<TextInput>(null);
 
   const {searchText, setSearchText, filteredBag, setPage} = useInventoryBag(
     bag,
-    pageSize,
+    pageSize
   );
 
-  const onNavigateToPostInventary = async () => {
+  const onNavigateToPostInventary = async () : Promise<void>=> {
     goBack();
     navigate('confirmationScreen');
   };
 
-  const handleLoadMore = () => {
+  const handleLoadMore = () : void  => {
     if (filteredBag.length >= numberOfItems) return;
-    setPage((prevPage) => prevPage + 1);
+    setPage((prevPage) => prevPage + INITITAL_PAGE);
   };
 
-  const handleCleanTemporal = () => {
+  const handleCleanTemporal = () : void => {
     setOpenModalDecision(false);
     cleanBag();
-    setPage(1);
+    setPage(INITITAL_PAGE);
   };
 
   const renderItem = useCallback(
@@ -69,7 +75,7 @@ export const InventoryBagScreen = () => {
       <SafeAreaView
         style={InventoryBagScreenStyles(theme, typeTheme).InventoryBagScreen}>
         {/* SEARCH BAR */}
-        {bag.length > 0 && (
+        {bag.length > BAG_EMPTY && (
           <TouchableWithoutFeedback onPress={() => inputRef.current?.focus()}>
             <View
               style={[
@@ -89,7 +95,7 @@ export const InventoryBagScreen = () => {
                 selectionColor={theme.text_color}
                 onChangeText={(text: string) => {
                   setSearchText(text);
-                  setPage(1);
+                  setPage(INITITAL_PAGE);
                 }}
               />
             </View>
@@ -97,7 +103,7 @@ export const InventoryBagScreen = () => {
         )}
 
         {/* PRODUCTS */}
-        {filteredBag.length > 0 ? (
+        {filteredBag.length > BAG_EMPTY ? (
           <FlatList
             style={InventoryBagScreenStyles(theme, typeTheme).content}
             data={filteredBag}
@@ -119,7 +125,7 @@ export const InventoryBagScreen = () => {
         )}
 
         {/* FOOTER */}
-        {numberOfItems > 0 && (
+        {numberOfItems > ITEMS_EMPTY && (
           <View style={InventoryBagScreenStyles(theme, typeTheme).footer}>
             <ButtonCustum
               title={'Guardar'}

@@ -1,0 +1,348 @@
+import React, { useCallback } from 'react';
+import { useReducer, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { api } from '../../api/api';
+import UserInterface from '../../interface/user';
+import { authReducer } from './authReducer';
+import { AuthContext } from './AuthContext';
+import { Id_TipoMovInvInterface } from '../../services/typeOfMovement';
+import useErrorHandler from '../../hooks/useErrorHandler';
+import { useNavigation } from '@react-navigation/native';
+import { AppNavigationProp, MainNavigationProp } from '../../interface/navigation';
+
+export interface AuthState {
+  serverstatus: 'checking-server' | 'server-authenticated' | 'server-not-authenticated';
+  status: 'checking' | 'authenticated' | 'not-authenticated';
+  tokenServer: string | null;
+  token: string | null;
+  errorMessage: string;
+  user: UserInterface;
+  codeBar?: string;
+  codeBarStatus?: boolean;
+}
+
+export interface LoginData {
+  usuario: string;
+  password: string;
+}
+
+export const AUTH_INITIAL_STATE: AuthState = {
+  serverstatus: 'checking-server',
+  status: 'checking',
+  tokenServer: null,
+  token: null,
+  user: {
+    ServidorSQL: '',
+    BaseSQL: '',
+    PasswordSQL: '',
+    UsuarioSQL: '',
+
+    IdUsuarioOLEI: '',
+    RazonSocial: '',
+    SwImagenes: '',
+    Vigencia: '',
+    from: 'mobil',
+
+    TodosAlmacenes: 0,
+    Id_Almacen: 0,
+    AlmacenNombre: '',
+
+    SalidaSinExistencias: 0,
+
+    Id_TipoMovInv: {
+      Id_TipoMovInv: 0,
+      Accion: 0,
+      Descripcion: '',
+      Id_AlmDest: 0,
+    },
+
+    Id_Usuario: '',
+    serverConected: false,
+    userConected: false,
+  },
+  errorMessage: '',
+  codeBar: '',
+  codeBarStatus: false,
+};
+
+const ID_MOVEMENT_0 = 0;
+const ID_MOVEMENT_1 = 1;
+const ID_MOVEMENT_2 = 2;
+
+export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Element => {
+
+  const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
+  const [loggingIn, setLoggingIn] = useState(false);
+  const { handleError } = useErrorHandler();
+  const { navigate, reset } = useNavigation<MainNavigationProp>();
+
+  const loginServer = async ({ usuario, password }: LoginData): Promise<void> => {
+    setLoggingIn(true);
+
+    try {
+      state.serverstatus = 'checking-server';
+
+      const { data } = await api.post<{ tokenServer: string, user: UserInterface }>('/api/auth/loginServer', {
+        IdUsuarioOLEI: usuario,
+        PasswordOLEI: password,
+      });
+
+      dispatch({
+        type: '[Auth] - logInServer',
+        payload: {
+          tokenServer: data.tokenServer,
+          user: data.user,
+        },
+      });
+
+      await AsyncStorage.setItem('tokenServer', data.tokenServer);
+
+    } catch (error) {
+      state.serverstatus = 'server-not-authenticated';
+      handleError(error)
+    } finally {
+      navigate('LoginPagelol')
+      setLoggingIn(false);
+    }
+  };
+
+  const login = async ({ usuario, password }: LoginData): Promise<void> => {
+    setLoggingIn(true);
+
+    try {
+      state.status = 'checking';
+
+      const { data } = await api.post<{ token: string, user: UserInterface, refreshToken: string }>('/api/auth/login', {
+        Id_Usuario: usuario,
+        password,
+      });
+
+
+      dispatch({
+        type: '[Auth] - logIn',
+        payload: {
+          token: data.token,
+          user: data.user
+        },
+      });
+
+      await AsyncStorage.setItem('token', data.token);
+      await AsyncStorage.setItem('refreshToken', data.refreshToken);
+
+    } catch (error) {
+      state.status = 'not-authenticated';
+      handleError(error);
+    } finally {
+      navigate('LoginDatabaseScreen')
+      setLoggingIn(false);
+    }
+  };
+
+  const refreshToken = useCallback(async (): Promise<void> => {
+    const contentHeaders = { headers: { 'Content-Type': 'application/json' } };
+
+    console.log("refreshToken");
+    console.log({ state: JSON.stringify(state, null, 2) })
+    const tokenServer = await AsyncStorage.getItem('tokenServer');
+    console.log({tokenServer});
+
+    try {
+      // 1. Verify if is connected to server.
+      if (!tokenServer) {
+        dispatch({ type: '[Auth] - server-notAuthenticated' });
+        return;
+      }
+
+      // 2. Verify if is has refresh token
+      const savedRefreshToken = await AsyncStorage.getItem('refreshToken');
+
+      if (!savedRefreshToken) {
+        const { data } = await api.post<{ user: UserInterface }>(
+          '/api/auth/refreshServer',
+          {},
+          contentHeaders
+        );
+        dispatch({
+          type: '[Auth] - notAuthenticated',
+          payload: {
+            user: data.user,
+            tokenServer: tokenServer
+          }
+        });
+        return;
+      }
+
+      const { data } = await api.post<{
+        token: string;
+        user: UserInterface;
+        refreshToken: string;
+      }>(
+        '/api/auth/refresh',
+        { refreshToken: savedRefreshToken },
+        contentHeaders
+      );
+
+      const { user, token, refreshToken: newRefreshToken } = data;
+
+      if (!user.serverConected) {
+        dispatch({ type: '[Auth] - server-notAuthenticated' });
+        return;
+      }
+
+      if (!user.userConected) {
+        dispatch({
+          type: '[Auth] - notAuthenticated',
+          payload: {
+            user,
+            tokenServer
+          },
+        });
+        return;
+      }
+
+      await AsyncStorage.multiSet([
+        ['token', token],
+        ['refreshToken', newRefreshToken],
+      ]);
+
+      dispatch({
+        type: '[Auth] - logIn',
+        payload: { token, user },
+      });
+    } catch (error) {
+      handleError(error, true, true);
+
+      if (!tokenServer) {
+        dispatch({ type: '[Auth] - server-notAuthenticated' });
+        return;
+      }
+
+      dispatch({
+        type: '[Auth] - notAuthenticated',
+        payload: { user: state.user, tokenServer },
+      });
+    }
+  }, [handleError]);
+
+  const logOutServer = async (): Promise<void> => {
+    console.log("logOutServer")
+
+    try {
+      //const savedRefreshToken = await AsyncStorage.getItem('refreshToken');
+      const contentHeaders = { headers: { 'Content-Type': 'application/json' } };
+
+      setLoggingIn(false);
+      const { data } = await api.post<{ user: UserInterface }>(
+        '/api/auth/refreshServer',
+        {},
+        contentHeaders
+      );
+      dispatch({ type: '[Auth] - logOutServer' });
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setTimeout(async () => {
+        await AsyncStorage.removeItem('tokenServer');
+        await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('refreshToken');
+      }, 1000);
+    }
+  };
+
+  const logOutUser = async (): Promise<void> => {
+    try {
+      state.status = 'checking';
+      setLoggingIn(false);
+      const { data } = await api.get('/api/auth/logoutUser');
+
+      dispatch({
+        type: '[Auth] - logOutUser',
+        payload: {
+          user: data.user
+        },
+      });
+      reset({
+        index: 0,
+        routes: [{ name: 'LoginPagelol' }],
+      });
+    } catch (error) {
+      state.status = 'not-authenticated';
+      handleError(error);
+    } finally {
+      setTimeout(async () => {
+        await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('refreshToken');
+      }, 1000);
+    }
+  };
+
+  const removeError = (): void => {
+    dispatch({ type: '[Auth] - removeError' });
+  };
+
+  const updateTypeOfMovements = async (value: Id_TipoMovInvInterface): Promise<void> => {
+    try {
+      dispatch({
+        type: '[Auth] - typeOfMovement',
+        payload: {
+          user: {
+            ...state.user!,
+            Id_TipoMovInv: {
+              Id_TipoMovInv: value.Id_TipoMovInv,
+              Accion: value.Accion,
+              Descripcion: value.Descripcion,
+              Id_AlmDest: value.Id_AlmDest,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      handleError(error, true);
+    }
+  };
+
+  const getTypeOfMovementsName = useCallback((): string => {
+    let name;
+    if (
+      state.user?.Id_TipoMovInv?.Accion === ID_MOVEMENT_1 &&
+      state.user?.Id_TipoMovInv?.Id_TipoMovInv === ID_MOVEMENT_0
+    ) {
+      // Inventario fisico
+      name = 'Inventario';
+    } else if (state.user?.Id_TipoMovInv?.Accion === ID_MOVEMENT_1) {
+      name = 'Entrada';
+    } else if (state.user?.Id_TipoMovInv?.Accion === ID_MOVEMENT_2) {
+      name = 'Salida';
+    } else {
+      name = 'Traspaso';
+    }
+    return name;
+  }, [state.user?.Id_TipoMovInv?.Accion, state.user?.Id_TipoMovInv?.Id_TipoMovInv]);
+
+  const updateUser = (user: Partial<UserInterface>): void => {
+    dispatch({ type: '[Auth] - updateUser', payload: user });
+  };
+
+  useEffect(() => {
+    refreshToken();
+  }, [refreshToken]);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        ...state,
+        loginServer,
+        loggingIn,
+        login,
+        logOutUser,
+        logOutServer,
+        removeError,
+        updateTypeOfMovements,
+        getTypeOfMovementsName,
+        updateUser,
+      }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

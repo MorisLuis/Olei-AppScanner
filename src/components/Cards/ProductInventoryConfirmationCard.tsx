@@ -13,7 +13,7 @@ interface ProductInventoryConfirmationCardInterface {
 export const ProductInventoryConfirmationCard = ({
   product,
   onClick,
-}: ProductInventoryConfirmationCardInterface) => {
+}: ProductInventoryConfirmationCardInterface) :  JSX.Element => {
   const {theme, typeTheme} = useTheme();
 
   return (

@@ -9,15 +9,17 @@ import {useTheme} from '../context/ThemeContext';
 import {AppNavigationProp} from '../interface/navigation';
 import {AuthContext} from '../context/auth/AuthContext';
 
-export const SuccesMessage = () => {
+const TODOS_ALMACENES_ON = 1;
+
+export const SuccesMessage = () : JSX.Element => {
   const {user} = useContext(AuthContext);
   const {navigate} = useNavigation<AppNavigationProp>();
   const {inventoryData} = useContext(InventoryBagContext);
   const {theme, typeTheme} = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 
-  const handleNavigate = () => {
-    if (user.TodosAlmacenes === 1) {
+  const handleNavigate = () : void => {
+    if (user?.TodosAlmacenes === TODOS_ALMACENES_ON) {
       navigate('almacenScreen');
     } else {
       navigate('typeOfMovementScreen');

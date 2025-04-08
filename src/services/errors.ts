@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import {api} from '../api/api';
 
 interface sendErrorInterface {
@@ -14,7 +15,8 @@ export const sendError = async ({
   Id_Usuario,
   Metodo,
   code,
-}: sendErrorInterface) => {
+}: sendErrorInterface) : Promise<AxiosResponse | unknown> => {
+
   const errorBody = {
     From,
     Message,
@@ -27,7 +29,6 @@ export const sendError = async ({
     const error = await api.post(`/api/errors`, errorBody);
     return error;
   } catch (error) {
-    console.log('error in sendError', error);
     return {error: error};
   }
 };

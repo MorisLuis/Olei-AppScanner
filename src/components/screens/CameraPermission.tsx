@@ -14,7 +14,7 @@ export const CameraPermission = ({
   requestPermissions,
   message,
   availableAuthorization = false,
-}: CameraPermissionInterface) => {
+}: CameraPermissionInterface) : JSX.Element => {
   const {theme} = useTheme();
 
   return (

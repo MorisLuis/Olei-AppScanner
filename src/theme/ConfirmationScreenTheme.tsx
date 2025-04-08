@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
@@ -14,7 +13,7 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) =>
     },
     content: {
       height: '100%',
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
       paddingBottom: hp('20%'),
     },
     confirmationHeader: {
@@ -25,7 +24,12 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) =>
     },
     confirmationHeader__icon: {
       position: 'relative',
-      marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom,
+      marginBottom: globalStyles().globalMarginBottomSmall.marginBottom,
+    },
+    confirmationHeader__icon__correct: {
+      position: 'absolute', 
+      right: 0,
+       bottom: -8
     },
     confirmationHeaderTitle: {
       fontSize: globalFont.font_normal,
@@ -41,9 +45,9 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) =>
         typeTheme === 'light'
           ? theme.color_border_secondary
           : theme.color_border_tertiary,
-      padding: globalStyles(theme).globalPadding.padding,
-      borderRadius: globalStyles(theme).borderRadius.borderRadius,
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      padding: globalStyles().globalPadding.padding,
+      borderRadius: globalStyles().borderRadius.borderRadius,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
 
       // Sombra para iOS
       shadowColor: theme.text_color, // O el color que desees para la sombra
@@ -59,7 +63,7 @@ export const ConfirmationScreenStyles = (theme: Theme, typeTheme: string) =>
       fontSize: globalFont.font_sm,
       textTransform: 'uppercase',
       marginBottom:
-        globalStyles(theme).globalMarginBottomSmall.marginBottom / 2,
+        globalStyles().globalMarginBottomSmall.marginBottom / 2,
     },
     confirmationText: {
       fontSize: globalFont.font_normal,

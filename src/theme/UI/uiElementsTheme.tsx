@@ -22,14 +22,14 @@ export const uiNavigationStyles = (theme: Theme, typeTheme?: string) =>
           : theme.background_color_secondary,
     },
     FooterScreenContainer: {
-      marginVertical: globalStyles(theme).globalMarginBottomSmall.marginBottom,
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
+      marginVertical: globalStyles().globalMarginBottomSmall.marginBottom,
+      paddingHorizontal: globalStyles().globalPadding.padding,
     },
     FooterTwoButtonsScreen: {
       backgroundColor: theme.background_color,
       position: 'absolute',
       bottom: 0,
-      right: globalStyles(theme).globalPadding.padding,
+      right: globalStyles().globalPadding.padding,
       width: wp('100%') - globalStyles().globalPadding.padding * 2,
       borderEndWidth: 0,
       display: 'flex',

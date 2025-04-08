@@ -1,36 +1,23 @@
-import React, {useContext} from 'react';
-import {Text, View} from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import {useTheme} from '../context/ThemeContext';
-import {globalFont, globalStyles} from '../theme/appTheme';
+import { useTheme } from '../context/ThemeContext';
+import { Theme, globalFont, globalStyles } from '../theme/appTheme';
 import ButtonCustum from '../components/Ui/ButtonCustum';
-import {AuthContext} from '../context/auth/AuthContext';
+import { AuthContext } from '../context/auth/AuthContext';
 
-export const SessionExpiredScreen = () => {
-  const {theme} = useTheme();
-  const {logOut} = useContext(AuthContext);
+export const SessionExpiredScreen = (): JSX.Element => {
+  const { theme } = useTheme();
+  const { logOutUser } = useContext(AuthContext);
 
-  const handleBack = () => {
-    logOut?.();
+  const handleBack = (): void => {
+    logOutUser?.();
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        paddingHorizontal: globalStyles(theme).globalPadding.padding,
-        backgroundColor: theme.background_color,
-        height: '100%',
-      }}>
-      <Text
-        style={{
-          color: theme.text_color,
-          marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
-          fontSize: globalFont.font_med,
-        }}>
-        La sentimos por las molestias pero la sesión término, es necesario
-        volver iniciar sesión.
+    <View style={loadingStyles(theme).SessionExpiredScreen}>
+      <Text style={loadingStyles().text}>
+        La sentimos por las molestias pero la sesión término, es necesario volver iniciar sesión.
       </Text>
 
       <ButtonCustum
@@ -42,3 +29,20 @@ export const SessionExpiredScreen = () => {
     </View>
   );
 };
+
+
+/* eslint-disable react-native/no-unused-styles */
+const loadingStyles = (theme?: Theme): ReturnType<typeof StyleSheet.create> => StyleSheet.create({
+  SessionExpiredScreen: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: globalStyles().globalPadding.padding,
+    backgroundColor: theme?.background_color,
+    height: '100%'
+  },
+  text: {
+    color: theme?.text_color,
+    marginBottom: globalStyles().globalMarginBottom.marginBottom,
+    fontSize: globalFont.font_med,
+  }
+})

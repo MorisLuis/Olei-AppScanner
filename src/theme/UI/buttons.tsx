@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
@@ -14,15 +13,15 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) =>
       backgroundColor: theme.color_tertiary,
       borderWidth: 1,
       borderColor: theme.color_border_tertiary,
-      borderRadius: globalStyles(theme).borderRadius.borderRadius,
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
+      borderRadius: globalStyles().borderRadius.borderRadius,
+      paddingHorizontal: globalStyles().globalPadding.padding,
       width: '100%',
       color: theme.text_color_secondary,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'row',
-      gap: globalStyles(theme).globalMarginBottomSmall.marginBottom / 2,
+      gap: globalStyles().globalMarginBottomSmall.marginBottom / 2,
     },
 
     button_secondary: {
@@ -35,13 +34,13 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) =>
       backgroundColor: theme.background_color_secondary,
       borderWidth: 1,
       borderColor: theme.color_border,
-      borderRadius: globalStyles(theme).borderRadius.borderRadius,
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
-      paddingVertical: globalStyles(theme).globalPadding.padding / 2,
+      borderRadius: globalStyles().borderRadius.borderRadius,
+      paddingHorizontal: globalStyles().globalPadding.padding,
+      paddingVertical: globalStyles().globalPadding.padding / 2,
       width: '100%',
       color: theme.text_color,
       display: 'flex',
-      gap: globalStyles(theme).globalMarginBottomSmall.marginBottom / 2,
+      gap: globalStyles().globalMarginBottomSmall.marginBottom / 2,
     },
 
     // Button text
@@ -83,8 +82,8 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) =>
       backgroundColor: 'transparent',
       borderWidth: 0,
       borderColor: 'transparent',
-      borderRadius: globalStyles(theme).borderRadius.borderRadius,
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
+      borderRadius: globalStyles().borderRadius.borderRadius,
+      paddingHorizontal: globalStyles().globalPadding.padding,
       width: '100%',
       color: theme.text_color_secondary,
       display: 'flex',

@@ -1,96 +1,96 @@
-import UserInterface from '../../interface/user';
-import {AUTH_INITIAL_STATE} from './AuthProvider';
-
-export interface AuthState {
-  status: 'checking' | 'authenticated' | 'not-authenticated';
-  token: string | null;
-  errorMessage: string;
-  user: UserInterface;
-  codeBar?: string;
-}
+import UserInterface, { ID_TIPO_MOVIMIENTO } from '../../interface/user';
+import { AuthState } from './AuthProvider';
 
 type AuthAction =
-  | {
-      type: '[Auth] - logInServer';
-      payload: {user: UserInterface; token: string};
-    }
-  | {type: '[Auth] - logIn'; payload: {user: UserInterface}}
-  | {type: '[Auth] - logOutServer'}
-  | {type: '[Auth] - logOutUser'; payload: {user: UserInterface}}
-  | {type: '[Auth] - notAuthenticated'}
-  | {type: '[Auth] - addError'; payload: string}
-  | {type: '[Auth] - removeError'}
-  | {type: '[Auth] - typeOfMovement'; payload: {user: UserInterface}}
-  | {type: '[Auth] - updateUser'; payload: Partial<UserInterface>};
+  | { type: '[Auth] - SET_LOADING', payload: boolean }
+  | { type: '[Auth] - LOGIN_SERVER'; payload: { tokenServer: string, user: UserInterface } }
+  | { type: '[Auth] - LOGIN_CLIENT'; payload: { token: string, user: UserInterface } }
+  | { type: '[Auth] - REFRESH'; payload: { token: string, user: UserInterface } }
+  | { type: '[Auth] - RESTORE'; payload: { tokenServer: string | null, token: string | null } }
+  | { type: '[Auth] - LOGOUT_SERVER' }
+  | { type: '[Auth] - LOGOUT_CLIENT', payload: { user: UserInterface } }
+  | { type: '[Auth] - TYPE_OF_MOVEMENT', payload: { tipoMovimiento: ID_TIPO_MOVIMIENTO } }
+  | { type: '[Auth] - UPDATE_USER', payload: { user: Partial<UserInterface> } }
 
-const clearAuthState = (): AuthState => ({
-  status: 'not-authenticated',
-  token: null,
-  user: AUTH_INITIAL_STATE.user,
-  errorMessage: '',
-  codeBar: '',
-});
 
 export const authReducer = (
   state: AuthState,
   action: AuthAction,
 ): AuthState => {
+
   switch (action.type) {
-    case '[Auth] - addError':
-      return {
-        ...clearAuthState(),
-        errorMessage: action.payload,
-      };
 
-    case '[Auth] - removeError':
+    case '[Auth] - LOGIN_SERVER':
       return {
         ...state,
-        errorMessage: '',
+        tokenServer: action.payload.tokenServer,
+        user: action.payload.user,
       };
 
-    case '[Auth] - logInServer':
+    case '[Auth] - LOGIN_CLIENT':
       return {
         ...state,
-        errorMessage: '',
-        status: 'authenticated',
+        token: action.payload.token,
+        user: {
+          ...state.user!,
+          ...action.payload.user
+        },
+      };
+
+    case '[Auth] - REFRESH':
+      return {
+        ...state,
         token: action.payload.token,
         user: action.payload.user,
       };
 
-    case '[Auth] - logIn':
+    case '[Auth] - RESTORE':
       return {
         ...state,
-        errorMessage: '',
-        status: 'authenticated',
-        user: action.payload.user,
+        tokenServer: action.payload.tokenServer,
+        token: action.payload.token,
+        isLoading: false,
       };
 
-    case '[Auth] - logOutServer':
-      return clearAuthState();
 
-    case '[Auth] - logOutUser':
+    case '[Auth] - LOGOUT_SERVER':
       return {
         ...state,
-        errorMessage: '',
-        user: action.payload.user,
+        tokenServer: null,
+        token: null,
+        user: null,
       };
 
-    case '[Auth] - notAuthenticated':
-      return {
-        ...clearAuthState(),
-      };
-
-    case '[Auth] - typeOfMovement':
+    case '[Auth] - LOGOUT_CLIENT':
       return {
         ...state,
-        user: action.payload.user,
+        token: null,
+        user: action.payload.user
       };
 
-    case '[Auth] - updateUser':
+    case '[Auth] - TYPE_OF_MOVEMENT':
+      if (!state.user) return state;
+
       return {
         ...state,
-        user: {...state.user, ...action.payload},
+        user: {
+          ...state.user,
+          Id_TipoMovInv: action.payload.tipoMovimiento
+        }
       };
+
+    case '[Auth] - UPDATE_USER':
+      if (!state.user) return state;
+
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload
+        }
+      }
+
+
 
     default:
       return state;

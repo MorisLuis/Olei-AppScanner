@@ -1,12 +1,11 @@
 import {StyleSheet} from 'react-native';
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
 import {Theme, globalFont, globalStyles} from './appTheme';
 
-export const almacenStyles = (theme: Theme, typeTheme?: string) =>
+export const almacenStyles = (theme: Theme) =>
   StyleSheet.create({
     AlmacenScreen: {
       flex: 1,
@@ -18,7 +17,7 @@ export const almacenStyles = (theme: Theme, typeTheme?: string) =>
       paddingBottom: hp('20%'),
     },
     header: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     headerTitle: {
       fontSize: globalFont.font_med,

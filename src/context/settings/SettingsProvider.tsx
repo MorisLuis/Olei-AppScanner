@@ -1,7 +1,7 @@
-import React, {useReducer} from 'react';
+import React, { useCallback, useReducer } from 'react';
 
-import {SettingsContext} from './SettingsContext';
-import {settingsReducer} from './settingsReducer';
+import { SettingsContext } from './SettingsContext';
+import { settingsReducer } from './settingsReducer';
 import UserInterface from '../../interface/user';
 import useErrorHandler from '../../hooks/useErrorHandler';
 
@@ -26,45 +26,45 @@ export const SettingsInitialState: SettingsInterface = {
   startScanning: false,
 };
 
-export const SettingsProvider = ({children}: {children: JSX.Element}) => {
+export const SettingsProvider = ({ children }: { children: JSX.Element }): JSX.Element => {
   const [state, dispatch] = useReducer(settingsReducer, SettingsInitialState);
-  const {handleError} = useErrorHandler();
+  const { handleError } = useErrorHandler();
 
-  const handleVibrationState = (value: boolean) => {
-    dispatch({type: '[Settings] - Vibration state', vibration: value});
+  const handleVibrationState = (value: boolean): void => {
+    dispatch({ type: '[Settings] - Vibration state', vibration: value });
   };
 
-  const handleCameraAvailable = (value: boolean) => {
+  const handleCameraAvailable = useCallback((value: boolean): void => {
     dispatch({
       type: '[Settings] - CameraAvailable state',
       cameraAvailable: value,
     });
-  };
+  }, []);
 
-  const handleLimitProductsScanned = (value: number) => {
+  const handleLimitProductsScanned = (value: number): void => {
     dispatch({
       type: '[Settings] - limitProductsScanned state',
       limitProductsScanned: value,
     });
   };
 
-  const handleSetupUser = (user: UserInterface) => {
-    dispatch({type: '[Settings] - userSetup', user});
+  const handleSetupUser = (user: UserInterface): void => {
+    dispatch({ type: '[Settings] - userSetup', user });
   };
 
-  const handleCodebarScannedProcces = (value: boolean) => {
-    dispatch({type: '[Settings] - codeBarStatus', codeBarStatus: value});
+  const handleCodebarScannedProcces = (value: boolean): void => {
+    dispatch({ type: '[Settings] - codeBarStatus', codeBarStatus: value });
   };
 
-  const handleGetCodebarType = (codebarType?: number) => {
+  const handleGetCodebarType = (codebarType?: number): void => {
     if (!codebarType) return;
-    dispatch({type: '[Settings] - codebarType', codebarType: codebarType});
+    dispatch({ type: '[Settings] - codebarType', codebarType: codebarType });
   };
 
-  const updateCodeBarProvider = async (value: string) => {
+  const updateCodeBarProvider = async (value: string): Promise<void> => {
     try {
       handleCodebarScannedProcces(true);
-      dispatch({type: '[Settings] - codeBar', codeBar: value});
+      dispatch({ type: '[Settings] - codeBar', codeBar: value });
     } catch (error) {
       handleError(error);
     } finally {
@@ -72,8 +72,8 @@ export const SettingsProvider = ({children}: {children: JSX.Element}) => {
     }
   };
 
-  const handleStartScanning = (value: boolean) => {
-    dispatch({type: '[Settings] - startScanning', startScanning: value});
+  const handleStartScanning = (value: boolean): void => {
+    dispatch({ type: '[Settings] - startScanning', startScanning: value });
   };
 
   return (

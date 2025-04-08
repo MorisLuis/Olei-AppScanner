@@ -9,7 +9,7 @@ type FieldType = 'password' | 'user'; // Puedes agregar más valores aquí
 
 interface InputPasswordInterface {
   password?: string;
-  onChange: (value: string, field: FieldType) => void;
+  onChange: (_value: string, _field: FieldType) => void;
   onLogin: () => void;
   placeholder: string;
 
@@ -22,7 +22,7 @@ export const InputPassword = ({
   onLogin,
   placeholder,
   inputName,
-}: InputPasswordInterface) => {
+}: InputPasswordInterface) : JSX.Element => {
   const {theme, typeTheme} = useTheme();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -45,15 +45,7 @@ export const InputPassword = ({
       />
       <TouchableOpacity
         onPress={() => setShowPassword(!showPassword)}
-        style={[
-          inputStyles(theme, typeTheme).passwordToggle,
-          {
-            width: 48,
-            height: 48,
-            justifyContent: 'center',
-            alignItems: 'center',
-          },
-        ]} // Aumenta el área táctil a 48x48
+        style={inputStyles(theme, typeTheme).passwordToggle}
       >
         <Icon
           name={showPassword ? 'eye-off' : 'eye'}

@@ -20,3 +20,6 @@ export const ProductDetailItem = React.memo(
     </View>
   ),
 );
+
+
+ProductDetailItem.displayName = "ProductDetailItem"; // Asigna el displayName aquí

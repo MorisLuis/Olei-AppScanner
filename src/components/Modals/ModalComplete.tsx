@@ -19,7 +19,7 @@ const ModalComplete = ({
   onClose,
   title,
   children,
-}: ModalCompleteInterface) => {
+}: ModalCompleteInterface) : JSX.Element => {
   const {theme, typeTheme} = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 

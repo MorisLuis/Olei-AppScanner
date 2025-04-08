@@ -10,7 +10,7 @@ export const CameraModalStyles = (theme: Theme) =>
       flexDirection: 'row',
       height: 200,
       width: '100%',
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
       borderRadius: 10,
       overflow: 'hidden',
     },
@@ -19,12 +19,12 @@ export const CameraModalStyles = (theme: Theme) =>
       backgroundColor: 'black',
     },
     header: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     header_title: {
       fontSize: globalFont.font_med,
       fontWeight: 'bold',
-      marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom,
+      marginBottom: globalStyles().globalMarginBottomSmall.marginBottom,
       color: theme.text_color,
     },
     header_message: {
@@ -36,7 +36,7 @@ export const CameraModalStyles = (theme: Theme) =>
       color: theme.text_color,
     },
     codebarFound: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -47,7 +47,7 @@ export const CameraModalStyles = (theme: Theme) =>
       color: theme.text_color,
     },
     warningMessage: {
-      paddingBottom: globalStyles(theme).globalPadding.padding,
+      paddingBottom: globalStyles().globalPadding.padding,
       fontSize: globalFont.font_normal,
       color: theme.color_red,
     },

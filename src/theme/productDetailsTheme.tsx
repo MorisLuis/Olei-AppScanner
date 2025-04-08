@@ -10,7 +10,7 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) =>
   StyleSheet.create({
     ProductDetailsPage: {},
     content: {
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
     },
     imageContainer: {
       minHeight: 300,
@@ -23,7 +23,7 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) =>
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     image: {
       position: 'absolute',
@@ -49,10 +49,10 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) =>
       textAlign: 'center',
       lineHeight: globalFont.font_med,
       overflow: 'hidden',
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
+      paddingHorizontal: globalStyles().globalPadding.padding,
     },
     header: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     description: {
       fontSize: globalFont.font_med,
@@ -67,8 +67,8 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) =>
       fontSize: globalFont.font_normal,
     },
     information: {
-      paddingVertical: globalStyles(theme).globalPadding.padding / 2,
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
+      paddingVertical: globalStyles().globalPadding.padding / 2,
+      paddingHorizontal: globalStyles().globalPadding.padding,
       backgroundColor: theme.background_color_secondary,
       borderWidth: 1,
       borderColor:
@@ -78,18 +78,18 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) =>
       borderRadius: 5,
     },
     codebarIdentify: {
-      paddingBottom: globalStyles(theme).globalPadding.padding / 2,
+      paddingBottom: globalStyles().globalPadding.padding / 2,
     },
     data: {
       display: 'flex',
       flexDirection: 'row',
-      paddingVertical: globalStyles(theme).globalPadding.padding / 2,
+      paddingVertical: globalStyles().globalPadding.padding / 2,
       position: 'relative',
     },
     label: {
       fontWeight: 'bold',
       fontSize: globalFont.font_normal,
-      marginRight: globalStyles(theme).globalMarginBottom.marginBottom / 2,
+      marginRight: globalStyles().globalMarginBottom.marginBottom / 2,
       color: theme.text_color,
     },
     dataValue: {
@@ -109,17 +109,17 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) =>
     optionsContent: {},
     optionCodebar: {
       backgroundColor: theme.background_color_secondary,
-      padding: globalStyles(theme).globalPadding.padding,
-      borderRadius: globalStyles(theme).borderRadius.borderRadius,
+      padding: globalStyles().globalPadding.padding,
+      borderRadius: globalStyles().borderRadius.borderRadius,
       borderWidth: 1,
       borderColor: theme.color_border_tertiary,
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom,
+      marginBottom: globalStyles().globalMarginBottomSmall.marginBottom,
     },
     optionCodebar_icon: {
-      marginRight: globalStyles(theme).globalMarginBottomSmall.marginBottom,
+      marginRight: globalStyles().globalMarginBottomSmall.marginBottom,
     },
     selectedOption: {
       backgroundColor: theme.color_yellow,
@@ -138,7 +138,7 @@ export const productDetailsStyles = (theme: Theme, typeTheme?: string) =>
         typeTheme === 'light'
           ? theme.color_border_secondary
           : theme.color_border_tertiary,
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',

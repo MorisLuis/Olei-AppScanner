@@ -50,7 +50,7 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
       butonSecondary && buttonStyles(theme, typeTheme).button_secondary,
       buttonSmall && buttonStyles(theme, typeTheme).button_small,
     ],
-    [theme, typeTheme, disabled, extraStyles, buttonColor],
+    [theme, typeTheme, disabled, extraStyles, buttonColor, butonSecondary, buttonSmall],
   );
 
   const textStyle = useMemo(
@@ -62,7 +62,7 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
       butonSecondary && buttonStyles(theme, typeTheme).buttonTextSecondary,
       buttonSmall && buttonStyles(theme, typeTheme).buttonTextSecondary,
     ],
-    [theme, typeTheme, textColor],
+    [theme, typeTheme, textColor, butonSecondary, buttonSmall],
   );
 
   return (

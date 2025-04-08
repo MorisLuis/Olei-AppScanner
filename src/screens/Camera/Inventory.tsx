@@ -1,27 +1,46 @@
-import React, {useCallback, useContext, useEffect} from 'react';
-import {FlatList, SafeAreaView, Text, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, { useCallback, useContext, useEffect } from 'react';
+import { FlatList, SafeAreaView, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {
   getProductsByStock,
   getTotalProductsByStock,
 } from '../../services/products';
-import {ProductInventoryCardComponent} from '../../components/Cards/ProductInventoryCard';
+import { ProductInventoryCardComponent } from '../../components/Cards/ProductInventoryCard';
 import ProductInterface from '../../interface/product';
-import {ProductInventoryCardSkeleton} from '../../components/Skeletons/ProductInventoryCardSkeleton';
-import {SettingsContext} from '../../context/settings/SettingsContext';
-import {useTheme} from '../../context/ThemeContext';
-import {InventoryScreenStyles} from '../../theme/InventoryScreenTheme';
-import {EmptyMessageCard} from '../../components/Cards/EmptyMessageCard';
-import {AppNavigationProp} from '../../interface/navigation';
-import {useLoadMoreData} from '../../hooks/useLoadMoreData';
+import { ProductInventoryCardSkeleton } from '../../components/Skeletons/ProductInventoryCardSkeleton';
+import { SettingsContext } from '../../context/settings/SettingsContext';
+import { useTheme } from '../../context/ThemeContext';
+import { InventoryScreenStyles } from '../../theme/InventoryScreenTheme';
+import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
+import { AppNavigationProp } from '../../interface/navigation';
+import { useLoadMoreData } from '../../hooks/useLoadMoreData';
 
-export const Inventory = () => {
-  const {handleCodebarScannedProcces} = useContext(SettingsContext);
-  const {navigate} = useNavigation<AppNavigationProp>();
-  const {theme, typeTheme} = useTheme();
+const PAGE_NUMBER_INITIAL = 1;
+const TOTAL_PRODUCTS_EMPTY = 0;
+
+export const Inventory: React.FC = () => {
+  const { handleCodebarScannedProcces } = useContext(SettingsContext);
+  const { navigate } = useNavigation<AppNavigationProp>();
+  const { theme, typeTheme } = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
+
+  const fetchInitialData = useCallback(async (): Promise<ProductInterface[]> => {
+    const { products } = await getProductsByStock(PAGE_NUMBER_INITIAL);
+    return products;
+  }, []);
+
+  const fetchPaginatedData = useCallback(async (_: unknown, page?: number): Promise<ProductInterface[]> => {
+    const { products } = await getProductsByStock(page as number);
+    return products;
+  }, []);
+
+  const fetchTotalCount = useCallback(async (): Promise<number> => {
+    const { total } = await getTotalProductsByStock()
+    return total ?? TOTAL_PRODUCTS_EMPTY;
+  }, [])
+
 
   const {
     data,
@@ -31,21 +50,24 @@ export const Inventory = () => {
     isButtonLoading,
     total,
   } = useLoadMoreData({
-    fetchInitialData: () => getProductsByStock(1),
-    fetchPaginatedData: (_, nextPage) => getProductsByStock(nextPage as number),
-    fetchTotalCount: () => getTotalProductsByStock(),
+    fetchInitialData,
+    fetchPaginatedData,
+    fetchTotalCount,
   });
 
-  const showNoProductsMessage = total === 0 && !isLoading;
+  const showNoProductsMessage = total === TOTAL_PRODUCTS_EMPTY && !isLoading;
 
-  const handlePressProduct = (selectedProduct: ProductInterface) => {
-    handleCodebarScannedProcces(false);
-    navigate('[ProductDetailsPage] - inventoryDetailsScreen', {
-      selectedProduct,
-    });
-  };
+  const handlePressProduct = useCallback(
+    (selectedProduct: ProductInterface) => {
+      handleCodebarScannedProcces(false);
+      navigate('[ProductDetailsPage] - inventoryDetailsScreen', {
+        selectedProduct,
+      });
+    },
+    [handleCodebarScannedProcces, navigate]
+  );
 
-  const renderHeader = () => {
+  const renderHeader = (): JSX.Element => {
     return (
       <View style={InventoryScreenStyles(theme).header}>
         <Text style={InventoryScreenStyles(theme).title}>Inventario</Text>
@@ -65,7 +87,7 @@ export const Inventory = () => {
   };
 
   const renderItem = useCallback(
-    ({item}: {item: ProductInterface}) => {
+    ({ item }: { item: ProductInterface }) => {
       return (
         <ProductInventoryCardComponent
           product={item}
@@ -73,11 +95,11 @@ export const Inventory = () => {
         />
       );
     },
-    [handlePressProduct],
+    [handlePressProduct]
   );
 
-  const renderFooter = () => {
-    const visible = !isLoading && data.length >= (total ?? 0);
+  const renderFooter = (): JSX.Element | null => {
+    const visible = !isLoading && data.length >= (total ?? TOTAL_PRODUCTS_EMPTY);
 
     if (isButtonLoading) {
       return (
@@ -88,27 +110,27 @@ export const Inventory = () => {
     }
 
     return (
-      visible && (
+      visible ? (
         <View style={InventoryScreenStyles(theme).footerContent}>
           <Text style={InventoryScreenStyles(theme).footerMessage}>
             Estos son todos los productos que tienes. ({total})
-          </Text>{' '}
-          : renderLoader()
+          </Text>
+          {/* {renderLoader()} */}
         </View>
-      )
+      ) : null
     );
   };
 
   useEffect(() => {
     handleResetData();
-  }, []);
+  }, [handleResetData]);
 
   if (isLoading) {
     return (
       <SafeAreaView style={InventoryScreenStyles(theme).Inventory}>
         <View style={InventoryScreenStyles(theme).content}>
           {renderHeader()}
-          {Array.from({length: 10}).map((_, index) => (
+          {Array.from({ length: 10 }).map((_, index) => (
             <ProductInventoryCardSkeleton key={index} />
           ))}
         </View>

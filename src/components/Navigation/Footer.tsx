@@ -1,10 +1,10 @@
-import {View} from 'react-native';
+import { View } from 'react-native';
 import React from 'react';
 
-import {useTheme} from '../../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import ButtonCustum from '../Ui/ButtonCustum';
-import {uiNavigationStyles} from '../../theme/UI/uiElementsTheme';
-import {Theme} from '../../theme/appTheme';
+import { uiNavigationStyles } from '../../theme/UI/uiElementsTheme';
+import { Theme } from '../../theme/appTheme';
 
 interface FooterScreenInterface {
   buttonTitle: string;
@@ -28,28 +28,26 @@ const FooterScreen = ({
   buttonLoading,
   buttonProperties,
   visible = true,
-}: FooterScreenInterface) => {
-  const {typeTheme, theme} = useTheme();
+}: FooterScreenInterface): JSX.Element | null => {
+  const { typeTheme, theme } = useTheme();
 
-  return (
-    visible && (
-      <View style={uiNavigationStyles(theme, typeTheme).FooterScreen}>
-        <View
-          style={uiNavigationStyles(theme, typeTheme).FooterScreenContainer}>
-          <ButtonCustum
-            title={buttonTitle}
-            onPress={buttonOnPress}
-            disabled={buttonDisabled}
-            loading={buttonLoading}
-            iconName={buttonProperties?.iconName}
-            iconColor={buttonProperties?.iconColor}
-            buttonColor={buttonProperties?.buttonColor}
-            textColor={buttonProperties?.textColor}
-          />
-        </View>
+  return visible ? (
+    <View style={uiNavigationStyles(theme, typeTheme).FooterScreen}>
+      <View
+        style={uiNavigationStyles(theme, typeTheme).FooterScreenContainer}>
+        <ButtonCustum
+          title={buttonTitle}
+          onPress={buttonOnPress}
+          disabled={buttonDisabled}
+          loading={buttonLoading}
+          iconName={buttonProperties?.iconName}
+          iconColor={buttonProperties?.iconColor}
+          buttonColor={buttonProperties?.buttonColor}
+          textColor={buttonProperties?.textColor}
+        />
       </View>
-    )
-  );
+    </View>
+  ) : null
 };
 
 export default FooterScreen;

@@ -15,6 +15,6 @@ export const LoaderStyles = (theme: Theme) =>
       height: globalFont.font_sm / 2,
       borderRadius: 5,
       backgroundColor: theme.background_color_tertiary,
-      marginHorizontal: globalStyles(theme).globalMarginBottom.marginBottom / 4,
+      marginHorizontal: globalStyles().globalMarginBottom.marginBottom / 4,
     },
   });

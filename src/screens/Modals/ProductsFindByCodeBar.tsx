@@ -19,17 +19,17 @@ interface ProductFindByCodeBarInterface {
 
 export const ProductsFindByCodeBar = ({
   route,
-}: ProductFindByCodeBarInterface) => {
+}: ProductFindByCodeBarInterface) : JSX.Element | null => {
   const {products} = route?.params || {};
   const navigation = useNavigation<AppNavigationProp>();
   const {theme} = useTheme();
 
-  const onSelectProduct = (product: ProductInterface) => {
+  const onSelectProduct = (product: ProductInterface) : void => {
     navigation.goBack();
     navigation.navigate('[Modal] - scannerResultScreen', {product: product});
   };
 
-  if (!products) return;
+  if (!products) return null;
 
   return (
     <ModalBottom visible={true} onClose={() => navigation.goBack()}>

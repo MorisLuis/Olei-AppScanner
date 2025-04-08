@@ -1,30 +1,19 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+
 import { AuthProvider } from './src/context/auth/AuthProvider';
 import { ThemeProvider } from './src/context/ThemeContext';
 import { SettingsProvider } from './src/context/settings/SettingsProvider';
 import { InventoryProvider } from './src/context/Inventory/InventoryBagProvider';
-import { AppNavigation } from './src/navigator/AppNavigation';
 import { ShowToastMessage } from './src/components/ToastMesage';
-import { setUnauthorizedHandler } from './src/api/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { navigationRef, resetToLogin } from './src/hooks/useResetToLogin';
+import { navigationRef } from './src/hooks/useResetToLogin';
+import { MainNavigator } from './src/navigator/MainNavigation';
 
-const App = () => {
-  // Configuramos el callback para 401
-  useEffect(() => {
-    setUnauthorizedHandler(async () => {
-      console.log('setUnauthorizedHandler');
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('refreshToken');
-      resetToLogin();
-    });
-  }, []);
-
+const App = (): JSX.Element => {
   return (
     <NavigationContainer ref={navigationRef}>
       <AppState>
-        <AppNavigation />
+        <MainNavigator />
       </AppState>
       <ShowToastMessage />
     </NavigationContainer>

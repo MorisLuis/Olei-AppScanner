@@ -1,88 +1,65 @@
-import React, {useState} from 'react';
-import {View, Switch, Text, Platform, StyleProp, ViewStyle} from 'react-native';
+import React, { JSX, useState } from 'react';
+import { View, Switch, Platform, ViewStyle, StyleProp, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {toggleStyles} from '../../theme/UI/inputs';
-import {useTheme} from '../../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
+import { toggleStyles } from '../../theme/UI/inputs';
 
 interface ToggleInterface {
-  label: string;
-  message: string;
-  extraStyles: StyleProp<ViewStyle>;
-  value?: boolean;
-  onChange: (newValue: boolean) => void;
+    label: string;
+    message: string;
+    extraStyles: StyleProp<ViewStyle>;
+    value?: boolean;
+    onChange: (_newValue: boolean) => void;
 }
 
 const Toggle = ({
-  label,
-  message,
-  extraStyles,
-  value,
-  onChange,
-}: ToggleInterface) => {
-  const {theme, typeTheme} = useTheme();
-  const [isEnabled, setIsEnabled] = useState(value ? value : false);
-  const iconColor = typeTheme === 'dark' ? 'white' : 'black';
+    label,
+    message,
+    extraStyles,
+    value,
+    onChange
+}: ToggleInterface) : JSX.Element => {
 
-  const toggleSwitch = () => {
-    onChange(!isEnabled);
-    setIsEnabled(() => !isEnabled);
-  };
+    const { theme, typeTheme } = useTheme();
+    const [isEnabled, setIsEnabled] = useState(value ? value : false);
+    const iconColor = typeTheme === 'dark' ? "white" : "black"
 
-  return (
-    <View style={[toggleStyles(theme, typeTheme).Toggle, extraStyles]}>
-      <View style={toggleStyles(theme, typeTheme).toggleText}>
-        <Text style={toggleStyles(theme, typeTheme).togglelabel}>{label}</Text>
-        <Text style={toggleStyles(theme, typeTheme).togglemessage}>
-          {message}
-        </Text>
-      </View>
+    const toggleSwitch = () : void => {
+        onChange(!isEnabled)
+        setIsEnabled(() => !isEnabled);
+    };
 
-      <View
-        style={{
-          display: 'flex',
-          position: 'relative',
-          justifyContent: 'center',
-        }}>
-        {isEnabled && (
-          <Icon
-            name="checkmark-outline"
-            size={18}
-            color={iconColor}
-            style={{
-              position: 'absolute',
-              zIndex: 2,
-              left: isEnabled ? '52.5%' : '12.5%',
-            }}
-          />
-        )}
-        <Switch
-          trackColor={{
-            false: toggleStyles(theme, typeTheme).SwitchTrackColorFalse
-              .backgroundColor,
-            true: toggleStyles(theme, typeTheme).SwitchTrackColorTrue
-              .backgroundColor,
-          }}
-          thumbColor={
-            Platform.OS === 'android' && isEnabled
-              ? toggleStyles(theme, typeTheme).SwitchThumbColorAndroidEnabled
-                  .backgroundColor
-              : Platform.OS === 'android' && !isEnabled
-                ? toggleStyles(theme, typeTheme)
-                    .SwitchThumbColorAndroidNotEnabled.backgroundColor
-                : Platform.OS === 'ios' && isEnabled
-                  ? toggleStyles(theme, typeTheme).SwitchThumbColorIOSdEnabled
-                      .backgroundColor
-                  : toggleStyles(theme, typeTheme)
-                      .SwitchThumbColorIOSdNotEnabled.backgroundColor
-          }
-          //ios_backgroundColor={theme.background_color_tertiary}
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-        />
-      </View>
-    </View>
-  );
+    return (
+        <View style={[toggleStyles(theme, typeTheme).Toggle, extraStyles]}>
+            <View>
+                <Text style={toggleStyles(theme, typeTheme).togglelabel}>{label}</Text>
+                <Text style={toggleStyles(theme, typeTheme).togglemessage}>{message}</Text>
+            </View>
+
+            <View style={toggleStyles(theme, typeTheme).toggleContainer}>
+                {
+                    isEnabled &&
+                    <Icon
+                        name="checkmark-outline"
+                        size={18}
+                        color={iconColor}
+                        style={toggleStyles(theme, typeTheme, isEnabled).togglemessage}
+                    />
+                }
+                <Switch
+                    trackColor={{ false: toggleStyles(theme, typeTheme).SwitchTrackColorFalse.backgroundColor, true: toggleStyles(theme, typeTheme).SwitchTrackColorTrue.backgroundColor }}
+                    thumbColor={
+                        Platform.OS === 'android' && isEnabled ? toggleStyles(theme, typeTheme).SwitchThumbColorAndroidEnabled.backgroundColor :
+                            Platform.OS === 'android' && !isEnabled ? toggleStyles(theme, typeTheme).SwitchThumbColorAndroidNotEnabled.backgroundColor :
+                                Platform.OS === 'ios' && isEnabled ? toggleStyles(theme, typeTheme).SwitchThumbColorIOSdEnabled.backgroundColor : toggleStyles(theme, typeTheme).SwitchThumbColorIOSdNotEnabled.backgroundColor
+                    }
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
+                />
+            </View>
+        </View>
+    );
 };
 
 export default Toggle;

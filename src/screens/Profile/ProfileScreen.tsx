@@ -1,31 +1,31 @@
-import React, {useContext} from 'react';
-import {Alert, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, { useContext } from 'react';
+import { Alert, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DeviceInfo from 'react-native-device-info';
 
-import {AuthContext} from '../../context/auth/AuthContext';
-import {globalStyles} from '../../theme/appTheme';
-import {ProfileScreenStyles} from '../../theme/ProfileScreenTheme';
-import {useTheme} from '../../context/ThemeContext';
-import {InventoryBagContext} from '../../context/Inventory/InventoryBagContext';
-import {ProfileNavigationProp} from '../../interface/navigation';
+import { AuthContext } from '../../context/auth/AuthContext';
+import { globalStyles } from '../../theme/appTheme';
+import { ProfileScreenStyles } from '../../theme/ProfileScreenTheme';
+import { useTheme } from '../../context/ThemeContext';
+import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
+import { ProfileNavigationProp } from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 
-export const ProfileScreen = () => {
-  const {logOutUser, logOutServer} = useContext(AuthContext);
+export const ProfileScreen = (): JSX.Element => {
+  const { logOutClient, logOutServer } = useContext(AuthContext);
   const version = DeviceInfo.getVersion(); // Esto obtiene la versión de la aplicación
 
-  const {theme, typeTheme} = useTheme();
-  const {navigate} = useNavigation<ProfileNavigationProp>();
-  const {cleanBag} = useContext(InventoryBagContext);
+  const { theme, typeTheme } = useTheme();
+  const { navigate } = useNavigation<ProfileNavigationProp>();
+  const { cleanBag } = useContext(InventoryBagContext);
 
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 
-  const logOutSesion = () => {
-    const Accept = async () => {
+  const logOutSesion = (): void => {
+    const Accept = async (): Promise<void> => {
       cleanBag();
-      await logOutUser(true);
+      await logOutClient();
     };
 
     Alert.alert(
@@ -34,7 +34,7 @@ export const ProfileScreen = () => {
       [
         {
           text: 'Cancelar',
-          onPress: () => console.log('Cancel Pressed'),
+          //onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
         {
@@ -42,12 +42,12 @@ export const ProfileScreen = () => {
           onPress: Accept,
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
-  const logOutDataBase = () => {
-    const Accept = async () => {
+  const logOutDataBase = (): void => {
+    const Accept = async (): Promise<void> => {
       cleanBag();
       await logOutServer();
     };
@@ -58,7 +58,7 @@ export const ProfileScreen = () => {
       [
         {
           text: 'Cancelar',
-          onPress: () => console.log('Cancel Pressed'),
+          //onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
         {
@@ -66,7 +66,7 @@ export const ProfileScreen = () => {
           onPress: Accept,
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -80,7 +80,7 @@ export const ProfileScreen = () => {
             navigate('[ProfileNavigation] - personalInformationScreen')
           }
           style={ProfileScreenStyles(theme).section}>
-          <Text style={{color: theme.text_color}}>Información Personal</Text>
+          <Text style={{ color: theme.text_color }}>Información Personal</Text>
           <Icon name="person-outline" size={22} color={iconColor} />
         </TouchableOpacity>
 
@@ -89,7 +89,7 @@ export const ProfileScreen = () => {
         <TouchableOpacity
           onPress={() => navigate('[ProfileNavigation] - settingsSceen')}
           style={[ProfileScreenStyles(theme).section]}>
-          <Text style={{color: theme.text_color}}>Configuración General</Text>
+          <Text style={{ color: theme.text_color }}>Configuración General</Text>
           <Icon name="settings-outline" size={22} color={iconColor} />
         </TouchableOpacity>
 
@@ -100,7 +100,7 @@ export const ProfileScreen = () => {
         <TouchableOpacity
           onPress={() => navigate('[ProfileNavigation] - privacyScreen')}
           style={[ProfileScreenStyles(theme).section]}>
-          <Text style={{color: theme.text_color}}>Aviso de privacidad</Text>
+          <Text style={{ color: theme.text_color }}>Aviso de privacidad</Text>
           <Icon name="book-outline" size={22} color={iconColor} />
         </TouchableOpacity>
 
@@ -110,10 +110,7 @@ export const ProfileScreen = () => {
           title="Cerrar sesión"
           onPress={logOutSesion}
           disabled={false}
-          extraStyles={{
-            marginTop: globalStyles(theme).globalMarginBottom.marginBottom * 2,
-            marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
-          }}
+          extraStyles={ProfileScreenStyles(theme).button_close_session}
         />
 
         <TouchableOpacity
@@ -122,7 +119,7 @@ export const ProfileScreen = () => {
             ProfileScreenStyles(theme).logOutDB,
             {
               marginBottom:
-                globalStyles(theme).globalMarginBottomSmall.marginBottom,
+                globalStyles().globalMarginBottomSmall.marginBottom,
             },
           ]}>
           <Text style={ProfileScreenStyles(theme).logOutDBText}>
@@ -131,7 +128,7 @@ export const ProfileScreen = () => {
         </TouchableOpacity>
 
         <View>
-          <Text style={{color: theme.text_color}}>Version: {version}</Text>
+          <Text style={{ color: theme.text_color }}>Version: {version}</Text>
         </View>
       </SafeAreaView>
     </View>

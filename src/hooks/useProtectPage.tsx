@@ -1,9 +1,8 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {useCallback, useContext} from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useCallback } from 'react';
 
-import {AppNavigationProp} from '../interface/navigation';
-import {AppNavigationStackParamList} from '../navigator/AppNavigation';
-import {AuthContext} from '../context/auth/AuthContext';
+import { AppNavigationProp } from '../interface/navigation';
+import { AppNavigationStackParamList } from '../navigator/AppNavigation';
 
 export type NavigatePageType = keyof AppNavigationStackParamList | 'back';
 
@@ -15,23 +14,24 @@ interface UseProtectPageProps {
 export const useProtectPage = ({
   condition,
   navigatePage,
-}: UseProtectPageProps) => {
-  const {navigate, canGoBack} = useNavigation<AppNavigationProp>();
-  const {status} = useContext(AuthContext);
+}: UseProtectPageProps): void => {
+  const { navigate, canGoBack } = useNavigation<AppNavigationProp>();
 
-  const checkMiddleware = async () => {
+  const checkMiddleware = useCallback((): void => {
     if (navigatePage === 'back') {
-      return canGoBack() ? canGoBack?.() : navigate('typeOfMovementScreen');
+      if (canGoBack()) {
+        canGoBack();
+      } else {
+        //navigate('typeOfMovementScreen');
+      }
+    } else if (condition) {
+      navigate(navigatePage);
     }
-
-    if (condition) {
-      return navigate(navigatePage);
-    }
-  };
+  }, [condition, canGoBack, navigate, navigatePage]);
 
   useFocusEffect(
-    useCallback(() => {
+    useCallback((): void => {
       checkMiddleware();
-    }, [navigate, condition, status]),
+    }, [checkMiddleware]),
   );
 };

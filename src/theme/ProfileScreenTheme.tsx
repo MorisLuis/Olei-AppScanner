@@ -1,12 +1,12 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import {Theme, globalFont, globalStyles} from './appTheme';
+import { Theme, globalFont, globalStyles } from './appTheme';
 
 export const ProfileScreenStyles = (theme: Theme) =>
   StyleSheet.create({
     ProfileScreen: {
       flex: 1,
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
       backgroundColor: theme.background_color,
     },
     content: {
@@ -16,7 +16,7 @@ export const ProfileScreenStyles = (theme: Theme) =>
     },
     section: {
       paddingVertical:
-        globalStyles(theme).globalMarginBottom.marginBottom * 0.75,
+        globalStyles().globalMarginBottom.marginBottom * 0.75,
       borderWidth: 1,
       borderColor: 'transparent',
       //borderBottomColor: theme.color_border,
@@ -29,7 +29,7 @@ export const ProfileScreenStyles = (theme: Theme) =>
     title: {
       fontSize: globalFont.font_med,
       fontWeight: 'bold',
-      paddingTop: globalStyles(theme).globalPadding.padding,
+      paddingTop: globalStyles().globalPadding.padding,
       color: theme.text_color,
     },
     logOutDB: {},
@@ -41,6 +41,9 @@ export const ProfileScreenStyles = (theme: Theme) =>
       height: 1,
       width: '100%',
       backgroundColor: theme.color_border,
-      //marginVertical: globalStyles(theme).globalMarginBottom.marginBottom * 1
     },
+    button_close_session: {
+      marginTop: globalStyles().globalMarginBottom.marginBottom * 2,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
+    }
   });

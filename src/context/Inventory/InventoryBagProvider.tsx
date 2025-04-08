@@ -14,6 +14,7 @@ import {innventoryBagReducer} from './InventoryBagReducer';
 import {api} from '../../api/api';
 import {AuthContext} from '../auth/AuthContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
+import { NUMBER_0 } from '../../utils/globalConstants';
 
 export interface inventoryDataInterface {
   Folio: number;
@@ -25,75 +26,81 @@ export interface InventoryBagInterface {
   inventoryData: inventoryDataInterface;
 }
 
+const DEFAULT_FOLIO = 0;
+const DEFAULT_TIMEOUT_MS = 1000;
+const SINGLE_PIECE = 1;
+const DOUBLE_PIECES = 2;
+
 export const InventoryBagInitialState: InventoryBagInterface = {
   bag: [],
   numberOfItems: 0,
   inventoryData: {
-    Folio: 0,
+    Folio: DEFAULT_FOLIO,
   },
 };
 
-export const InventoryProvider = ({children}: {children: ReactNode}) => {
+export const InventoryProvider = ({children}: {children: ReactNode}): JSX.Element => {
+
   const [state, dispatch] = useReducer(
     innventoryBagReducer,
     InventoryBagInitialState,
   );
   const {user} = useContext(AuthContext);
 
-  const [inventoryCreated, setInventoryCreated] = useState(false);
-  const [productAdded, setProductAdded] = useState(false);
-  const [keyNumber, setKeyNumber] = useState(0);
+  const [inventoryCreated, setInventoryCreated] = useState<boolean>(false);
+  const [productAdded, setProductAdded] = useState<boolean>(false);
+  const [keyNumber, setKeyNumber] = useState<number>(NUMBER_0);
   const {handleError} = useErrorHandler();
 
-  const addProduct = (product: ProductInterfaceBag) => {
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const addProduct = (product: ProductInterfaceBag): void => {
     try {
-      setKeyNumber(keyNumber + 1);
-      const newKey = keyNumber + 1;
+      const newKey = keyNumber + SINGLE_PIECE;
+      setKeyNumber(newKey);
 
       dispatch({
         type: '[InventoryBag] - Add Product',
         payload: {...product, key: newKey},
       });
+
       setProductAdded(true);
     } catch (error) {
       handleError(error, true);
     } finally {
       timeoutRef.current = setTimeout(() => {
         setProductAdded(false);
-      }, 1000);
+      }, DEFAULT_TIMEOUT_MS);
     }
   };
 
-  const removeProduct = (product: ProductInterfaceBag) => {
+  const removeProduct = (product: ProductInterfaceBag): void => {
     dispatch({type: '[InventoryBag] - Remove Product', payload: product});
   };
 
-  const editProduct = (product: ProductInterfaceBag) => {
+  const editProduct = (product: ProductInterfaceBag): void => {
     dispatch({type: '[InventoryBag] - Edit Product', payload: product});
     Toast.show({
       type: 'tomatoToast',
       text1:
-        product.Cantidad < 2
+        product.Cantidad < DOUBLE_PIECES
           ? `Se cambio a ${product.Cantidad} pieza.`
           : `Se cambio a ${product.Cantidad} piezas.`,
     });
   };
 
-  const cleanBag = () => {
+  const cleanBag = (): void => {
     dispatch({type: '[InventoryBag] - Clear Bag', payload: []});
   };
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const postInventory = async (inventoryDetails: ProductInterfaceBag[]) => {
+  const postInventory = async (inventoryDetails: ProductInterfaceBag[]): Promise<void> => {
     try {
       const tipoMovInvId = user?.Id_TipoMovInv;
 
       const inventorybody = {
-        inventoryDetails: inventoryDetails,
+        inventoryDetails,
         typeOfMovement: tipoMovInvId,
       };
-
       const inventory = await api.post(`/api/inventory`, inventorybody);
       dispatch({
         type: '[InventoryBag] - Post Inventory',
@@ -105,12 +112,11 @@ export const InventoryProvider = ({children}: {children: ReactNode}) => {
     } finally {
       timeoutRef.current = setTimeout(() => {
         setInventoryCreated(false);
-      }, 1000);
+      }, DEFAULT_TIMEOUT_MS);
     }
   };
 
-  // Cleanup timeout on component unmount
-  useEffect(() => {
+  useEffect((): (() => void) => {
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -118,7 +124,7 @@ export const InventoryProvider = ({children}: {children: ReactNode}) => {
     };
   }, []);
 
-  useEffect(() => {
+  useEffect((): void => {
     const numberOfItems = state.bag.length;
     const orderSummary = {
       numberOfItems,

@@ -11,7 +11,7 @@ export const CameraPermissionStyles = (theme: Theme) =>
       alignItems: 'center',
     },
     messageContent: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     messageText: {
       color: theme.text_color_secondary,

@@ -1,35 +1,23 @@
 import React from 'react';
 import {View} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {RouteProp} from '@react-navigation/native';
 
 import {Inventory} from '../screens/Camera/Inventory';
 import {CustomTabBar} from '../components/Navigation/CustomTabBar';
 import CameraScreen from '../screens/Camera/CameraScreen';
-import {BottomNavigationStackParamList} from './BottomNavigation';
-
-type ScannerNavigationRouteProp = RouteProp<
-  BottomNavigationStackParamList,
-  'BottomNavigation - Scanner'
->;
-
-interface ScannerNavigationInterface {
-  route: ScannerNavigationRouteProp;
-}
+import { globalStyles } from '../theme/appTheme';
 
 export type ScannerNavigationStackParamList = {
   '[ScannerNavigation] - camera': undefined;
   '[ScannerNavigation] - inventory': undefined;
 };
 
-export const ScannerNavigation = ({route}: ScannerNavigationInterface) => {
-  const TopTabs =
-    createMaterialTopTabNavigator<ScannerNavigationStackParamList>();
-  //const initialScreen = route?.params?.screen || '[ScannerNavigation] - camera';
+export const ScannerNavigation = () : JSX.Element => {
+  const TopTabs = createMaterialTopTabNavigator<ScannerNavigationStackParamList>();
   const initialScreen = '[ScannerNavigation] - camera';
 
   return (
-    <View style={{flex: 1}}>
+    <View style={globalStyles().flex}>
       <TopTabs.Navigator
         tabBar={(props) => <CustomTabBar {...props} />}
         initialRouteName={initialScreen}>

@@ -1,13 +1,20 @@
 import codebartypes from './codebarTypes.json';
+import { NUMBER_0, NUMBER_1 } from './globalConstants';
 
-export const identifyBarcodeType = (codebar?: string) => {
+export const identifyBarcodeType = (codebar?: string): {
+  type: string,
+  id: number,
+  errorMessage: string,
+  keyboardType: string,
+  maxLength: number
+} | null => {
   const barcodeData = codebartypes;
 
-  for (let i = barcodeData.barcodes.length - 1; i >= 0; i--) {
+  for (let i = barcodeData.barcodes.length - NUMBER_1; i >= NUMBER_0; i--) {
     const barcode = barcodeData.barcodes[i];
     const regex = new RegExp(barcode.regex);
 
-    if (!codebar) return;
+    if (!codebar) return null;
     if (regex.test(codebar)) {
       return {
         type: barcode.type,

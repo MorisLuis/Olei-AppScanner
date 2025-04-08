@@ -1,7 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
+  widthPercentageToDP as wp
 } from 'react-native-responsive-screen';
 
 import {Theme, globalFont, globalStyles} from '../appTheme';
@@ -20,7 +19,7 @@ export const ModalMiddlenStyles = (theme: Theme, typeTheme: string) =>
       elevation: 5,
       width: wp('95%'),
       height: 'auto',
-      borderRadius: globalStyles(theme).borderRadius.borderRadius,
+      borderRadius: globalStyles().borderRadius.borderRadius,
       borderWidth: 1,
 
       borderColor:

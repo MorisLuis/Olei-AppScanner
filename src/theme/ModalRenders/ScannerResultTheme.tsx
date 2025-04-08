@@ -1,7 +1,6 @@
 import {Dimensions, StyleSheet} from 'react-native';
 import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
+  widthPercentageToDP as wp
 } from 'react-native-responsive-screen';
 
 import {Theme, globalFont, globalStyles} from '../appTheme';
@@ -10,7 +9,7 @@ const {height} = Dimensions.get('window');
 export const modalRenderstyles = (theme: Theme) =>
   StyleSheet.create({
     ScannerResult: {
-      paddingBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      paddingBottom: globalStyles().globalMarginBottom.marginBottom,
       backgroundColor: theme.background_color,
     },
     container: {
@@ -26,7 +25,7 @@ export const modalRenderstyles = (theme: Theme) =>
       alignItems: 'center',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      paddingBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     productText: {
       display: 'flex',
@@ -35,14 +34,14 @@ export const modalRenderstyles = (theme: Theme) =>
     },
     productMessage: {},
     code: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
     },
     codeLabel: {
       fontSize: globalFont.font_normal,
-      marginRight: globalStyles(theme).globalMarginBottomSmall.marginBottom,
+      marginRight: globalStyles().globalMarginBottomSmall.marginBottom,
       color: theme.text_color,
     },
     codeValue: {
@@ -64,14 +63,14 @@ export const modalRenderstyles = (theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      paddingBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     productNotFound: {
       display: 'flex',
       alignItems: 'center',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      paddingBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     productNotFoundText: {
       display: 'flex',
@@ -85,7 +84,7 @@ export const modalRenderstyles = (theme: Theme) =>
     productNotFoundTitle: {
       fontSize: 18,
       fontWeight: 'bold',
-      paddingBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      paddingBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     seeProduct: {
       fontSize: globalFont.font_normal,
@@ -97,6 +96,6 @@ export const modalRenderstyles = (theme: Theme) =>
     },
     doNotAllowProductOutputs: {
       backgroundColor: 'red',
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
     },
   });

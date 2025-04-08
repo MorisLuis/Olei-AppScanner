@@ -1,11 +1,13 @@
 // NavigationService.ts
-import { createNavigationContainerRef } from '@react-navigation/native';
-import { AppNavigationStackParamList } from '../navigator/AppNavigation';
+import {createNavigationContainerRef} from '@react-navigation/native';
 
-export const navigationRef = createNavigationContainerRef<AppNavigationStackParamList>();
+import {AppNavigationStackParamList} from '../navigator/AppNavigation';
 
-export function resetToLogin() {
-    if (navigationRef.isReady()) {
-        navigationRef.navigate('LoginDatabaseScreen')
-    }
+export const navigationRef =
+  createNavigationContainerRef<AppNavigationStackParamList>();
+
+export function resetToLogin() : void {
+  if (navigationRef.isReady()) {
+    navigationRef.navigate('LoginDatabaseScreen');
+  }
 }

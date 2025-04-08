@@ -1,22 +1,29 @@
-import {useContext} from 'react';
+import { useCallback, useContext } from 'react';
 import Toast from 'react-native-toast-message';
-import {AxiosError} from 'axios';
 
-import {AuthContext} from '../context/auth/AuthContext';
-import {sendError} from '../services/errors';
-import {CustomAxiosError, ErrorCustum} from '../interface/error';
+import { AuthContext } from '../context/auth/AuthContext';
+import { sendError } from '../services/errors';
+import { CustomAxiosError, ErrorCustum } from '../interface/error';
 
 const isAxiosError = (error: unknown): error is CustomAxiosError => {
   return (
     typeof error === 'object' &&
     error !== null &&
     'isAxiosError' in error &&
-    (error as {isAxiosError: boolean}).isAxiosError === true
+    (error as { isAxiosError: boolean }).isAxiosError === true
   );
 };
 
-const useErrorHandler = () => {
-  const {user, logOutServer} = useContext(AuthContext);
+// Constantes para evitar "magic numbers"
+const UNAUTHORIZED_STATUS = 401;
+const SERVER_ERROR_STATUS = 500;
+
+const useErrorHandler = (): {
+  handleError: (_error: unknown, _avoidAPI?: boolean, _avoidToast?: boolean) => Promise<void>;
+  handleErrorCustum: (_error: ErrorCustum) => Promise<void>;
+} => {
+
+  const { user, logOutServer } = useContext(AuthContext);
 
   /**
    * Procesa errores recibidos, principalmente de llamadas Axios.
@@ -26,16 +33,17 @@ const useErrorHandler = () => {
    * @param avoidAPI - Si es true, evita enviar el error a la API.
    * @param avoidToast - Si es true, evita mostrar la notificación (Toast).
    */
-  const handleError = async (
+  const handleError = useCallback(async (
     error: unknown,
     save?: boolean,
     avoidToast?: boolean,
   ): Promise<void> => {
-    if (isAxiosError(error)) {
+    console.log({error})
+
+/*     if (isAxiosError(error)) {
       // Extrae información relevante del error de Axios.
       const status = error.response?.status;
       const method = error.response?.config?.method;
-
       const message =
         error.response?.data?.error ??
         error.response?.data?.message ??
@@ -43,7 +51,7 @@ const useErrorHandler = () => {
 
       console.log(`${status}-${method}-${message}`);
 
-      if (status === 401) {
+      if (status === UNAUTHORIZED_STATUS) {
         logOutServer?.();
       }
 
@@ -64,21 +72,20 @@ const useErrorHandler = () => {
         });
       }
 
-      if (status === 500) {
+      if (status === SERVER_ERROR_STATUS) {
         logOutServer?.();
         return;
       }
-    } else {
-      console.error('Unknown error:', error);
-    }
-  };
+    } */
+  }, [logOutServer, user?.Id_Usuario]);
 
-  const handleErrorCustum = async (error: ErrorCustum) => {
-    const {status, Message, Metodo} = error ?? {};
+  const handleErrorCustum = async (error: ErrorCustum): Promise<void> => {
+    const { status, Message, Metodo } = error ?? {};
 
-    console.log({handleErrorCustum: true, status, Metodo, Message});
+    // eslint-disable-next-line no-console
+    console.log({ handleErrorCustum: true, status, Metodo, Message });
 
-    if (status === 401) {
+/*     if (status === UNAUTHORIZED_STATUS) {
       logOutServer?.();
     }
 
@@ -95,20 +102,16 @@ const useErrorHandler = () => {
       text1: Message,
     });
 
-    if (status === 500) {
+    if (status === SERVER_ERROR_STATUS) {
       logOutServer?.();
       return;
-    }
+    } */
   };
 
-  const handleErrorApi = async (error: AxiosError) => {
-    console.log({errorAPI: error});
-  };
 
   return {
     handleError,
-    handleErrorCustum,
-    handleErrorApi,
+    handleErrorCustum
   };
 };
 

@@ -3,14 +3,14 @@ import {createContext} from 'react';
 import UserInterface from '../../interface/user';
 
 interface ContextProps {
-  handleVibrationState: (value: boolean) => void;
-  handleCameraAvailable: (value: boolean) => void;
-  handleLimitProductsScanned: (value: number) => void;
-  handleSetupUser: (value: UserInterface) => void;
-  handleCodebarScannedProcces: (value: boolean) => void;
-  handleGetCodebarType: (value?: number) => void;
-  handleStartScanning: (value: boolean) => void;
-  updateCodeBarProvider: (value: string) => void;
+  handleVibrationState: (_value: boolean) => void;
+  handleCameraAvailable: (_value: boolean) => void;
+  handleLimitProductsScanned: (_value: number) => void;
+  handleSetupUser: (_value: UserInterface) => void;
+  handleCodebarScannedProcces: (_value: boolean) => void;
+  handleGetCodebarType: (_value?: number) => void;
+  handleStartScanning: (_value: boolean) => void;
+  updateCodeBarProvider: (_value: string) => void;
 
   vibration?: boolean;
   cameraAvailable?: boolean;

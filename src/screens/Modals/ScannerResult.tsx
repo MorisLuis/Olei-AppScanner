@@ -1,21 +1,27 @@
-import React, {useContext, useState} from 'react';
-import {View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import React, { useContext, useState } from 'react';
+import { StyleProp, View, ViewStyle } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import {InventoryBagContext} from '../../context/Inventory/InventoryBagContext';
-import ProductInterface, {ProductInterfaceBag} from '../../interface/product';
-import {Counter} from '../../components/Ui/Counter';
-import {globalStyles} from '../../theme/appTheme';
-import {EmptyMessageCard} from '../../components/Cards/EmptyMessageCard';
-import {SettingsContext} from '../../context/settings/SettingsContext';
-import {modalRenderstyles} from '../../theme/ModalRenders/ScannerResultTheme';
+import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
+import ProductInterface, { ProductInterfaceBag } from '../../interface/product';
+import { Counter } from '../../components/Ui/Counter';
+import { globalStyles } from '../../theme/appTheme';
+import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
+import { SettingsContext } from '../../context/settings/SettingsContext';
+import { modalRenderstyles } from '../../theme/ModalRenders/ScannerResultTheme';
 import ModalBottom from '../../components/Modals/ModalBottom';
-import {useTheme} from '../../context/ThemeContext';
-import {AppNavigationProp} from '../../interface/navigation';
+import { useTheme } from '../../context/ThemeContext';
+import { AppNavigationProp } from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
-import {AuthContext} from '../../context/auth/AuthContext';
+import { AuthContext } from '../../context/auth/AuthContext';
 import CustomText from '../../components/CustumText';
+
+// Constants to avoid magic numbers
+const ID_TIPO_MOVIMIENTO_2 = 2;
+const NO_EXISTENCE = 0;
+const MIN_COUNTER_VALUE = 1;
+const TIMEOUT_DELAY = 500;
 
 interface ScannerResultInterface {
   fromInput?: boolean;
@@ -32,37 +38,36 @@ const ScannerResult = ({
   fromInput,
   seeProductDetails = true,
   route,
-}: ScannerResultInterface) => {
-  const {product, fromProductDetails} = route?.params || {};
-  const {theme} = useTheme();
-  const {addProduct} = useContext(InventoryBagContext);
-  const {handleCameraAvailable, codeBar} = useContext(SettingsContext);
+}: ScannerResultInterface): JSX.Element => {
+  const { product, fromProductDetails } = route?.params || {};
+  const { theme } = useTheme();
+  const { addProduct } = useContext(InventoryBagContext);
+  const { handleCameraAvailable, codeBar } = useContext(SettingsContext);
   const {
-    user: {SalidaSinExistencias, Id_TipoMovInv},
+    user: { SalidaSinExistencias, Id_TipoMovInv },
   } = useContext(AuthContext);
   const showLimit =
-    Id_TipoMovInv?.Id_TipoMovInv === 2 && SalidaSinExistencias === 0;
-  const doNotAllowProductOutputs = showLimit && (product?.Existencia ?? 0) < 1;
+    Id_TipoMovInv?.Id_TipoMovInv === ID_TIPO_MOVIMIENTO_2 && SalidaSinExistencias === NO_EXISTENCE;
+  const doNotAllowProductOutputs = showLimit && (product?.Existencia ?? NO_EXISTENCE) < MIN_COUNTER_VALUE;
   const navigation = useNavigation<AppNavigationProp>();
 
   const [loadingAddProduct, setLoadingAddProduct] = useState(false);
-  const [counterProduct, setCounterProduct] = useState<number>(0);
-  const buttondisabled = loadingAddProduct || counterProduct < 1;
+  const [counterProduct, setCounterProduct] = useState<number>(NO_EXISTENCE);
+  const buttondisabled = loadingAddProduct || counterProduct < MIN_COUNTER_VALUE;
 
-  const handleAddToInventory = () => {
+  const handleAddToInventory = (): void => {
     setLoadingAddProduct(true);
     if (!product?.Codigo) return;
 
     const productData: ProductInterfaceBag = {
       Codigo: product?.Codigo,
-      Id_Marca: product?.Id_Marca ?? 0,
-      Existencia: product?.Existencia ?? 0,
-      Id_Ubicacion: 0,
-      Diferencia: 0,
-
+      Id_Marca: product?.Id_Marca ?? NO_EXISTENCE,
+      Existencia: product?.Existencia ?? NO_EXISTENCE,
+      Id_Ubicacion: NO_EXISTENCE,
+      Diferencia: NO_EXISTENCE,
       Descripcion: product?.Descripcion,
       Marca: product?.Marca,
-      Cantidad: counterProduct === 0 ? 1 : counterProduct,
+      Cantidad: counterProduct === NO_EXISTENCE ? MIN_COUNTER_VALUE : counterProduct,
     };
 
     addProduct(productData);
@@ -70,7 +75,7 @@ const ScannerResult = ({
     navigation.goBack();
   };
 
-  const handleExpandProductDetails = () => {
+  const handleExpandProductDetails = (): void => {
     if (!product) return;
     navigation.goBack();
     navigation.navigate('[ProductDetailsPage] - productDetailsScreen', {
@@ -79,12 +84,7 @@ const ScannerResult = ({
     });
   };
 
-  const handleSearchByCode = () => {
-    navigation.goBack();
-    navigation.navigate('[Modal] - findByCodebarInputModal');
-  };
-
-  const handleAssignCodeToProduct = () => {
+  const handleAssignCodeToProduct = (): void => {
     handleCameraAvailable(false);
     setTimeout(() => {
       navigation.goBack();
@@ -92,10 +92,10 @@ const ScannerResult = ({
         modal: true,
         withCodebar: false,
       });
-    }, 500);
+    }, TIMEOUT_DELAY);
   };
 
-  const renderDoesntExistProduct = () => {
+  const renderDoesntExistProduct = (): JSX.Element => {
     return (
       <View>
         <EmptyMessageCard
@@ -113,8 +113,7 @@ const ScannerResult = ({
           onPress={handleAssignCodeToProduct}
           disabled={false}
           extraStyles={{
-            marginVertical:
-              globalStyles(theme).globalMarginBottomSmall.marginBottom,
+            marginVertical: globalStyles().globalMarginBottomSmall.marginBottom,
           }}
           buttonColor="color_yellow"
           textColor="text_color"
@@ -122,6 +121,8 @@ const ScannerResult = ({
       </View>
     );
   };
+
+  const styles_counter_heigh: StyleProp<ViewStyle> = { width: fromProductDetails ? '100%' : wp('42.5%') }
 
   return (
     <ModalBottom visible={true} onClose={() => navigation.goBack()}>
@@ -151,7 +152,7 @@ const ScannerResult = ({
             <>
               <View style={modalRenderstyles(theme).counterContainer}>
                 {seeProductDetails && !fromProductDetails && (
-                  <View style={{width: wp('42.5%')}}>
+                  <View style={{ width: wp('42.5%') }}>
                     <ButtonCustum
                       title={'Ver producto'}
                       onPress={handleExpandProductDetails}
@@ -161,8 +162,7 @@ const ScannerResult = ({
                   </View>
                 )}
 
-                <View
-                  style={{width: fromProductDetails ? '100%' : wp('42.5%')}}>
+                <View style={styles_counter_heigh}>
                   <Counter
                     counter={counterProduct}
                     setCounter={setCounterProduct}

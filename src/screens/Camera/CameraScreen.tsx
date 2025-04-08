@@ -18,9 +18,10 @@ import {useTheme} from '../../context/ThemeContext';
 import ProductInterface from '../../interface/product';
 import {cameraStyles} from '../../theme/CameraCustumTheme';
 import {CameraPermission} from '../../components/screens/CameraPermission';
-import {cameraSettings, getTypeOfMovementsName} from './cameraSettings';
+import {getTypeOfMovementsName, useCameraSettings} from './cameraSettings';
 import {AppNavigationProp} from '../../interface/navigation';
 import {AuthContext} from '../../context/auth/AuthContext';
+import { NUMBER_0 } from '../../utils/globalConstants';
 
 type PermissionStatus =
   | 'unavailable'
@@ -35,6 +36,14 @@ export type OnReadCodeData = {
   };
 };
 
+// Constantes para evitar números mágicos
+const INITIAL_CAMERA_KEY = 0;
+const ANDROID_CAMERA_KEY_INCREMENT = 1;
+const CAMERA_BLUR_AMOUNT = 5;
+const ICON_SIZE = 28;
+const EMPTY_PRODUCTS_FOUND = 0;
+const MORE_THAN_ONE_PRODUCTS_FOUND = 1;
+
 const CameraScreen: React.FC = () => {
   const {bag} = useContext(InventoryBagContext);
   const {handleCameraAvailable, limitProductsScanned, startScanning} =
@@ -45,74 +54,65 @@ const CameraScreen: React.FC = () => {
   const onTheLimitProductScanned = limitProductsScanned < bag?.length;
 
   const [lightOn, setLightOn] = useState(false);
-  const [cameraKey, setCameraKey] = useState(0);
+  const [cameraKey, setCameraKey] = useState(INITIAL_CAMERA_KEY);
   const [productsScanned, setProductsScanned] = useState<ProductInterface[]>();
   const [cameraPermission, setCameraPermission] =
     useState<PermissionStatus | null>(null);
 
-  // Usamos un ref local para guardar el valor actual de la cámara disponible.
   const cameraAvailableRef = useRef(false);
 
-  // Actualizamos el ref de forma inmediata cuando se monta el componente.
-  useLayoutEffect(() => {
-    cameraAvailableRef.current = true; // Actualización inmediata
+  useLayoutEffect((): (() => void) => {
+    cameraAvailableRef.current = true;
     handleCameraAvailable(true);
     return () => {
       cameraAvailableRef.current = false;
       handleCameraAvailable(false);
     };
-  }, []);
+  }, [handleCameraAvailable]);
 
-  // Mantenemos el ref actualizado también en useFocusEffect para cuando se reenfoque la pantalla.
   useFocusEffect(
-    useCallback(() => {
+    useCallback((): (() => void) => {
       cameraAvailableRef.current = true;
       handleCameraAvailable(true);
       if (Platform.OS === 'android') {
-        setCameraKey((prevKey) => prevKey + 1);
+        setCameraKey((prevKey) => prevKey + ANDROID_CAMERA_KEY_INCREMENT);
       }
       return () => {
         cameraAvailableRef.current = false;
         handleCameraAvailable(false);
       };
-    }, []),
+    }, [handleCameraAvailable]),
   );
 
-  useEffect(() => {
+  const {
+    requestCameraPermission,
+    handleRequestPermission,
+    codeScanned,
+  } = useCameraSettings({
+    handleOpenProductsFoundByCodebar: (response: ProductInterface[]): void => {
+      if (response.length === MORE_THAN_ONE_PRODUCTS_FOUND) {
+        navigate('[Modal] - scannerResultScreen', {product: response[NUMBER_0]});
+      } else if (response.length > EMPTY_PRODUCTS_FOUND) {
+        navigate('[Modal] - productsFindByCodeBarModal', {
+          products: response,
+        });
+      } else {
+        navigate('[Modal] - scannerResultScreen', {product: response[NUMBER_0]});
+      }
+      setProductsScanned(response);
+    },
+    setProductsScanned,
+    productsScanned,
+    setCameraPermission,
+  });
+
+  useEffect((): void => {
     requestCameraPermission();
-  }, []);
-
-  /*     useEffect(() => {
-        if (!isFocused) {
-            cameraAvailableRef.current = false;
-            handleCameraAvailable(false);
-        }
-    }, [isFocused]); */
-
-  const {requestCameraPermission, handleRequestPermission, codeScanned} =
-    cameraSettings({
-      handleOpenProductsFoundByCodebar: (response: ProductInterface[]) => {
-        if (response.length === 1) {
-          navigate('[Modal] - scannerResultScreen', {product: response[0]});
-        } else if (response.length > 0) {
-          navigate('[Modal] - productsFindByCodeBarModal', {
-            products: response,
-          });
-        } else {
-          navigate('[Modal] - scannerResultScreen', {product: response[0]});
-        }
-        setProductsScanned(response);
-      },
-      setProductsScanned,
-      productsScanned,
-      setCameraPermission,
-    });
+  }, [requestCameraPermission]);
 
   const handleReadCode = useCallback(
-    (event: OnReadCodeData) => {
-      if (!cameraAvailableRef.current) {
-        return;
-      }
+    (event: OnReadCodeData): void => {
+      if (!cameraAvailableRef.current) return;
       codeScanned({codes: event.nativeEvent.codeStringValue});
     },
     [codeScanned],
@@ -143,7 +143,7 @@ const CameraScreen: React.FC = () => {
         <BlurView
           style={cameraStyles(theme).blurOverlay}
           blurType="dark"
-          blurAmount={5}
+          blurAmount={CAMERA_BLUR_AMOUNT}
         />
       )}
 
@@ -160,10 +160,10 @@ const CameraScreen: React.FC = () => {
 
       <View style={cameraStyles(theme).actions}>
         <View style={cameraStyles(theme).flash}>
-          <TouchableOpacity onPress={() => setLightOn(!lightOn)}>
+          <TouchableOpacity onPress={() => setLightOn((prev) => !prev)}>
             <Icon
               name={lightOn ? 'flash' : 'flash-outline'}
-              size={28}
+              size={ICON_SIZE}
               color="white"
             />
           </TouchableOpacity>
@@ -173,7 +173,7 @@ const CameraScreen: React.FC = () => {
           <TouchableOpacity
             onPress={() => navigate('typeOfMovementScreen')}
             style={{transform: [{rotate: '90deg'}]}}>
-            <Icon name="swap-horizontal-outline" size={28} color="white" />
+            <Icon name="swap-horizontal-outline" size={ICON_SIZE} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -184,34 +184,29 @@ const CameraScreen: React.FC = () => {
               handleCameraAvailable(false);
               navigate('[Modal] - findByCodebarInputModal');
             }}>
-            <Icon name="barcode-outline" size={28} color="white" />
+            <Icon name="barcode-outline" size={ICON_SIZE} color="white" />
           </TouchableOpacity>
         </View>
       </View>
 
-      {!startScanning ? (
-        <View style={cameraStyles(theme).message}>
-          {onTheLimitProductScanned ? (
+      <View style={cameraStyles(theme).message}>
+        {!startScanning ? (
+          <>
             <Text style={cameraStyles(theme, typeTheme).textmessage}>
-              Es necesario subir el inventario para seguir escaneando.
+              {onTheLimitProductScanned
+                ? 'Es necesario subir el inventario para seguir escaneando.'
+                : `Escanea un código de barras para agregarlo ${getTypeOfMovementsName()}`}
             </Text>
-          ) : (
             <Text style={cameraStyles(theme, typeTheme).textmessage}>
-              Escanea un código de barras para agregarlo{' '}
-              {getTypeOfMovementsName()}
+              Almacen: {user?.AlmacenNombre}
             </Text>
-          )}
-          <Text style={cameraStyles(theme, typeTheme).textmessage}>
-            Almacen: {user?.AlmacenNombre}
-          </Text>
-        </View>
-      ) : (
-        <View style={cameraStyles(theme).message}>
+          </>
+        ) : (
           <Text style={cameraStyles(theme, typeTheme).textmessage}>
             Escaneando...
           </Text>
-        </View>
-      )}
+        )}
+      </View>
     </View>
   );
 };

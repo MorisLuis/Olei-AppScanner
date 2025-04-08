@@ -6,7 +6,7 @@ import {
 
 import {Theme, globalFont, globalStyles} from './appTheme';
 
-export const loginStyles = (theme: Theme, typeTheme?: string) =>
+export const loginStyles = (theme: Theme) =>
   StyleSheet.create({
     LoginScreen: {
       flex: 1,
@@ -18,9 +18,9 @@ export const loginStyles = (theme: Theme, typeTheme?: string) =>
     },
     formContainer: {
       flex: 1,
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
+      paddingHorizontal: globalStyles().globalPadding.padding,
       justifyContent: 'center',
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     imageContainer: {
       display: 'flex',
@@ -29,7 +29,7 @@ export const loginStyles = (theme: Theme, typeTheme?: string) =>
       width: '100%',
       minHeight: hp('10%'),
       maxHeight: hp('20%'),
-      marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom,
+      marginBottom: globalStyles().globalMarginBottomSmall.marginBottom,
     },
     logo: {
       objectFit: 'scale-down',
@@ -52,29 +52,29 @@ export const loginStyles = (theme: Theme, typeTheme?: string) =>
     },
     textLogin: {
       fontSize: globalFont.font_normal,
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
       color: theme.text_color,
     },
     titleDB: {
       color: theme.text_color,
       fontSize: globalFont.font_med,
       fontWeight: 'bold',
-      marginTop: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginTop: globalStyles().globalMarginBottom.marginBottom,
       textTransform: 'uppercase',
       width: hp('80%'),
     },
 
     buttonContainer: {
       alignItems: 'center',
-      marginTop: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginTop: globalStyles().globalMarginBottom.marginBottom,
     },
     buttonContainerDB: {
       alignItems: 'center',
-      marginTop: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginTop: globalStyles().globalMarginBottom.marginBottom,
     },
     footer: {
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
-      paddingVertical: globalStyles(theme).globalPadding.padding,
+      paddingHorizontal: globalStyles().globalPadding.padding,
+      paddingVertical: globalStyles().globalPadding.padding,
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'flex-end',
@@ -99,7 +99,7 @@ export const loginDBStyles = (theme: Theme) =>
     },
     formContainer: {
       flex: 1,
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
+      paddingHorizontal: globalStyles().globalPadding.padding,
       justifyContent: 'center',
       height: '100%',
       marginBottom: hp('7.5%'),
@@ -117,7 +117,7 @@ export const loginDBStyles = (theme: Theme) =>
       justifyContent: 'center',
       width: '100%',
       height: hp('20%'),
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     imageContainerActive: {
       display: 'flex',
@@ -133,7 +133,7 @@ export const loginDBStyles = (theme: Theme) =>
     headersActive: {
       height: hp('15%'),
       width: '100%',
-      marginBottom: globalStyles(theme).globalMarginBottomSmall.marginBottom,
+      marginBottom: globalStyles().globalMarginBottomSmall.marginBottom,
     },
     logo: {
       maxWidth: '40%',

@@ -12,6 +12,7 @@ import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import ProductInterface from '../../interface/product';
 import {customHeaderStyles} from '../../theme/UI/customHeader';
 import {useTheme} from '../../context/ThemeContext';
+import { Theme } from '../../theme/appTheme';
 
 interface CustomHeaderInterface {
   navigation: {
@@ -39,12 +40,12 @@ export const CustomHeader = ({
   back,
   secondaryDesign,
   route,
-}: CustomHeaderInterface) => {
+}: CustomHeaderInterface) : JSX.Element => {
   const {fromModal} = route?.params || {};
   const {theme, typeTheme} = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 
-  const handleOnPress = () => {
+  const handleOnPress = () : void => {
     if (typeof back === 'function' && backCustum) {
       back();
     } else if (typeof back === 'function') {
@@ -111,32 +112,27 @@ interface CustomBackButtonProps {
 export const CustomBackButton = ({
   navigation,
   onClick,
-}: CustomBackButtonProps) => {
+}: CustomBackButtonProps) : JSX.Element => {
   const {typeTheme, theme} = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 
-  const handlePress = () => {
+  const handlePress = () : void => {
     onClick?.();
     navigation.goBack();
   };
 
   return (
-    <TouchableOpacity style={stylesHeaderBack.back} onPress={handlePress}>
+    <TouchableOpacity style={extraStyles().back} onPress={handlePress}>
       <Icon name="chevron-back-outline" size={20} color={iconColor} />
       <Text
-        style={{
-          fontWeight: 'bold',
-          fontSize: 14,
-          marginLeft: 3,
-          color: theme.text_color,
-        }}>
+        style={extraStyles(theme).back_text}>
         Atrás
       </Text>
     </TouchableOpacity>
   );
 };
 
-const stylesHeaderBack = StyleSheet.create({
+const extraStyles = (theme?: Theme): ReturnType<typeof StyleSheet.create> => ({
   back: {
     display: 'flex',
     flexDirection: 'row',
@@ -144,8 +140,10 @@ const stylesHeaderBack = StyleSheet.create({
     left: 0,
     bottom: 0,
   },
-  titleHeader: {
+  back_text: {
     fontWeight: 'bold',
-    fontSize: 16,
-  },
+    fontSize: 14,
+    marginLeft: 3,
+    color: theme?.text_color
+  }
 });

@@ -15,7 +15,7 @@ export const EmptyMessageCard = ({
   message,
   title,
   icon = 'close-outline',
-}: EmptyMessageCardInterface) => {
+}: EmptyMessageCardInterface) : JSX.Element => {
   const {theme, typeTheme} = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 

@@ -8,7 +8,7 @@ import {useTheme} from '../../context/ThemeContext';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
-export const ProductDetailsSkeleton = () => {
+export const ProductDetailsSkeleton = () : JSX.Element => {
   const {theme} = useTheme();
   const shimmerColors = [
     theme.color_primary,

@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useTheme} from '../../context/ThemeContext';
 import {ModalBottomStyles} from '../../theme/ModalRenders/ModalBottomTheme';
 import CustomText from '../CustumText';
+import { globalStyles } from '../../theme/appTheme';
 
 interface ModalBottomInterface {
   visible: boolean;
@@ -30,14 +31,14 @@ const ModalBottom = ({
   children,
   blurNotAvailable = false,
   title,
-}: ModalBottomInterface) => {
+}: ModalBottomInterface) : JSX.Element => {
   const {theme, typeTheme} = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 
-  const render = () => {
+  const render = () : JSX.Element => {
     return (
       <TouchableWithoutFeedback>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={globalStyles().flex}>
           <View style={ModalBottomStyles(theme).modalBottom}>
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -77,11 +78,11 @@ const ModalBottom = ({
   return (
     <Modal animationType="slide" transparent={true} visible={visible}>
       {blurNotAvailable ? (
-        <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.15)'}}>
+        <View style={ModalBottomStyles().modalBottom_wrapp}>
           {render()}
         </View>
       ) : (
-        <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.15)'}}>
+        <View style={ModalBottomStyles().modalBottom_wrapp}>
           {render()}
         </View>
       )}

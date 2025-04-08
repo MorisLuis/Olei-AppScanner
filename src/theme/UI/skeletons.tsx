@@ -5,18 +5,18 @@ import {Theme, globalFont, globalStyles} from '../appTheme';
 export const ProductDetailsSkeletonStyles = (theme: Theme) =>
   StyleSheet.create({
     ProductDetailsPage: {
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
       height: '100%',
       backgroundColor: theme.background_color,
     },
     imageContainer: {
       minHeight: 300,
       width: '100%',
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
 
     header: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     description: {
       height: globalFont.font_med,

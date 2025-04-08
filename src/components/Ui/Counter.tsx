@@ -6,20 +6,22 @@ import Toast from 'react-native-toast-message';
 
 import {counterStyles} from '../../theme/UI/counterStyles';
 import {useTheme} from '../../context/ThemeContext';
+import { NUMBER_0 } from '../../utils/globalConstants';
 
 interface CounterInterface {
   counter: number;
   setCounter:
     | React.Dispatch<React.SetStateAction<number>>
-    | ((value: number) => void);
+    | ((_value: number) => void);
   limit?: number;
 }
 
-export const Counter = ({counter, setCounter, limit}: CounterInterface) => {
+const COUNT_MINIMUM = 1;
+export const Counter = ({counter, setCounter, limit}: CounterInterface) : JSX.Element => {
   const {theme, typeTheme} = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 
-  const addProduct = () => {
+  const addProduct = () : void => {
     if (counter === limit) {
       Toast.show({
         type: 'tomatoError',
@@ -27,11 +29,11 @@ export const Counter = ({counter, setCounter, limit}: CounterInterface) => {
       });
       return;
     }
-    setCounter(counter + 1);
+    setCounter(counter + COUNT_MINIMUM);
   };
 
-  const handleInputChange = (value: string) => {
-    const numericValue = parseInt(value) || 0;
+  const handleInputChange = (value: string) : void => {
+    const numericValue = parseInt(value) || NUMBER_0;
     if (limit && numericValue > limit) {
       Toast.show({
         type: 'tomatoError',
@@ -42,9 +44,9 @@ export const Counter = ({counter, setCounter, limit}: CounterInterface) => {
     setCounter(numericValue);
   };
 
-  const subtractProduct = () => {
-    if (counter === 0) return;
-    setCounter(counter - 1);
+  const subtractProduct = () : void => {
+    if (counter === NUMBER_0) return;
+    setCounter(counter - COUNT_MINIMUM);
   };
 
   return (

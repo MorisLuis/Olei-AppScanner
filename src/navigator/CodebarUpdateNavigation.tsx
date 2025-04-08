@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {StackHeaderProps, createStackNavigator} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 
 import {CodebarUpdateScreen} from '../screens/CodebarUpdate/CodebarUpdateScreen';
@@ -32,7 +32,7 @@ export type CodebarUpdateNavigationStackParamList = {
 
 export const CodebarUpdateNavigation = ({
   route,
-}: CodebarUpdateNavigationInterface) => {
+}: CodebarUpdateNavigationInterface) : JSX.Element => {
   const Stack = createStackNavigator<CodebarUpdateNavigationStackParamList>();
   const {Codigo, Id_Marca} = route?.params ?? {};
   const {theme} = useTheme();
@@ -45,7 +45,7 @@ export const CodebarUpdateNavigation = ({
           header: () => (
             <View
               style={{
-                paddingTop: globalStyles(theme).globalPadding.padding,
+                paddingTop: globalStyles().globalPadding.padding,
                 backgroundColor: theme.background_color,
               }}>
               <CustomHeader
@@ -70,7 +70,7 @@ export const CodebarUpdateNavigation = ({
           header: () => (
             <View
               style={{
-                paddingTop: globalStyles(theme).globalPadding.padding,
+                paddingTop: globalStyles().globalPadding.padding,
                 backgroundColor: theme.background_color,
               }}>
               <CustomHeader title="Modificar" navigation={navigation} />

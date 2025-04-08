@@ -24,10 +24,10 @@ const ModalDecision = ({
   visible,
   children,
   message,
-}: ModalDecisionInterface) => {
+}: ModalDecisionInterface) : JSX.Element => {
   const {theme, typeTheme} = useTheme();
 
-  const handleDismissKeyboard = () => {
+  const handleDismissKeyboard = () : void => {
     Keyboard.dismiss();
   };
 

@@ -13,22 +13,22 @@ export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) =>
     },
     content: {
       height: '100%',
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
       paddingBottom: hp('20%'),
     },
     header: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
       width: wp('80%'),
     },
     title: {
-      paddingTop: globalStyles(theme).globalPadding.padding,
+      paddingTop: globalStyles().globalPadding.padding,
       fontSize: globalFont.font_med,
       color: theme.text_color,
     },
     optionContainer: {
-      padding: globalStyles(theme).globalPadding.padding / 1.5,
+      padding: globalStyles().globalPadding.padding / 1.5,
       borderWidth: 0.7,
-      borderRadius: globalStyles(theme).borderRadius.borderRadius,
+      borderRadius: globalStyles().borderRadius.borderRadius,
       borderColor: theme.color_border_tertiary,
     },
     optionText: {
@@ -44,8 +44,8 @@ export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) =>
       backgroundColor: theme.color_yellow,
     },
     footer: {
-      padding: globalStyles(theme).globalPadding.padding,
-      paddingBottom: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
+      paddingBottom: globalStyles().globalPadding.padding,
       backgroundColor: theme.background_color_secondary,
       position: 'absolute',
       bottom: 0,

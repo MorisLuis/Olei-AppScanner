@@ -4,10 +4,10 @@ import {ProductInterfaceBag} from '../../interface/product';
 import {inventoryDataInterface} from './InventoryBagProvider';
 
 interface ContextProps {
-  addProduct: (product: ProductInterfaceBag) => void;
-  removeProduct: (product: ProductInterfaceBag) => void;
-  editProduct: (product: ProductInterfaceBag) => void;
-  postInventory: (inventoryDetails: ProductInterfaceBag[]) => Promise<void>;
+  addProduct: (_product: ProductInterfaceBag) => void;
+  removeProduct: (_product: ProductInterfaceBag) => void;
+  editProduct: (_product: ProductInterfaceBag) => void;
+  postInventory: (_inventoryDetails: ProductInterfaceBag[]) => Promise<void>;
   cleanBag: () => void;
   bag: ProductInterfaceBag[];
   inventoryCreated: boolean;

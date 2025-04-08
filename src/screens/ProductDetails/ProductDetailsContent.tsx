@@ -1,19 +1,18 @@
-import React, {useCallback, useContext} from 'react';
-import {Image, ScrollView, Text, View} from 'react-native';
+import React, { useCallback, useContext } from 'react';
+import { Image, ScrollView, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import {useTheme} from '../../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import ProductInterface from '../../interface/product';
-import {productDetailsStyles} from '../../theme/productDetailsTheme';
-import {ProductDetailItem} from './ProductDetailsItem';
+import { productDetailsStyles } from '../../theme/productDetailsTheme';
+import { ProductDetailItem } from './ProductDetailsItem';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 import FooterScreen from '../../components/Navigation/Footer';
-import {globalStyles} from '../../theme/appTheme';
-import {AuthContext} from '../../context/auth/AuthContext';
+import { globalStyles } from '../../theme/appTheme';
+import { AuthContext } from '../../context/auth/AuthContext';
 
 interface ProductDetailsContentInterface {
   productDetailsData: ProductInterface;
@@ -22,33 +21,35 @@ interface ProductDetailsContentInterface {
   hideActions?: boolean;
 }
 
+const ACCION_SALIDA = 2;
+const NO_EXISTENCIA_LIMIT = 0;
+const EXSITENCIAS_EMPTY = 0;
+
 export const ProductDetailsContent = React.memo(
   ({
     productDetailsData,
     handleOptionsToUpdateCodebar,
     handleAddToInventory,
     hideActions = false,
-  }: ProductDetailsContentInterface) => {
-    const {theme, typeTheme} = useTheme();
-    const {
-      user: {SalidaSinExistencias, Id_TipoMovInv},
-    } = useContext(AuthContext);
-    const showLimit =
-      Id_TipoMovInv?.Id_TipoMovInv === 2 && SalidaSinExistencias === 0;
-    const dontShowAddButton = showLimit && productDetailsData.Existencia < 1;
+  }: ProductDetailsContentInterface): JSX.Element => {
+
+    const { theme, typeTheme } = useTheme();
+    const { user: { SalidaSinExistencias, Id_TipoMovInv } } = useContext(AuthContext);
+    const showLimit = Id_TipoMovInv?.Id_TipoMovInv === ACCION_SALIDA && SalidaSinExistencias === NO_EXISTENCIA_LIMIT;
+    const dontShowAddButton = showLimit && productDetailsData.Existencia <= EXSITENCIAS_EMPTY;
 
     const memoizedHandleOptionsToUpdateCodebar = useCallback(
       handleOptionsToUpdateCodebar,
-      [],
-    );
-    const memoizedHandleAddToInventory = useCallback(handleAddToInventory, []);
+      [handleOptionsToUpdateCodebar],);
 
-    const getIconColor = () => (typeTheme === 'dark' ? 'white' : 'black');
+    const memoizedHandleAddToInventory = useCallback(handleAddToInventory, [handleAddToInventory]);
+
+    const getIconColor = (): string => (typeTheme === 'dark' ? 'white' : 'black');
 
     return (
-      <View style={{flex: 1}}>
+      <View style={globalStyles().flex}>
         <ScrollView
-          contentContainerStyle={!hideActions && {paddingBottom: hp('20%')}}>
+          contentContainerStyle={!hideActions && { paddingBottom: hp('20%') }}>
           <View style={productDetailsStyles(theme).ProductDetailsPage}>
             <View style={productDetailsStyles(theme).content}>
               {/* Imagen del Producto */}
@@ -57,7 +58,7 @@ export const ProductDetailsContent = React.memo(
                 {productDetailsData.imagen ? (
                   <Image
                     style={productDetailsStyles(theme).image}
-                    source={{uri: productDetailsData.imagen}}
+                    source={{ uri: productDetailsData.imagen }}
                   />
                 ) : (
                   <View style={productDetailsStyles(theme).notImage}>
@@ -147,3 +148,5 @@ export const ProductDetailsContent = React.memo(
     );
   },
 );
+
+ProductDetailsContent.displayName = "ProductDetailsContent"; // Asigna el displayName aquí

@@ -8,7 +8,7 @@ import {useTheme} from '../../context/ThemeContext';
 interface ProductInventoryCardInterface {
   product: ProductInterfaceBag;
   showDelete?: boolean;
-  onDelete?: (product: ProductInterfaceBag) => void;
+  onDelete?: (_product: ProductInterfaceBag) => void;
   onClick?: () => void;
 }
 
@@ -17,7 +17,7 @@ export const ProductInventoryCardComponent = ({
   showDelete,
   onDelete,
   onClick,
-}: ProductInventoryCardInterface) => {
+}: ProductInventoryCardInterface) : JSX.Element => {
   const {theme, typeTheme} = useTheme();
 
   return (

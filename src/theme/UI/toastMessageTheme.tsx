@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-import {Theme, globalFont, globalStyles} from '../appTheme';
+import {Theme, globalFont} from '../appTheme';
 
 export const ToastMessageStyles = (theme: Theme) =>
   StyleSheet.create({

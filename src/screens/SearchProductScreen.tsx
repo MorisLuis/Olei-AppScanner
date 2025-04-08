@@ -4,6 +4,7 @@ import React, {
   useLayoutEffect,
   useState,
   useCallback,
+  useMemo,
 } from 'react';
 import {
   FlatList,
@@ -13,11 +14,10 @@ import {
   TextInputChangeEventData,
   View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { debounce } from 'lodash';
+import {useNavigation} from '@react-navigation/native';
+import {debounce} from 'lodash';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
@@ -26,86 +26,87 @@ import {
   getSearchProductInStockWithoutCodebar,
 } from '../services/Search/products';
 import ProductInterface from '../interface/product';
-import { ProductItemSearch } from '../components/Cards/ProductItemSearch';
-import { CustomBackButton } from '../components/Ui/CustomHeader';
+import {ProductItemSearch} from '../components/Cards/ProductItemSearch';
+import {CustomBackButton} from '../components/Ui/CustomHeader';
 import ModalBottom from '../components/Modals/ModalBottom';
-import { ProductInventoryCardSkeleton } from '../components/Skeletons/ProductInventoryCardSkeleton';
-import { SettingsContext } from '../context/settings/SettingsContext';
-import { SearchProductScreenStyles } from '../theme/SearchProductScreenTheme';
-import { useTheme } from '../context/ThemeContext';
+import {ProductInventoryCardSkeleton} from '../components/Skeletons/ProductInventoryCardSkeleton';
+import {SettingsContext} from '../context/settings/SettingsContext';
+import {SearchProductScreenStyles} from '../theme/SearchProductScreenTheme';
+import {useTheme} from '../context/ThemeContext';
 import useErrorHandler from '../hooks/useErrorHandler';
-import { AppNavigationProp } from '../interface/navigation';
-import { updateCodbar } from '../services/costos';
+import {AppNavigationProp} from '../interface/navigation';
+import {updateCodbar} from '../services/costos';
 
 type SearchProductScreenInterface = {
   route?: {
     params: {
       modal: boolean;
       isModal?: boolean;
-
-      // handle if we get products with codebas or not
       withCodebar: boolean;
     };
   };
 };
 
-export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => {
-  const { modal, isModal, withCodebar = true } = route?.params ?? {};
-  const {
-    handleCodebarScannedProcces,
-    codeBar,
-  } = useContext(SettingsContext);
-  const { theme, typeTheme } = useTheme();
-  const { handleError, handleErrorCustum } = useErrorHandler();
+const DEBOUNCE_DELAY = 300;
+const INITIAL_PAGE = 1;
+const END_REACHED_THRESHOLD = 0.5;
+const MAGIC_NUMBER_ZERO = 0;
+const PRODUCTS_INVENTORY_LENGTH_EMPTY = 0;
+
+export const SearchProductScreen = ({route}: SearchProductScreenInterface) : JSX.Element => {
+  const {modal, isModal, withCodebar = true} = route?.params ?? {};
+  const {handleCodebarScannedProcces, codeBar} = useContext(SettingsContext);
+  const {theme, typeTheme} = useTheme();
+  const {handleError, handleErrorCustum} = useErrorHandler();
 
   const navigation = useNavigation<AppNavigationProp>();
   const [productsInInventory, setProductsInInventory] = useState<ProductInterface[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(INITIAL_PAGE);
   const [openModalAdvice, setOpenModalAdvice] = useState(false);
   const [searchingProducts, setSearchingProducts] = useState(false);
 
-  const getSearchData = async (searchTerm: string) => {
+  const getSearchData = useCallback(async (searchTerm: string): Promise<void> => {
     try {
       setSearchingProducts(true);
-      let products;
+      let response;
       if (withCodebar) {
-        products = await getSearchProductInStock(searchTerm ? searchTerm : '');
+        response = await getSearchProductInStock(searchTerm ? searchTerm : '');
       } else {
-        products = await getSearchProductInStockWithoutCodebar(
-          searchTerm ? searchTerm : '',
-        );
+        response = await getSearchProductInStockWithoutCodebar( searchTerm ? searchTerm : '' );
       }
 
-      if (products.error) return handleError(products.error);
-      setProductsInInventory(products);
+      if (response.error) return handleError(response.error);
+      setProductsInInventory(response.products);
     } catch (error) {
       handleError(error, true);
     } finally {
       setSearchingProducts(false);
     }
-  };
+  }, [handleError, withCodebar]);
 
-  // Crear la función debounced para evitar múltiples llamadas
-  const debouncedSearch = useCallback(
-    debounce((text: string) => {
-      getSearchData(text);
-    }, 300),
-    [], // Se asegura que debounce se cree solo una vez
-  );
+  const debouncedSearch = useMemo(() => 
+  debounce((text: string) => {
+    getSearchData(text);
+  }, DEBOUNCE_DELAY), 
+  [getSearchData]
+);
 
-  const renderItem = ({ item }: { item: ProductInterface }) => (
+
+  const renderItem = ({item}: {item: ProductInterface}): JSX.Element => (
     <ProductItemSearch
-      fromModal={modal ? modal : false}
+      fromModal={modal ?? false}
       product={item}
-      onClick={() => withCodebar ? navigateToProduct(item) : updateCodebar(item)}
+      onClick={() =>
+        withCodebar ? navigateToProduct(item) : updateCodebar(item)
+      }
     />
   );
 
-  const loadMoreItem = () => {
-    setCurrentPage(currentPage + 1);
+  const loadMoreItem = (): void => {
+    setCurrentPage(currentPage + INITIAL_PAGE);
   };
 
-  const navigateToProduct = (selectedProduct: ProductInterface) => {
+  const navigateToProduct = (selectedProduct: ProductInterface): void => {
     if (modal) {
       if (isModal) {
         navigation?.goBack();
@@ -124,7 +125,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
     }
   };
 
-  const updateCodebar = async (item: ProductInterface) => {
+  const updateCodebar = async (item: ProductInterface): Promise<void> => {
     try {
       if (!item.Codigo || !item.Id_Marca) {
         handleErrorCustum({
@@ -138,8 +139,8 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
 
       handleCodebarScannedProcces(true);
 
-      const response = await updateCodbar({
-        codigo: item.Codigo,
+      const {error} = await updateCodbar({
+        codigoProps: item.Codigo,
         Id_Marca: item.Id_Marca,
         body: {
           CodBar: codeBar,
@@ -148,7 +149,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
 
       navigation.goBack();
 
-      if (response.error) return handleError(response.error);
+      if (error) return handleError(error);
     } catch (error) {
       handleError(error, true);
     } finally {
@@ -157,9 +158,9 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
   };
 
   useEffect(() => {
-    setOpenModalAdvice(modal ? true : false);
+    setOpenModalAdvice(modal ?? false);
     getSearchData('');
-  }, []);
+  }, [modal, getSearchData]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -179,12 +180,12 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
         textColor: theme.text_color,
         onChangeText: (
           event: NativeSyntheticEvent<TextInputChangeEventData>,
-        ) => {
+        ): void => {
           debouncedSearch(event.nativeEvent.text);
         },
       },
     });
-  }, [navigation, theme, debouncedSearch]);
+  }, [navigation, theme, debouncedSearch, modal]);
 
   if (searchingProducts) {
     return (
@@ -197,7 +198,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
     );
   }
 
-  return productsInInventory && productsInInventory.length > 0 ? (
+  return productsInInventory && productsInInventory.length > PRODUCTS_INVENTORY_LENGTH_EMPTY ? (
     <>
       <SafeAreaView
         style={SearchProductScreenStyles(theme).SearchProductScreen}>
@@ -207,7 +208,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
             renderItem={renderItem}
             keyExtractor={(product) => product.UniqueKey || product.Codigo}
             onEndReached={loadMoreItem}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={END_REACHED_THRESHOLD}
             initialNumToRender={10}
           />
         </View>
@@ -217,7 +218,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
         visible={openModalAdvice}
         onClose={() => setOpenModalAdvice(false)}
         blurNotAvailable={true}
-        blurAmount={0}>
+        blurAmount={MAGIC_NUMBER_ZERO}>
         <View style={SearchProductScreenStyles(theme, typeTheme).searchAdvice}>
           <View
             style={SearchProductScreenStyles(theme, typeTheme).adviceHeader}>
@@ -231,21 +232,17 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
               Asignar producto
             </Text>
           </View>
-          <View
-            style={SearchProductScreenStyles(theme, typeTheme).adviceMessage}>
-            <Text
-              style={
-                SearchProductScreenStyles(theme, typeTheme).adviceMessage1
-              }>
+          <View>
+            <Text style={ SearchProductScreenStyles(theme, typeTheme).adviceMessage1}>
               Selecciona un producto al cual podrás asignarle el código de
-              barras: <Text style={{ fontWeight: 'bold' }}>{codeBar}</Text>
+              barras: <Text style={SearchProductScreenStyles(theme, typeTheme).adviceMessage1_bold}>{codeBar}</Text>
             </Text>
             <Text
               style={
                 SearchProductScreenStyles(theme, typeTheme).adviceMessage2
               }>
-              Los productos con mensaje "No tiene codigo" son elegibles por que
-              aun no tienen codigo de barras.
+              Los productos con mensaje &quot;No tiene codigo&quot; son
+              elegibles porque aún no tienen código de barras.
             </Text>
           </View>
         </View>
@@ -254,7 +251,7 @@ export const SearchProductScreen = ({ route }: SearchProductScreenInterface) => 
   ) : (
     <SafeAreaView style={SearchProductScreenStyles(theme).SearchProductScreen}>
       <View style={SearchProductScreenStyles(theme).content}>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {Array.from({length: 10}).map((_, index) => (
           <ProductInventoryCardSkeleton key={index} />
         ))}
       </View>

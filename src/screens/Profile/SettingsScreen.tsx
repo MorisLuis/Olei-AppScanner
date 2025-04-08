@@ -1,26 +1,29 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import {globalStyles} from '../../theme/appTheme';
+import { globalStyles } from '../../theme/appTheme';
 import {
   Id_TipoMovInvInterface,
   getTypeOfMovements,
 } from '../../services/typeOfMovement';
-import {AuthContext} from '../../context/auth/AuthContext';
-import {Selector} from '../../components/Ui/Selector';
+import { AuthContext } from '../../context/auth/AuthContext';
+import { Selector } from '../../components/Ui/Selector';
 import Toggle from '../../components/Ui/Toggle';
-import {SettingsContext} from '../../context/settings/SettingsContext';
-import {Counter} from '../../components/Ui/Counter';
-import {buttonStyles} from '../../theme/UI/buttons';
-import {SettingsScreenStyles} from '../../theme/SettingsScreenTheme';
-import {useTheme} from '../../context/ThemeContext';
+import { SettingsContext } from '../../context/settings/SettingsContext';
+import { Counter } from '../../components/Ui/Counter';
+import { buttonStyles } from '../../theme/UI/buttons';
+import { SettingsScreenStyles } from '../../theme/SettingsScreenTheme';
+import { useTheme } from '../../context/ThemeContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
 
-export const SettingsScreen = () => {
-  const {updateTypeOfMovements} = useContext(AuthContext);
-  const {theme, toggleTheme, typeTheme} = useTheme();
-  const {handleError} = useErrorHandler();
+const TYPE_MOVEMENT_EMPTY = 0;
+
+export const SettingsScreen = (): JSX.Element => {
+
+  const { updateTypeOfMovements } = useContext(AuthContext);
+  const { theme, toggleTheme, typeTheme } = useTheme();
+  const { handleError } = useErrorHandler();
 
   const {
     vibration,
@@ -30,23 +33,20 @@ export const SettingsScreen = () => {
   } = useContext(SettingsContext);
   const [typeSelected, setTypeSelected] = useState<number>();
 
-  const [typeOfMovement, setTypeOfMovement] = useState<
-    Id_TipoMovInvInterface[]
-  >([]);
-  const {user} = useContext(AuthContext);
+  const [typeOfMovement, setTypeOfMovement] = useState<Id_TipoMovInvInterface[]>([]);
+  const { user } = useContext(AuthContext);
 
   const [editingLimitProducts, setEditingLimitProducts] = useState(false);
-  const [limitProductValue, setLimitProductValue] =
-    useState(limitProductsScanned);
+  const [limitProductValue, setLimitProductValue] = useState(limitProductsScanned);
 
-  const onChangetTypeOfMovement = (value: number) => {
+  const onChangetTypeOfMovement = (value: number): void => {
     const type = typeOfMovement.find((item) => item.Id_TipoMovInv == value);
     if (type === undefined || type === null) return;
     setTypeSelected(type.Accion);
     updateTypeOfMovements(type);
   };
 
-  const onChangeLimitProducts = () => {
+  const onChangeLimitProducts = (): void => {
     handleLimitProductsScanned(limitProductValue);
     setEditingLimitProducts(!editingLimitProducts);
     Toast.show({
@@ -55,22 +55,22 @@ export const SettingsScreen = () => {
     });
   };
 
-  const handleGetTypeOfMovements = async () => {
+  const handleGetTypeOfMovements = useCallback(async (): Promise<void> => {
     try {
-      const types = await getTypeOfMovements();
-      if (types.error) return handleError(types.error);
-      setTypeOfMovement(types);
+      const { error, TiposMovimiento } = await getTypeOfMovements();
+      if (error) return handleError(error);
+      setTypeOfMovement(TiposMovimiento);
     } catch (error) {
       handleError(error, true);
     }
-  };
+  }, [handleError]);
 
   useEffect(() => {
     setTypeSelected(user?.Id_TipoMovInv?.Id_TipoMovInv);
     handleGetTypeOfMovements();
-  }, []);
+  }, [handleGetTypeOfMovements, user?.Id_TipoMovInv?.Id_TipoMovInv]);
 
-  const visible = typeOfMovement?.length > 0 ? true : false;
+  const visible = typeOfMovement?.length > TYPE_MOVEMENT_EMPTY ? true : false;
 
   return (
     <>
@@ -80,13 +80,13 @@ export const SettingsScreen = () => {
             <Selector
               label={'Tipo de movimiento'}
               items={typeOfMovement.map((item) => {
-                return {label: item?.Descripcion, value: item?.Id_TipoMovInv};
+                return { label: item?.Descripcion, value: item?.Id_TipoMovInv };
               })}
               value={
-                typeSelected !== undefined && typeOfMovement.length > 0
+                typeSelected !== undefined && typeOfMovement.length > TYPE_MOVEMENT_EMPTY
                   ? (typeOfMovement
-                      .find((item) => item.Id_TipoMovInv === typeSelected)
-                      ?.Descripcion.trim() as string)
+                    .find((item) => item.Id_TipoMovInv === typeSelected)
+                    ?.Descripcion.trim() as string)
                   : 'Selecciona una opción...'
               }
               //Methods
@@ -112,7 +112,7 @@ export const SettingsScreen = () => {
                     Limite de productos a escanear
                   </Text>
                   {!editingLimitProducts && (
-                    <Text style={{color: theme.text_color}}>
+                    <Text style={{ color: theme.text_color }}>
                       {limitProductValue}
                     </Text>
                   )}
@@ -139,7 +139,7 @@ export const SettingsScreen = () => {
                       buttonStyles(theme).button_small,
                       {
                         marginBottom:
-                          globalStyles(theme).globalMarginBottom.marginBottom,
+                          globalStyles().globalMarginBottom.marginBottom,
                       },
                     ]}
                     onPress={onChangeLimitProducts}>
@@ -159,14 +159,14 @@ export const SettingsScreen = () => {
               message="Personaliza el aspecto de Olei en tu dispositivo."
               extraStyles={{}}
               value={typeTheme === 'light' ? true : false}
-              onChange={(value: boolean) => toggleTheme()}
+              onChange={() => toggleTheme()}
             />
 
             <View style={SettingsScreenStyles(theme).divider}></View>
           </>
         ) : (
           <View>
-            <Text style={{color: theme.text_color}}>Cargando...</Text>
+            <Text style={{ color: theme.text_color }}>Cargando...</Text>
           </View>
         )}
       </View>

@@ -21,11 +21,11 @@ interface CodebarUpdateWithInputScreenInterface {
 export const CodebarUpdateWithInputScreen = ({
   Codigo,
   Id_Marca,
-}: CodebarUpdateWithInputScreenInterface) => {
+}: CodebarUpdateWithInputScreenInterface) : JSX.Element => {
   const [text, setText] = useState('');
   const navigation = useNavigation<CodebarUpdateNavigationProp>();
   const {codebarType} = useContext(SettingsContext);
-  const {theme, typeTheme} = useTheme();
+  const {theme} = useTheme();
   const {handleError, handleErrorCustum} = useErrorHandler();
 
   const currentType = codebartypes.barcodes.find(
@@ -33,7 +33,7 @@ export const CodebarUpdateWithInputScreen = ({
   );
   const regex = new RegExp(currentType?.regex as string);
 
-  const hanldeUpdateCodebarWithCodeRandom = async () => {
+  const hanldeUpdateCodebarWithCodeRandom = async () : Promise<void> => {
     try {
       if (!Codigo || !Id_Marca) {
         handleErrorCustum({
@@ -48,7 +48,7 @@ export const CodebarUpdateWithInputScreen = ({
       if (!regex.test(text)) return;
 
       const response = await updateCodbar({
-        codigo: Codigo,
+        codigoProps: Codigo,
         Id_Marca: Id_Marca,
         body: {CodBar: text},
       });
@@ -62,7 +62,7 @@ export const CodebarUpdateWithInputScreen = ({
     }
   };
 
-  const handleTextChange = (value: string) => {
+  const handleTextChange = (value: string) : void => {
     setText(value);
   };
 
@@ -72,14 +72,14 @@ export const CodebarUpdateWithInputScreen = ({
         CodebarUpdateWithInputScreenStyles(theme).CodebarUpdateWithInputScreen
       }>
       <Text
-        style={CodebarUpdateWithInputScreenStyles(theme, typeTheme).inputLabel}>
+        style={CodebarUpdateWithInputScreenStyles(theme).inputLabel}>
         Escribe el codigo que quieras.
       </Text>
 
       <TextInput
         style={[
           inputStyles(theme).input,
-          globalStyles(theme).globalMarginBottomSmall,
+          globalStyles().globalMarginBottomSmall,
         ]}
         placeholder="Ej: 654s1q"
         onChangeText={handleTextChange}

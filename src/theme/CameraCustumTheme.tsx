@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -44,7 +44,7 @@ export const cameraStyles = (theme: Theme, typeTheme?: string) =>
       position: 'absolute',
       bottom: hp('10%'),
       right: wp('6%'),
-      padding: globalStyles(theme).globalPadding.padding / 2,
+      padding: globalStyles().globalPadding.padding / 2,
       zIndex: 2,
       width: wp('20%'),
       height: wp('20%'),
@@ -65,7 +65,7 @@ export const cameraStyles = (theme: Theme, typeTheme?: string) =>
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      padding: globalStyles(theme).globalPadding.padding / 2,
+      padding: globalStyles().globalPadding.padding / 2,
       borderRadius: 100,
       borderWidth: 2,
       borderColor:

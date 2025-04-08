@@ -27,13 +27,13 @@ export const ModalDecisionStyles = (theme: Theme, typeTheme: string) =>
           : theme.background_color,
     },
     modalChildren: {
-      padding: globalStyles(theme).globalPadding.padding,
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      padding: globalStyles().globalPadding.padding,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     message: {
       fontSize: globalFont.font_med,
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
-      paddingTop: globalStyles(theme).globalPadding.padding,
+      paddingHorizontal: globalStyles().globalPadding.padding,
+      paddingTop: globalStyles().globalPadding.padding,
       width: '85%',
       color: theme.text_color,
     },

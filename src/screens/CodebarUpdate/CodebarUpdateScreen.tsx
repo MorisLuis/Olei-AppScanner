@@ -1,20 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useContext, useEffect, useState} from 'react';
+import {Text, TouchableOpacity, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
-import { productDetailsStyles } from '../../theme/productDetailsTheme';
-import { globalStyles } from '../../theme/appTheme';
-import { updateCodbar } from '../../services/costos';
+import {productDetailsStyles} from '../../theme/productDetailsTheme';
+import {globalStyles} from '../../theme/appTheme';
+import {updateCodbar} from '../../services/costos';
 import ModalBottom from '../../components/Modals/ModalBottom';
 import CameraModal from '../../components/Modals/ModalRenders/CameraModal';
-import { Selector } from '../../components/Ui/Selector';
+import {Selector} from '../../components/Ui/Selector';
 import codebartypes from '../../utils/codebarTypes.json';
-import { SettingsContext } from '../../context/settings/SettingsContext';
-import { useTheme } from '../../context/ThemeContext';
-import { CodebarUpdateScreenStyles } from '../../theme/CodebarUpdateScreenTheme';
-import { CodebarUpdateOptionCard } from '../../components/Cards/CodebarUpdateOptionCard';
+import {SettingsContext} from '../../context/settings/SettingsContext';
+import {useTheme} from '../../context/ThemeContext';
+import {CodebarUpdateScreenStyles} from '../../theme/CodebarUpdateScreenTheme';
+import {CodebarUpdateOptionCard} from '../../components/Cards/CodebarUpdateOptionCard';
 import useErrorHandler from '../../hooks/useErrorHandler';
-import { CodebarUpdateNavigationProp } from '../../interface/navigation';
+import {CodebarUpdateNavigationProp} from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 
 interface CodebarUpdateScreenInterface {
@@ -22,10 +22,17 @@ interface CodebarUpdateScreenInterface {
   Id_Marca: number;
 }
 
+const CODEBAR_TYPE_DEFAULT = 1;
+const OPTION_UPDATE_CODEBAR = 1;
+const OPTION_SCAN_CAMERA = 2;
+const OPTION_UPDATE_RANDOM = 3;
+const OPTION_MANUAL_INPUT = 4;
+const OPTION_UPDATE_DEFAULT = 0;
+
 export const CodebarUpdateScreen = ({
   Codigo,
   Id_Marca,
-}: CodebarUpdateScreenInterface) => {
+}: CodebarUpdateScreenInterface) : JSX.Element => {
   const navigation = useNavigation<CodebarUpdateNavigationProp>();
   const {
     updateCodeBarProvider,
@@ -34,8 +41,8 @@ export const CodebarUpdateScreen = ({
     codebarType,
     codeBar,
   } = useContext(SettingsContext);
-  const { theme } = useTheme();
-  const { handleError, handleErrorCustum } = useErrorHandler();
+  const {theme} = useTheme();
+  const {handleError, handleErrorCustum} = useErrorHandler();
 
   const [openModalCamera, setOpenModalCamera] = useState(false);
   const [codebartypeSelected, setCodebartypeSelected] = useState<number>();
@@ -43,21 +50,21 @@ export const CodebarUpdateScreen = ({
   const currentType = codebartypes.barcodes.find(
     (code) => code.id === codebarType,
   );
-  const [optionSelected, setOptionSelected] = useState<number>(0);
+  const [optionSelected, setOptionSelected] = useState<number>(OPTION_UPDATE_DEFAULT);
 
-  const hanldeCodebarTypeSelected = (value: number) => {
+  const hanldeCodebarTypeSelected = (value: number): void => {
     handleGetCodebarType(value);
   };
 
-  const handleGoToNextStep = () => {
-    if (optionSelected === 1) {
+  const handleGoToNextStep = (): void => {
+    if (optionSelected === OPTION_UPDATE_CODEBAR) {
       hanldeUpdateCodebarWithCodeFound();
-    } else if (optionSelected === 2) {
+    } else if (optionSelected === OPTION_SCAN_CAMERA) {
       updateCodeBarProvider('');
       setOpenModalCamera(true);
-    } else if (optionSelected === 3) {
+    } else if (optionSelected === OPTION_UPDATE_RANDOM) {
       hanldeUpdateCodebarWithCodeRandom();
-    } else if (optionSelected === 4) {
+    } else if (optionSelected === OPTION_MANUAL_INPUT) {
       if (!Codigo || !Id_Marca) {
         return;
       }
@@ -71,7 +78,7 @@ export const CodebarUpdateScreen = ({
     }
   };
 
-  const hanldeUpdateCodebarWithCodeFound = async () => {
+  const hanldeUpdateCodebarWithCodeFound = async (): Promise<void> => {
     try {
       if (!Codigo || !Id_Marca) {
         handleErrorCustum({
@@ -85,8 +92,8 @@ export const CodebarUpdateScreen = ({
 
       handleCodebarScannedProcces(true);
 
-      const response = await updateCodbar({
-        codigo: Codigo,
+      const { error } = await updateCodbar({
+        codigoProps: Codigo,
         Id_Marca: Id_Marca,
         body: {
           CodBar: codeBar,
@@ -95,7 +102,7 @@ export const CodebarUpdateScreen = ({
 
       navigation.goBack();
 
-      if (response.error) return handleError(response.error);
+      if (error) return handleError(error);
     } catch (error) {
       handleError(error, true);
     } finally {
@@ -103,7 +110,7 @@ export const CodebarUpdateScreen = ({
     }
   };
 
-  const hanldeUpdateCodebarWithCodeRandom = async () => {
+  const hanldeUpdateCodebarWithCodeRandom = async (): Promise<void> => {
     try {
       if (!Codigo || !Id_Marca) {
         handleErrorCustum({
@@ -117,7 +124,7 @@ export const CodebarUpdateScreen = ({
 
       handleCodebarScannedProcces(true);
       const response = await updateCodbar({
-        codigo: Codigo,
+        codigoProps: Codigo,
         Id_Marca: Id_Marca,
         body: {
           codeRandom: 'true',
@@ -134,8 +141,8 @@ export const CodebarUpdateScreen = ({
   };
 
   useEffect(() => {
-    const handleGetTypeOfCodebar = async () => {
-      setCodebartypeSelected(codebarType || 1);
+    const handleGetTypeOfCodebar = async (): Promise<void> => {
+      setCodebartypeSelected(codebarType || CODEBAR_TYPE_DEFAULT);
     };
     handleGetTypeOfCodebar();
   }, [codebarType]);
@@ -164,7 +171,7 @@ export const CodebarUpdateScreen = ({
               <Selector
                 label={'Tipo de codigo de barras: '}
                 items={codebartypes.barcodes.map((item) => {
-                  return { label: item?.type, value: item?.id };
+                  return {label: item?.type, value: item?.id};
                 })}
                 value={
                   codebartypes?.barcodes.find(
@@ -180,7 +187,7 @@ export const CodebarUpdateScreen = ({
                     CodebarUpdateScreenStyles(theme).actualCodebarTypeChange,
                     {
                       marginTop:
-                        globalStyles(theme).globalMarginBottomSmall
+                        globalStyles().globalMarginBottomSmall
                           .marginBottom,
                     },
                   ]}>
@@ -193,34 +200,34 @@ export const CodebarUpdateScreen = ({
           <CodebarUpdateOptionCard
             message={`Actualizar código con: ${codeBar}`}
             icon="barcode-outline"
-            onClick={() => setOptionSelected(1)}
-            active={optionSelected === 1}
+            onClick={() => setOptionSelected(OPTION_UPDATE_CODEBAR)}
+            active={optionSelected === OPTION_UPDATE_CODEBAR}
             visible={codeBar ? true : false}
           />
 
           <CodebarUpdateOptionCard
             message={`Usar camara para escanear codigo`}
             icon="camera-outline"
-            onClick={() => setOptionSelected(2)}
-            active={optionSelected === 2}
+            onClick={() => setOptionSelected(OPTION_SCAN_CAMERA)}
+            active={optionSelected === OPTION_SCAN_CAMERA}
           />
 
           <CodebarUpdateOptionCard
             message={`Actualizar con código aleatorio`}
             icon="shuffle-outline"
-            onClick={() => setOptionSelected(3)}
-            active={optionSelected === 3}
+            onClick={() => setOptionSelected(OPTION_UPDATE_RANDOM)}
+            active={optionSelected === OPTION_UPDATE_RANDOM}
           />
 
           <CodebarUpdateOptionCard
             message="Escribir manualmente"
             icon="text-outline"
-            onClick={() => setOptionSelected(4)}
-            active={optionSelected === 4}
+            onClick={() => setOptionSelected(OPTION_MANUAL_INPUT)}
+            active={optionSelected === OPTION_MANUAL_INPUT}
           />
         </View>
 
-        {optionSelected !== 0 && (
+        {optionSelected !== OPTION_UPDATE_DEFAULT && (
           <ButtonCustum
             title={'Avanzar'}
             onPress={handleGoToNextStep}

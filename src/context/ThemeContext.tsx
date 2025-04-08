@@ -3,7 +3,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Theme, darkTheme, lightTheme} from '../theme/appTheme';
 
-const ThemeContext = createContext({
+interface ThemeContextProps {
+  theme: Theme;
+  typeTheme: string;
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextProps>({
   theme: lightTheme,
   typeTheme: 'light',
   toggleTheme: () => {},
@@ -20,13 +26,15 @@ interface ThemeState {
 
 const themeReducer = (state: ThemeState, action: ThemeAction): ThemeState => {
   switch (action.type) {
-    case 'SET_THEME':
+    case 'SET_THEME': {
+      const {theme, typeTheme} = action.payload;
       return {
         ...state,
-        theme: action.payload.theme,
-        typeTheme: action.payload.typeTheme,
+        theme,
+        typeTheme,
       };
-    case 'TOGGLE_THEME':
+    }
+    case 'TOGGLE_THEME': {
       const newTheme = state.theme === lightTheme ? darkTheme : lightTheme;
       const newTypeTheme = state.theme === lightTheme ? 'dark' : 'light';
       return {
@@ -34,48 +42,40 @@ const themeReducer = (state: ThemeState, action: ThemeAction): ThemeState => {
         theme: newTheme,
         typeTheme: newTypeTheme,
       };
+    }
     default:
       return state;
   }
 };
 
-export const ThemeProvider = ({children}: {children: JSX.Element}) => {
+export const ThemeProvider = ({children}: {children: JSX.Element}): JSX.Element => {
   const [state, dispatch] = useReducer(themeReducer, {
     theme: lightTheme,
     typeTheme: 'light',
   });
 
   useEffect(() => {
-    const loadTheme = async () => {
-      try {
-        const storedTheme = await AsyncStorage.getItem('theme');
-        if (storedTheme) {
-          dispatch({
-            type: 'SET_THEME',
-            payload: {
-              theme: storedTheme === 'dark' ? darkTheme : lightTheme,
-              typeTheme: storedTheme,
-            },
-          });
-        }
-      } catch (error) {
-        console.error('Error loading theme from AsyncStorage:', error);
+    const loadTheme = async (): Promise<void> => {
+      const storedTheme = await AsyncStorage.getItem('theme');
+      if (storedTheme) {
+        const selectedTheme = storedTheme === 'dark' ? darkTheme : lightTheme;
+        dispatch({
+          type: 'SET_THEME',
+          payload: {
+            theme: selectedTheme,
+            typeTheme: storedTheme,
+          },
+        });
       }
     };
 
     loadTheme();
   }, []);
 
-  const toggleTheme = async () => {
-    try {
-      dispatch({type: 'TOGGLE_THEME'});
-      await AsyncStorage.setItem(
-        'theme',
-        state.typeTheme === 'light' ? 'dark' : 'light',
-      );
-    } catch (error) {
-      console.error('Error saving theme to AsyncStorage:', error);
-    }
+  const toggleTheme = async (): Promise<void> => {
+    dispatch({type: 'TOGGLE_THEME'});
+    const newType = state.typeTheme === 'light' ? 'dark' : 'light';
+    await AsyncStorage.setItem('theme', newType);
   };
 
   return (
@@ -86,4 +86,4 @@ export const ThemeProvider = ({children}: {children: JSX.Element}) => {
   );
 };
 
-export const useTheme = () => useContext(ThemeContext);
+export const useTheme = (): ThemeContextProps => useContext(ThemeContext);

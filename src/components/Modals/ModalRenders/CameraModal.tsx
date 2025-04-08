@@ -1,19 +1,26 @@
-import React, {useContext, useState} from 'react';
-import {View, Vibration, Text, ActivityIndicator} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {Camera} from 'react-native-camera-kit';
+import React, { useContext, useState } from 'react';
+import { View, Vibration, Text, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Camera } from 'react-native-camera-kit';
 
-import {globalStyles} from '../../../theme/appTheme';
-import {SettingsContext} from '../../../context/settings/SettingsContext';
-import {updateCodbar} from '../../../services/costos';
-import {getProductByCodeBar} from '../../../services/products';
+import { globalStyles } from '../../../theme/appTheme';
+import { SettingsContext } from '../../../context/settings/SettingsContext';
+import { updateCodbar } from '../../../services/costos';
+import { getProductByCodeBar } from '../../../services/products';
 import codebartypes from '../../../utils/codebarTypes.json';
-import {CameraModalStyles} from '../../../theme/ModalRenders/CameraModalTheme';
-import {useTheme} from '../../../context/ThemeContext';
+import { CameraModalStyles } from '../../../theme/ModalRenders/CameraModalTheme';
+import { useTheme } from '../../../context/ThemeContext';
 import useErrorHandler from '../../../hooks/useErrorHandler';
-import {AppNavigationProp} from '../../../interface/navigation';
-import {OnReadCodeData} from '../../../screens/Camera/CameraScreen';
+import { AppNavigationProp } from '../../../interface/navigation';
+import { OnReadCodeData } from '../../../screens/Camera/CameraScreen';
 import ButtonCustum from '../../Ui/ButtonCustum';
+
+// Constants para evitar magic numbers
+const VIBRATION_DURATION_MS = 500;
+const SCANNING_RESET_DELAY_MS = 2000;
+const BARCODE_LENGTH_LIMIT = 20;
+const CODES_LENGTH_EMPTY = 0;
+const PRODUCTS_LENGTH_EMPTY = 0;
 
 interface CameraModalInterface {
   Codigo: string;
@@ -21,12 +28,11 @@ interface CameraModalInterface {
   onClose: () => void;
 }
 
-const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
-  const {vibration, updateCodeBarProvider, codebarType, codeBar} =
-    useContext(SettingsContext);
+const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface): JSX.Element => {
+  const { vibration, updateCodeBarProvider, codebarType, codeBar } = useContext(SettingsContext);
   const navigation = useNavigation<AppNavigationProp>();
-  const {theme, typeTheme} = useTheme();
-  const {handleError, handleErrorCustum} = useErrorHandler();
+  const { theme, typeTheme } = useTheme();
+  const { handleError, handleErrorCustum } = useErrorHandler();
 
   const [isScanningAllowed, setIsScanningAllowed] = useState(true);
   const [codeIsScanning, setCodeIsScanning] = useState(false);
@@ -34,46 +40,46 @@ const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
   const [codebarTest, setCodebarTest] = useState(true);
 
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
-  const currentType = codebartypes.barcodes.find(
-    (code) => code.id === codebarType,
-  );
+  const currentType = codebartypes.barcodes.find(code => code.id === codebarType);
   const regex = new RegExp(currentType?.regex as string);
 
-  const handleVibrate = () => {
-    if (vibration) Vibration.vibrate(500);
+  const handleVibrate = (): void => {
+    if (vibration) Vibration.vibrate(VIBRATION_DURATION_MS);
   };
 
-  const codeScanned = async ({codes}: {codes: string}) => {
+  const codeScanned = async ({ codes }: { codes: string }): Promise<void> => {
     if (!regex.test(codes)) {
       setCodebarTest(false);
     }
 
     setCodeIsScanning(true);
 
-    if (codes.length > 0 && isScanningAllowed) {
+    if (codes.length > CODES_LENGTH_EMPTY && isScanningAllowed) {
       setIsScanningAllowed(false);
       const codeValue = codes;
       if (!codeValue) return;
+
       try {
-        const response = await getProductByCodeBar({codeBar: codeValue});
-        if (response.error) return handleError(response.error);
+        const { products, error} = await getProductByCodeBar({ codeBar: codeValue });
+        if (error) return handleError(error);
 
         handleVibrate();
         updateCodeBarProvider(codeValue);
-        if (response.length > 0) setProductExistent(true);
+        if (products.length > PRODUCTS_LENGTH_EMPTY) setProductExistent(true);
       } catch (error) {
         handleError(error, true);
       } finally {
         setCodebarTest(true);
         setTimeout(() => {
           setIsScanningAllowed(true);
-        }, 2000);
+        }, SCANNING_RESET_DELAY_MS);
       }
     }
+
     setCodeIsScanning(false);
   };
 
-  const handleUpdateCodebar = async () => {
+  const handleUpdateCodebar = async (): Promise<void> => {
     if (!Codigo || !Id_Marca) {
       handleErrorCustum({
         status: 400,
@@ -84,15 +90,15 @@ const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
     }
 
     try {
-      const response = await updateCodbar({
-        codigo: Codigo,
+      const { error } = await updateCodbar({
+        codigoProps: Codigo,
         Id_Marca: Id_Marca,
         body: {
           CodBar: codeBar,
         },
       });
 
-      if (response.error) return handleError(response.error);
+      if (error) return handleError(error);
     } catch (error) {
       handleError(error, true);
     } finally {
@@ -101,7 +107,7 @@ const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
     }
   };
 
-  const handleTryAgain = () => {
+  const handleTryAgain = (): void => {
     updateCodeBarProvider('');
     setProductExistent(false);
   };
@@ -125,7 +131,7 @@ const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
               </Text>
             ) : (
               <View>
-                <Text style={{color: theme.text_color}}>
+                <Text style={{ color: theme.text_color }}>
                   Escanea el codigo que le pondras a este producto.
                 </Text>
                 <Text style={CameraModalStyles(theme).header_message_scanner}>
@@ -142,7 +148,7 @@ const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
               <Camera
                 scanBarcode={true}
                 onReadCode={(event: OnReadCodeData) =>
-                  codeScanned({codes: event.nativeEvent.codeStringValue})
+                  codeScanned({ codes: event.nativeEvent.codeStringValue })
                 }
                 style={CameraModalStyles(theme).camera}
               />
@@ -160,7 +166,7 @@ const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
                 loading={false}
                 extraStyles={{
                   marginBottom:
-                    globalStyles(theme).globalMarginBottom.marginBottom,
+                    globalStyles().globalMarginBottom.marginBottom,
                 }}
               />
             </View>
@@ -172,7 +178,7 @@ const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
                 </Text>
               </View>
 
-              {codeBar && codeBar?.length < 20 ? (
+              {codeBar && codeBar.length < BARCODE_LENGTH_LIMIT ? (
                 <ButtonCustum
                   title={'Asignar codigo de barras'}
                   onPress={handleUpdateCodebar}
@@ -180,12 +186,12 @@ const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
                   loading={false}
                   extraStyles={{
                     marginBottom:
-                      globalStyles(theme).globalMarginBottom.marginBottom,
+                      globalStyles().globalMarginBottom.marginBottom,
                   }}
                 />
               ) : (
                 <View>
-                  <Text>El codigo de barras es maximo de 20 caracteres</Text>
+                  <Text>El codigo de barras es maximo de {BARCODE_LENGTH_LIMIT} caracteres</Text>
                 </View>
               )}
             </>
@@ -208,7 +214,7 @@ const CameraModal = ({Codigo, Id_Marca, onClose}: CameraModalInterface) => {
             disabled={false}
             loading={false}
             extraStyles={{
-              marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+              marginBottom: globalStyles().globalMarginBottom.marginBottom,
             }}
           />
         </>

@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -83,8 +83,14 @@ export const darkTheme = {
   background_color_blur: 'rgba(0, 0, 0, 0.2)',
 };
 
-export const globalStyles = (theme?: Theme) =>
+export const globalStyles = () =>
   StyleSheet.create({
+    flex: {
+      flex: 1
+    },
+    opacity: {
+      opacity: 0.5
+    },
     globalPadding: {
       padding: wp('5%'),
     },
@@ -108,6 +114,9 @@ export const globalStyles = (theme?: Theme) =>
     borderRadius: {
       borderRadius: hp('1%'),
     },
+    ItemSeparator: {
+      height: 15
+  },
   });
 
 export const globalFont = {

@@ -1,33 +1,45 @@
-import {useCallback, useState} from 'react';
+import { useCallback, useState } from 'react';
 
 import useErrorHandler from './useErrorHandler';
 
-interface UseLoadMoreDataInterface<TFilters = unknown> {
-  fetchInitialData: (filters?: TFilters) => Promise<[]>;
-  fetchPaginatedData: (filters?: TFilters, page?: number) => Promise<[]>;
-  fetchTotalCount?: (filters?: TFilters) => Promise<number>;
+
+interface UseLoadMoreDataInterface<TData = unknown, TFilters = unknown> {
+  fetchInitialData: (_filters?: TFilters) => Promise<TData[]>;
+  fetchPaginatedData: (_filters?: TFilters, _page?: number) => Promise<TData[]>;
+  fetchTotalCount?: (_filters?: TFilters) => Promise<number>;
   filters?: TFilters;
 }
 
-export const useLoadMoreData = ({
+
+const PAGE_INITIAL = 1;
+
+export const useLoadMoreData = <TData, TFilters = unknown>({
   fetchInitialData,
   fetchPaginatedData,
   fetchTotalCount,
   filters,
-}: UseLoadMoreDataInterface) => {
-  const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
+}: UseLoadMoreDataInterface<TData, TFilters>): {
+  data: TData[],
+  isLoading: boolean,
+  isButtonLoading: boolean,
+  total: number | null,
+  handleResetData: () => Promise<void>,
+  handleLoadMore: () => Promise<void>,
+} => {
+
+  const [data, setData] = useState<TData[]>([]);
+  const [page, setPage] = useState(PAGE_INITIAL);
   const [isLoading, setIsLoading] = useState(true);
   const [isButtonLoading, setButtonIsLoading] = useState(false);
   const [total, setTotal] = useState<number | null>(null);
-  const {handleError} = useErrorHandler();
+  const { handleError } = useErrorHandler();
 
-  const handleResetData = useCallback(async () => {
+  const handleResetData = useCallback(async (): Promise<void> => {
     setIsLoading(true);
     try {
       const initialData = await fetchInitialData(filters);
       setData(initialData);
-      setPage((prevPage) => prevPage + 1); // Actualizar página de forma segura
+      setPage((prevPage) => prevPage + PAGE_INITIAL); // Actualizar página de forma segura
 
       if (fetchTotalCount) {
         const total = await fetchTotalCount(filters);
@@ -38,14 +50,14 @@ export const useLoadMoreData = ({
     } finally {
       setIsLoading(false);
     }
-  }, [fetchInitialData, filters, fetchTotalCount]);
+  }, [handleError, fetchInitialData, filters, fetchTotalCount]);
 
-  const handleLoadMore = useCallback(async () => {
+  const handleLoadMore = useCallback(async (): Promise<void> => {
     // Evitar múltiples llamadas simultáneas
     if (isButtonLoading) return;
 
     // Calcular nueva página
-    const nextPage = page + 1;
+    const nextPage = page + PAGE_INITIAL;
 
     // Verificar si se alcanzó el total de elementos
     if (total !== null && data.length >= total) return;
@@ -55,13 +67,13 @@ export const useLoadMoreData = ({
     try {
       const moreData = await fetchPaginatedData(filters, nextPage);
       setData((prevData) => [...prevData, ...moreData]);
-      setPage((prevPage) => prevPage + 1); // Actualizar página de forma segura
+      setPage((prevPage) => prevPage + PAGE_INITIAL); // Actualizar página de forma segura
     } catch (error) {
       handleError(error, true);
     } finally {
       setButtonIsLoading(false);
     }
-  }, [fetchPaginatedData, filters, isButtonLoading, data.length, total, page]);
+  }, [handleError, fetchPaginatedData, filters, isButtonLoading, data.length, total, page]);
 
   return {
     data,

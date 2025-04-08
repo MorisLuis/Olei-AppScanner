@@ -1,19 +1,21 @@
-import React from 'react';
-import {useReducer, useEffect, useState} from 'react';
+import React, { useCallback, useState } from 'react';
+import { useReducer, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import {api} from '../../api/api';
-import UserInterface from '../../interface/user';
-import {authReducer} from './authReducer';
-import {AuthContext} from './AuthContext';
-import {Id_TipoMovInvInterface} from '../../services/typeOfMovement';
+import UserInterface, { ID_TIPO_MOVIMIENTO } from '../../interface/user';
+import { authReducer } from './authReducer';
+import { AuthContext } from './AuthContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
+import { postLogOutClient, postLoginClient, postLoginClientInterface, postLoginServer, postLoginServerInterface, postRefreshToken } from '../../services/auth';
+import { setClientLogoutHandler, setUnauthorizedHandler } from '../../api/apiCallbacks';
 
 export interface AuthState {
-  status: 'checking' | 'authenticated' | 'not-authenticated';
+  tokenServer: string | null;
   token: string | null;
+  user: UserInterface | null;
+  isLoading: boolean;
+  status: 'checking' | 'authenticated' | 'not-authenticated';
+
   errorMessage: string;
-  user: UserInterface;
   codeBar?: string;
   codeBarStatus?: boolean;
 }
@@ -24,8 +26,9 @@ export interface LoginData {
 }
 
 export const AUTH_INITIAL_STATE: AuthState = {
-  status: 'checking',
+  tokenServer: null,
   token: null,
+  isLoading: false,
   user: {
     ServidorSQL: '',
     BaseSQL: '',
@@ -55,196 +58,191 @@ export const AUTH_INITIAL_STATE: AuthState = {
     serverConected: false,
     userConected: false,
   },
+  status: 'checking',
+
   errorMessage: '',
   codeBar: '',
   codeBarStatus: false,
 };
 
-export const AuthProvider = ({children}: {children: JSX.Element}) => {
+const ID_MOVEMENT_0 = 0;
+const ID_MOVEMENT_1 = 1;
+const ID_MOVEMENT_2 = 2;
+
+export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Element => {
+
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
-  const [loggingIn, setLoggingIn] = useState(false);
-  const {handleError} = useErrorHandler();
+  const [isStorageReady, setIsStorageReady] = useState(false);
+  const { handleError } = useErrorHandler();
 
-  useEffect(() => {
-    refreshToken();
-  }, []);
-
-  const loginServer = async ({usuario, password}: LoginData) => {
-    setLoggingIn(true);
-
+  const loginServer = async ({ usuario, password }: postLoginServerInterface): Promise<void> => {
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
     try {
-      state.status = 'checking';
-      const {data} = await api.post('/api/auth/loginServer', {
-        IdUsuarioOLEI: usuario,
-        PasswordOLEI: password,
-      });
-
-      dispatch({
-        type: '[Auth] - logInServer',
-        payload: {
-          token: data.token,
-          user: data.user,
-        },
-      });
-
-      await AsyncStorage.setItem('token', data.token);
-      await AsyncStorage.setItem('refreshToken', data.refreshToken);
+      const { user, tokenServer } = await postLoginServer({ usuario, password });
+      await AsyncStorage.setItem('tokenServer', tokenServer);
+      dispatch({ type: '[Auth] - LOGIN_SERVER', payload: { user, tokenServer } })
     } catch (error) {
-      handleError(error);
+      handleError(`Login server failed: ${error}`);
     } finally {
-      setLoggingIn(false);
+      dispatch({ type: '[Auth] - SET_LOADING', payload: false });
     }
   };
 
-  const login = async ({usuario, password}: LoginData) => {
-    setLoggingIn(true);
+  const loginClient = async ({ Id_Usuario, password }: postLoginClientInterface): Promise<void> => {
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
 
     try {
-      state.status = 'checking';
-      const {data} = await api.post('/api/auth/login', {
-        Id_Usuario: usuario,
-        password,
-      });
+      const { user, token, refreshToken } = await postLoginClient({ Id_Usuario, password });
 
-      dispatch({
-        type: '[Auth] - logIn',
-        payload: {
-          user: data.user,
-        },
-      });
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('refreshToken', refreshToken);
+
+      dispatch({ type: '[Auth] - LOGIN_CLIENT', payload: { user, token } })
     } catch (error) {
-      handleError(error);
+      handleError(`Login client failed: ${error}`);
     } finally {
-      setLoggingIn(false);
+      dispatch({ type: '[Auth] - SET_LOADING', payload: false });
     }
-  };
+  }
 
-  const refreshToken = async () => {
+  const logOutServer = useCallback(async (): Promise<void> => {
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
+
     try {
-      const refreshToken = await AsyncStorage.getItem('refreshToken');
-      if (!refreshToken) return dispatch({type: '[Auth] - notAuthenticated'});
+      AsyncStorage.removeItem('token');
+      AsyncStorage.removeItem('tokenServer');
+      AsyncStorage.removeItem('refreshToken');
 
-      // Hay token
-      const resp = await api.post(
-        '/api/auth/refresh',
-        {refreshToken},
-        {
-          headers: {
-            'Content-type': 'application/json',
-          },
-        },
-      );
-
-      if (resp.status !== 200) {
-        return dispatch({type: '[Auth] - notAuthenticated'});
-      }
-
-      if (resp.data.userConected === false) {
-        return dispatch({type: '[Auth] - notAuthenticated'});
-      }
-
-      await AsyncStorage.setItem('token', resp.data.token);
-      await AsyncStorage.setItem('refreshToken', resp.data.refreshToken);
-
-      dispatch({
-        type: '[Auth] - logIn',
-        payload: {
-          user: resp.data.user,
-        },
-      });
+      dispatch({ type: '[Auth] - LOGOUT_SERVER' })
     } catch (error) {
-      handleError(error, true, true);
-      return dispatch({type: '[Auth] - notAuthenticated'});
-    }
-  };
+      handleError(`Logout Server failed: ${error}`);
+    } finally {
+      dispatch({ type: '[Auth] - SET_LOADING', payload: false })
+    };
+  }, [handleError]);
 
-  const logOutServer = async () => {
+  const logOutClient = useCallback(async (): Promise<void> => {
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
+
     try {
-      setLoggingIn(false);
-      await api.get('/api/auth/logoutServer');
-      await AsyncStorage.removeItem('token');
-      dispatch({type: '[Auth] - logOutServer'});
-    } catch (error) {
-      handleError(error);
-    }
-  };
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        return
+        //return dispatch({ type: '[Auth] - LOGOUT_SERVER' })
+      };
 
-  const logOutUser = async () => {
+      const { user } = await postLogOutClient()
+
+      AsyncStorage.removeItem('token');
+
+      dispatch({ type: '[Auth] - LOGOUT_CLIENT', payload: { user } })
+    } catch (error) {
+      handleError(`Logout Client failed: ${error}`);
+    } finally {
+      dispatch({ type: '[Auth] - SET_LOADING', payload: false })
+    };
+  }, [handleError]);
+
+  const refreshAuth = useCallback(async (): Promise<void | null> => {
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
+
     try {
-      setLoggingIn(false);
-      const user = await api.get('/api/auth/logoutUser');
+      const refreshToken_prop = await AsyncStorage.getItem('refreshToken');
+      if (!refreshToken_prop) {
+        return logOutClient();
+      };
 
-      dispatch({
-        type: '[Auth] - logOutUser',
-        payload: {
-          user: user.data.user,
-        },
-      });
+      const { token, refreshToken, user } = await postRefreshToken({ refreshToken_prop });
+
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('refreshToken', refreshToken);
+
+      dispatch({ type: '[Auth] - REFRESH', payload: { token, user } })
+
     } catch (error) {
-      handleError(error);
+      handleError(`Refresh Auth failed: ${error}`);
+    } finally {
+      dispatch({ type: '[Auth] - SET_LOADING', payload: false });
     }
-  };
+  }, [handleError, logOutClient])
 
-  const removeError = () => {
-    dispatch({type: '[Auth] - removeError'});
-  };
-
-  const updateTypeOfMovements = async (value: Id_TipoMovInvInterface) => {
+  const restoreAuth = useCallback(async (): Promise<void> => {
     try {
-      dispatch({
-        type: '[Auth] - typeOfMovement',
-        payload: {
-          user: {
-            ...state.user!,
-            Id_TipoMovInv: {
-              Id_TipoMovInv: value.Id_TipoMovInv,
-              Accion: value.Accion,
-              Descripcion: value.Descripcion,
-              Id_AlmDest: value.Id_AlmDest,
-            },
-          },
-        },
-      });
-    } catch (error) {
-      handleError(error, true);
-    }
-  };
+      const tokenServer = await AsyncStorage.getItem('tokenServer');
+      const token = await AsyncStorage.getItem('token');
 
-  const getTypeOfMovementsName = () => {
+      dispatch({ type: '[Auth] - RESTORE', payload: { token: token, tokenServer } })
+
+      await refreshAuth()
+    } catch (error) {
+      handleError(`Restore Auth failed: ${error}`);
+    }
+  }, [handleError, refreshAuth])
+
+
+  const getTypeOfMovementsName = useCallback((): string => {
     let name;
     if (
-      state.user?.Id_TipoMovInv?.Accion === 1 &&
-      state.user?.Id_TipoMovInv?.Id_TipoMovInv === 0
+      state.user?.Id_TipoMovInv?.Accion === ID_MOVEMENT_1 &&
+      state.user?.Id_TipoMovInv?.Id_TipoMovInv === ID_MOVEMENT_0
     ) {
       // Inventario fisico
       name = 'Inventario';
-    } else if (state.user?.Id_TipoMovInv?.Accion === 1) {
+    } else if (state.user?.Id_TipoMovInv?.Accion === ID_MOVEMENT_1) {
       name = 'Entrada';
-    } else if (state.user?.Id_TipoMovInv?.Accion === 2) {
+    } else if (state.user?.Id_TipoMovInv?.Accion === ID_MOVEMENT_2) {
       name = 'Salida';
     } else {
       name = 'Traspaso';
     }
     return name;
+  }, [state.user?.Id_TipoMovInv?.Accion, state.user?.Id_TipoMovInv?.Id_TipoMovInv]);
+
+  const updateTypeOfMovements = async (value: ID_TIPO_MOVIMIENTO): Promise<void> => {
+    try {
+      dispatch({ type: '[Auth] - TYPE_OF_MOVEMENT', payload: { tipoMovimiento: value } })
+    } catch (error) {
+      handleError(`Update type movement failed: ${error}`);
+    }
   };
 
-  const updateUser = (user: Partial<UserInterface>) => {
-    dispatch({type: '[Auth] - updateUser', payload: user});
+  const updateUser = (user: Partial<UserInterface>): void => {
+    dispatch({ type: '[Auth] - UPDATE_USER', payload: { user } });
   };
+
+  useEffect(() => {
+    if (!isStorageReady) {
+      setIsStorageReady(true)
+      return
+    }
+    restoreAuth()
+  }, [restoreAuth, isStorageReady]);
+
+  useEffect(() => {
+    setClientLogoutHandler(() => {
+      logOutClient();
+    });
+  }, [logOutClient]);
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      logOutServer();
+    });
+  }, [logOutServer]);
+
 
   return (
     <AuthContext.Provider
       value={{
         ...state,
         loginServer,
-        loggingIn,
-        login,
-        logOutUser,
+        loginClient,
         logOutServer,
-        removeError,
-        updateTypeOfMovements,
+        logOutClient,
+
         getTypeOfMovementsName,
-        updateUser,
+        updateTypeOfMovements,
+        updateUser
       }}>
       {children}
     </AuthContext.Provider>

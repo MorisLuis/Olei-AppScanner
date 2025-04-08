@@ -9,8 +9,8 @@ export const SearchProductScreenStyles = (theme: Theme, typeTheme?: string) =>
       backgroundColor: theme.background_color,
     },
     content: {
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
-      marginTop: globalStyles(theme).globalPadding.padding,
+      paddingHorizontal: globalStyles().globalPadding.padding,
+      marginTop: globalStyles().globalPadding.padding,
     },
     searchAdvice: {},
     adviceHeader: {
@@ -18,21 +18,23 @@ export const SearchProductScreenStyles = (theme: Theme, typeTheme?: string) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     titleHeader: {
       fontSize: globalFont.font_normal,
       color: typeTheme === 'light' ? theme.color_red : theme.text_color,
       fontWeight: 'bold',
     },
-    adviceMessage: {},
     adviceMessage1: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
       fontSize: globalFont.font_normal,
       color: theme.text_color,
     },
+    adviceMessage1_bold:{
+      fontWeight: 'bold'
+    },
     adviceMessage2: {
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
       fontSize: globalFont.font_normal,
       color: theme.text_color,
     },

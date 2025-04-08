@@ -6,9 +6,9 @@ export const SettingsScreenStyles = (theme: Theme) =>
   StyleSheet.create({
     SettingsScreen: {
       flex: 1,
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
       backgroundColor: theme.background_color,
-      paddingVertical: globalStyles(theme).globalPadding.padding * 2,
+      paddingVertical: globalStyles().globalPadding.padding * 2,
     },
     section: {
       display: 'flex',
@@ -19,7 +19,7 @@ export const SettingsScreenStyles = (theme: Theme) =>
       justifyContent: 'space-between',
     },
     sectionClosed: {
-      paddingTop: globalStyles(theme).globalPadding.padding,
+      paddingTop: globalStyles().globalPadding.padding,
     },
     label: {
       fontSize: globalFont.font_normal,
@@ -35,6 +35,6 @@ export const SettingsScreenStyles = (theme: Theme) =>
       height: 1,
       width: '100%',
       backgroundColor: theme.color_border,
-      marginVertical: globalStyles(theme).globalMarginBottom.marginBottom * 1.5,
+      marginVertical: globalStyles().globalMarginBottom.marginBottom * 1.5,
     },
   });

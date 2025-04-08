@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
@@ -14,13 +13,13 @@ export const SuccesMessageScreenStyles = (theme: Theme) =>
       width: '100%',
       backgroundColor: theme.background_color,
       zIndex: 9999,
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
       justifyContent: 'center',
     },
     header: {
       position: 'absolute',
       top: hp('5%'),
-      left: globalStyles(theme).globalPadding.padding,
+      left: globalStyles().globalPadding.padding,
       backgroundColor: theme.background_color_tertiary,
       borderWidth: 1,
       borderColor: theme.color_border_secondary,
@@ -28,20 +27,20 @@ export const SuccesMessageScreenStyles = (theme: Theme) =>
       padding: 8,
     },
     content: {
-      padding: globalStyles(theme).globalPadding.padding,
+      padding: globalStyles().globalPadding.padding,
     },
     title: {
       fontSize: globalFont.font_big,
       width: '80%',
       color: theme.color_tertiary,
       fontWeight: 'bold',
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     text: {
       fontSize: globalFont.font_normal,
       width: '80%',
       color: theme.color_tertiary,
-      marginBottom: globalStyles(theme).globalMarginBottom.marginBottom,
+      marginBottom: globalStyles().globalMarginBottom.marginBottom,
     },
     actions: {
       width: '40%',

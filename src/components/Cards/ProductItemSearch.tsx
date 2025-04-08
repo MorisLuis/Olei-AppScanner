@@ -1,14 +1,14 @@
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 
 import ProductInterface from '../../interface/product';
-import { ProductItemSearchStyles } from '../../theme/UI/cardsStyles';
-import { useTheme } from '../../context/ThemeContext';
+import {ProductItemSearchStyles} from '../../theme/UI/cardsStyles';
+import {useTheme} from '../../context/ThemeContext';
 
 interface ProductItemSearchInterface {
   product: ProductInterface;
   showDelete?: boolean;
-  onDelete?: (product: ProductInterface) => void;
+  onDelete?: (_product: ProductInterface) => void;
   onClick?: () => void;
   fromModal?: boolean;
 }
@@ -17,12 +17,11 @@ export const ProductItemSearch = ({
   product,
   onClick,
   fromModal,
-}: ProductItemSearchInterface) => {
-  const { theme, typeTheme } = useTheme();
-  
-  console.log({product: JSON.stringify(product, null, 2)})
+}: ProductItemSearchInterface) : JSX.Element => {
+  const {theme, typeTheme} = useTheme();
 
-  const withoutCodebar = product?.CodBar?.trim() === '' || product.CodBar === null
+  const withoutCodebar =
+    product?.CodBar?.trim() === '' || product.CodBar === null;
 
   return (
     <TouchableOpacity
@@ -42,14 +41,30 @@ export const ProductItemSearch = ({
           </Text>
           {product.SKU && (
             <>
-              <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>-</Text>
-              <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>
+              <Text
+                style={
+                  ProductItemSearchStyles(theme, typeTheme).otherInformationText
+                }>
+                -
+              </Text>
+              <Text
+                style={
+                  ProductItemSearchStyles(theme, typeTheme).otherInformationText
+                }>
                 SKU: {product.SKU.trim()}
               </Text>
             </>
           )}
-          <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>-</Text>
-          <Text style={ProductItemSearchStyles(theme, typeTheme).otherInformationText}>
+          <Text
+            style={
+              ProductItemSearchStyles(theme, typeTheme).otherInformationText
+            }>
+            -
+          </Text>
+          <Text
+            style={
+              ProductItemSearchStyles(theme, typeTheme).otherInformationText
+            }>
             Marca: {product.Marca.trim()}
           </Text>
         </View>
@@ -67,11 +82,7 @@ export const ProductItemSearch = ({
                   ? ProductItemSearchStyles(theme, typeTheme).textAvailable
                   : ProductItemSearchStyles(theme, typeTheme).textNotAvailable
               }>
-              {
-                !withoutCodebar
-                  ? 'Tiene código'
-                  : 'No tiene código'
-              }
+              {!withoutCodebar ? 'Tiene código' : 'No tiene código'}
             </Text>
           </View>
         )}

@@ -1,23 +1,37 @@
-import {createContext} from 'react';
-
-import {LoginData} from './AuthProvider';
-import UserInterface from '../../interface/user';
-import {Id_TipoMovInvInterface} from '../../services/typeOfMovement';
+import { createContext } from 'react';
+import UserInterface, { ID_TIPO_MOVIMIENTO } from '../../interface/user';
+import { postLoginClientInterface, postLoginServerInterface } from '../../services/auth';
 
 interface ContextProps {
-  errorMessage: string;
-  token: string | null;
-  user: UserInterface;
-  status: 'checking' | 'authenticated' | 'not-authenticated';
-  loggingIn: boolean;
-  loginServer: (loginData: LoginData) => void;
-  login: (loginData: LoginData) => void;
-  logOutUser: () => void;
+  loginServer: (_info: postLoginServerInterface) => void;
+  loginClient: (_info: postLoginClientInterface) => void;
   logOutServer: () => void;
-  removeError: () => void;
-  updateTypeOfMovements: (value: Id_TipoMovInvInterface) => void;
+  logOutClient: () => void;
+
+  user: UserInterface | null;
+  token: string | null;
+  tokenServer: string | null;
+
+
   getTypeOfMovementsName: () => string;
-  updateUser: (user: Partial<UserInterface>) => void;
+  updateTypeOfMovements: (_value: ID_TIPO_MOVIMIENTO) => void;
+  updateUser: (_user: Partial<UserInterface>) => void;
+
+  /*   errorMessage: string;
+    token: string | null;
+    tokenServer: string | null;
+    user: UserInterface;
+    serverstatus: 'checking-server' | 'server-authenticated' | 'server-not-authenticated';
+    status: 'checking' | 'authenticated' | 'not-authenticated'
+    loggingIn: boolean;
+    loginServer: (_loginData: LoginData) => void;
+    login: (_loginData: LoginData) => void;
+    logOutUser: () => void;
+    logOutServer: () => void;
+    removeError: () => void;
+    updateTypeOfMovements: (_value: Id_TipoMovInvInterface) => void;
+    getTypeOfMovementsName: () => string;
+    updateUser: (_user: Partial<UserInterface>) => void; */
 }
 
 export const AuthContext = createContext({} as ContextProps);

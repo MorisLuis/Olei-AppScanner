@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Text,
   View,
@@ -11,67 +11,61 @@ import {
   SafeAreaView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-import {AuthContext} from '../../context/auth/AuthContext';
-import {useTheme} from '../../context/ThemeContext';
-import {globalStyles} from '../../theme/appTheme';
-import {loginStyles} from '../../theme/loginTheme';
-import {inputStyles} from '../../theme/UI/inputs';
-import {LoadingScreen} from '../LoadingScreen';
+import { AuthContext } from '../../context/auth/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
+import { globalStyles } from '../../theme/appTheme';
+import { loginStyles } from '../../theme/loginTheme';
+import { inputStyles } from '../../theme/UI/inputs';
 import useKeyboardStatus from '../../hooks/useKeyboardStatus';
-import {useForm} from '../../hooks/useForm';
-import {InputPassword} from '../../components/Ui/InputPassword';
-import {useProtectPage} from '../../hooks/useProtectPage';
+import { useForm } from '../../hooks/useForm';
+import { InputPassword } from '../../components/Ui/InputPassword';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
+import { DELAY_HALF_A_SECOND } from '../../utils/globalConstants';
 
-export const LoginScreen = () => {
-  const {login, status, user: userAuth} = useContext(AuthContext);
+// Reemplaza require con import
+import logo from '../../assets/logo01.png';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppNavigationStackParamList } from '../../navigator/AppNavigation';
+import { AuthNavigationProp } from '../../interface/navigation';
 
-  /* useProtectPage({
-        condition: status === 'authenticated',
-        navigatePage: userAuth?.TodosAlmacenes === 1 ? 'almacenScreen' : 'typeOfMovementScreen' //redireccion
-    }); */
+export type AppNavigationProp = NativeStackNavigationProp<
+  AppNavigationStackParamList
+>;
 
-  const {theme, typeTheme} = useTheme();
+export const LoginScreen = (): JSX.Element => {
+  const { loginClient } = useContext(AuthContext);
+
+  const { theme, typeTheme } = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
   const [loadingLogin, setLoadingLogin] = useState(false);
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<AuthNavigationProp>();
   const keyboardActive = useKeyboardStatus();
 
-  const {user, password, onChange} = useForm({
+  const { user, password, onChange } = useForm({
     user: '',
     password: '',
   });
 
-  const onLogin = () => {
+  const onLogin = (): void => {
     setLoadingLogin(true);
-    try {
-      Keyboard.dismiss();
-      login({usuario: user, password});
-    } catch (error) {
-    } finally {
+    Keyboard.dismiss();
+    loginClient({ Id_Usuario: user, password });
+    setTimeout(() => {
       setLoadingLogin(false);
-    }
+    }, DELAY_HALF_A_SECOND);
   };
 
-  const handleNavigateToProfile = () => {
-    navigation.navigate('BottomNavigation', {
-      screen: 'BottomNavigation - Profile',
-      params: {
-        screen: '[ProfileNavigation] - personalInformationScreen',
-        params: {fromLogIn: true},
-      },
-    });
-  };
-
-  //if (loggingIn) return <LoadingScreen message='Iniciando sesion...' state={loggingIn} />;
+  const handleNavigateToProfile = (): void => {
+    navigation.navigate('PersonalInformationScreen', { fromLogIn: true });
+  }
 
   return (
     <KeyboardAvoidingView
       style={[loginStyles(theme).LoginScreen]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={globalStyles().flex}>
         <View style={loginStyles(theme).formContainer}>
           <View style={loginStyles(theme).imageContainer}>
             <Image
@@ -80,7 +74,7 @@ export const LoginScreen = () => {
                   ? loginStyles(theme).logoActived
                   : loginStyles(theme).logo,
               ]}
-              source={require('../../assets/logo01.png')}
+              source={logo} // Logo importado directamente
             />
           </View>
           <Text style={loginStyles(theme).title}>Bienvenido!</Text>
@@ -94,7 +88,7 @@ export const LoginScreen = () => {
             keyboardType="email-address"
             style={[
               inputStyles(theme, typeTheme).input,
-              globalStyles(theme).globalMarginBottom,
+              globalStyles().globalMarginBottom,
             ]}
             selectionColor={theme.text_color}
             onChangeText={(value) => onChange(value, 'user')}

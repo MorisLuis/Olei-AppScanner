@@ -20,12 +20,7 @@ export default interface UserInterface {
 
   SalidaSinExistencias?: number;
 
-  Id_TipoMovInv?: {
-    Id_TipoMovInv: number;
-    Accion: number;
-    Descripcion: string;
-    Id_AlmDest?: number;
-  };
+  Id_TipoMovInv?: ID_TIPO_MOVIMIENTO;
 
   Nombre?: string;
   Id_Usuario: string;
@@ -38,4 +33,10 @@ export default interface UserInterface {
 export interface UserDBInterface {
   BaseSQL: string;
   RazonSocial: string;
+}
+export interface ID_TIPO_MOVIMIENTO {
+  Id_TipoMovInv: number;
+  Accion: number;
+  Descripcion: string;
+  Id_AlmDest?: number;
 }

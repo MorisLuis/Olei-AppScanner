@@ -1,0 +1,113 @@
+import UserInterface from '../../interface/user';
+import { AUTH_INITIAL_STATE, AuthState } from './AuthProvider';
+
+
+
+type AuthAction =
+  | { type: '[Auth] - logInServer'; payload: { user: UserInterface; tokenServer: string } }
+  | { type: '[Auth] - logIn'; payload: { user: UserInterface, token: string } }
+  | { type: '[Auth] - logOutServer' }
+  | { type: '[Auth] - logOutUser'; payload: { user: UserInterface } }
+
+  | { type: '[Auth] - notAuthenticated'; payload: { user: UserInterface, tokenServer: string } }
+  | { type: '[Auth] - server-notAuthenticated' }
+
+  | { type: '[Auth] - addError'; payload: string }
+  | { type: '[Auth] - removeError' }
+  | { type: '[Auth] - typeOfMovement'; payload: { user: UserInterface } }
+  | { type: '[Auth] - updateUser'; payload: Partial<UserInterface> };
+
+const clearAuthStateServer = (): AuthState => ({
+  serverstatus: 'server-not-authenticated',
+  status: 'not-authenticated',
+  token: null,
+  tokenServer: null,
+  user: AUTH_INITIAL_STATE.user,
+  errorMessage: '',
+  codeBar: '',
+});
+
+export const authReducer = (
+  state: AuthState,
+  action: AuthAction,
+): AuthState => {
+
+  switch (action.type) {
+
+    case '[Auth] - logInServer':
+      return {
+        ...state,
+        errorMessage: '',
+        //serverstatus: 'server-authenticated',
+        tokenServer: action.payload.tokenServer,
+        user: action.payload.user,
+      };
+
+    case '[Auth] - logIn':
+      return {
+        ...state,
+        errorMessage: '',
+        serverstatus: 'server-authenticated',
+        status: 'authenticated',
+        token: action.payload.token,
+        user: action.payload.user,
+      };
+
+    case '[Auth] - logOutServer':
+      return clearAuthStateServer();
+
+    case '[Auth] - logOutUser':
+      return {
+        ...state,
+        status: 'not-authenticated',
+        token: null,
+        user: action.payload.user
+      };
+
+    case '[Auth] - notAuthenticated':
+      return {
+        serverstatus: 'server-authenticated',
+        status: 'not-authenticated',
+        token: null,
+        tokenServer: state.tokenServer,
+        errorMessage: state.errorMessage,
+        user: action.payload.user
+      };
+
+    case '[Auth] - server-notAuthenticated':
+      return {
+        ...clearAuthStateServer(),
+      };
+
+    case '[Auth] - typeOfMovement':
+      return {
+        ...state,
+        user: action.payload.user,
+      };
+
+    case '[Auth] - updateUser':
+      return {
+        ...state,
+        user: { ...state.user, ...action.payload },
+      };
+
+    case '[Auth] - addError':
+      return {
+        serverstatus: 'server-authenticated',
+        status: 'not-authenticated',
+        token: null,
+        tokenServer: state.tokenServer,
+        user: state.user,
+        errorMessage: action.payload
+      };
+
+    case '[Auth] - removeError':
+      return {
+        ...state,
+        errorMessage: '',
+      };
+
+    default:
+      return state;
+  }
+};

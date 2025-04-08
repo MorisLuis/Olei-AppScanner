@@ -1,15 +1,13 @@
-import {api} from '../api/api';
+import { api } from '../api/api';
+import ProductInterface from '../interface/product';
 
-const getProductDetails = async (id: string, marca: string) => {
-  let product;
+const getProductDetails = async (id: string, marca: string): Promise<{ product?: ProductInterface, error?: unknown }> => {
   try {
-    const getProduct = await api.get(`/api/product/${id}?Marca=${marca}`);
-    product = getProduct.data;
+    const { data: { product } } = await api.get<{ product?: ProductInterface }>(`/api/product/${id}?Marca=${marca}`);
+    return { product }
   } catch (error) {
-    return {error: error};
+    return { error };
   }
-
-  return product;
 };
 
 interface getProductByCodeBarInterface {
@@ -22,44 +20,36 @@ const getProductByCodeBar = async ({
   codeBar,
   codigo,
   sku,
-}: getProductByCodeBarInterface) => {
-  let product;
+}: getProductByCodeBarInterface): Promise<{ products: ProductInterface[], error?: unknown }> => {
   try {
-    const getProduct = await api.get(
+    const { data: { products } } = await api.get<{ products: ProductInterface[] }>(
       `/api/product/byStockAndCodeBar?CodBar=${codeBar ?? ''}&Codigo=${codigo ?? ''}&SKU=${sku ?? ''}`,
     );
-    product = getProduct.data;
+    return { products }
   } catch (error) {
-    return {error: error};
+    return { error: error, products: [] };
   }
-
-  return product;
 };
 
-const getProductsByStock = async (PageNumber: number) => {
-  let products;
+const getProductsByStock = async (PageNumber: number): Promise<{ products: ProductInterface[], error?: unknown }> => {
   try {
-    const getProduct = await api.get(
+    const { data: { products } } = await api.get<{ products: ProductInterface[] }>(
       `/api/product/byStock?PageNumber=${PageNumber}&PageSize=10`,
     );
-    products = getProduct.data;
+    return { products }
   } catch (error) {
-    return {error: error};
+    return { error, products: [] };
   }
-
-  return products;
 };
 
-const getTotalProductsByStock = async () => {
-  let total;
+const getTotalProductsByStock = async (): Promise<{ total?: number, error?: unknown }> => {
   try {
-    const getProduct = await api.get(`/api/product/byStockCount`);
-    total = getProduct.data[0].TotalProductos;
+    const { data: { total } } = await api.get<{ total: number }>(`/api/product/byStockCount`);
+    return { total }
   } catch (error) {
-    return {error: error};
+    return { error };
   }
 
-  return total;
 };
 
 export {

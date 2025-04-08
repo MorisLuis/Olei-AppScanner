@@ -31,7 +31,8 @@ interface ProductDetailsPageInterface {
     | ProductDetailsInventorySectionPageRouteProp;
 }
 
-export const ProductDetailsPage = ({route}: ProductDetailsPageInterface) => {
+export const ProductDetailsPage = ({route}: ProductDetailsPageInterface) : JSX.Element => {
+
   const {selectedProduct, hideActions} = route.params ?? {};
   const {Codigo, Marca} = selectedProduct ?? {};
   const shouldCleanUp = useRef(true);
@@ -40,21 +41,21 @@ export const ProductDetailsPage = ({route}: ProductDetailsPageInterface) => {
   const {codeBarStatus} = useContext(SettingsContext);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [productDetailsData, setProductDetailsData] =
-    useState<ProductInterface | null>(null);
+  const [productDetailsData, setProductDetailsData] = useState<ProductInterface | null>(null);
 
-  const handleGetProductDetails = async () => {
+  const handleGetProductDetails = useCallback(async () : Promise<void> => {
     try {
       setIsLoading(true);
-      const productData = await getProductDetails(Codigo, Marca);
-      if (productData.error) return handleError(productData.error);
-      setProductDetailsData(productData);
+      const { product, error} = await getProductDetails(Codigo, Marca);
+      if (error) return handleError(error);
+      if (!product) return handleError('No hay producto');
+      setProductDetailsData(product);
     } catch (error) {
       handleError(error, true);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [handleError, Codigo, Marca]);
 
   const handleOptionsToUpdateCodebar = useCallback(() => {
     if (!productDetailsData?.Codigo || !productDetailsData?.Id_Marca) {
@@ -65,7 +66,7 @@ export const ProductDetailsPage = ({route}: ProductDetailsPageInterface) => {
       Id_Marca: productDetailsData?.Id_Marca,
       Codigo: productDetailsData?.Codigo,
     });
-  }, [navigation, selectedProduct, productDetailsData]);
+  }, [navigation, productDetailsData]);
 
   const handleAddToInventory = useCallback(() => {
     if (!selectedProduct) return;
@@ -79,7 +80,7 @@ export const ProductDetailsPage = ({route}: ProductDetailsPageInterface) => {
 
   useEffect(() => {
     handleGetProductDetails();
-  }, [codeBarStatus]);
+  }, [handleGetProductDetails, codeBarStatus]);
 
   if (isLoading) {
     return <ProductDetailsSkeleton />;

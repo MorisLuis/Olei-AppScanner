@@ -23,7 +23,7 @@ export const customTabBarStyles = (theme: Theme, typeTheme?: string) =>
       flexDirection: 'row',
       width: '100%',
       justifyContent: 'space-between',
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
+      paddingHorizontal: globalStyles().globalPadding.padding,
     },
     navigation: {
       display: 'flex',
@@ -48,7 +48,7 @@ export const customTabBarStyles = (theme: Theme, typeTheme?: string) =>
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      paddingHorizontal: globalStyles(theme).globalPadding.padding,
+      paddingHorizontal: globalStyles().globalPadding.padding,
     },
     sectionBag: {
       fontSize: globalFont.font_normal,

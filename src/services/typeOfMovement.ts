@@ -1,20 +1,13 @@
-import {api} from '../api/api';
+import { api } from '../api/api';
+import { TipoMovimiento } from '../interface/TipoMovimiento';
 
-export interface Id_TipoMovInvInterface {
-  Id_TipoMovInv: number;
-  Accion: number;
-  Descripcion: string;
-  Id_AlmDest?: number;
-}
-
-const getTypeOfMovements = async () => {
+const getTypeOfMovements = async (): Promise<{ TiposMovimiento: TipoMovimiento[], error?: unknown }> => {
   try {
-    const getTypeOfMovements = await api.get(`/api/typeofmovements`);
-    const typeOfMov = getTypeOfMovements.data;
-    return typeOfMov;
+    const { data: { TiposMovimiento } } = await api.get<{ TiposMovimiento: TipoMovimiento[] }>(`/api/typeofmovements`);
+    return { TiposMovimiento };
   } catch (error) {
-    return {error: error};
+    return { error, TiposMovimiento: [] };
   }
 };
 
-export {getTypeOfMovements};
+export { getTypeOfMovements };

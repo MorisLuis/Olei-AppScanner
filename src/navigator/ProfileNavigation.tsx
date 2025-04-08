@@ -14,7 +14,7 @@ export type ProfileNavigationStackParamList = {
   '[ProfileNavigation] - privacyScreen': undefined;
 };
 
-export const ProfileNavigation = () => {
+export const ProfileNavigation = () : JSX.Element => {
   const ProfileTabs =
     createNativeStackNavigator<ProfileNavigationStackParamList>();
 
@@ -23,7 +23,7 @@ export const ProfileNavigation = () => {
       <ProfileTabs.Screen
         name="[ProfileNavigation] - profile"
         options={({navigation}) => ({
-          header: () => (
+          header: () : JSX.Element => (
             <CustomHeader
               navigation={navigation}
               title="Perfil"
@@ -38,7 +38,7 @@ export const ProfileNavigation = () => {
         name="[ProfileNavigation] - personalInformationScreen"
         component={PersonalInformation}
         options={({navigation, route}) => ({
-          header: () => (
+          header: () : JSX.Element => (
             <CustomHeader
               title="Información Personal"
               navigation={navigation}
@@ -58,7 +58,7 @@ export const ProfileNavigation = () => {
         name="[ProfileNavigation] - settingsSceen"
         component={SettingsScreen}
         options={({navigation}) => ({
-          header: () => (
+          header: () : JSX.Element => (
             <CustomHeader title="Configuración" navigation={navigation} />
           ),
         })}
@@ -68,7 +68,7 @@ export const ProfileNavigation = () => {
         name="[ProfileNavigation] - privacyScreen"
         component={PrivacyScreen}
         options={({navigation}) => ({
-          header: () => (
+          header: () : JSX.Element => (
             <CustomHeader title="Aviso de privacidad" navigation={navigation} />
           ),
         })}
