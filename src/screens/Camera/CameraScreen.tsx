@@ -6,21 +6,21 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {View, TouchableOpacity, Text, Platform} from 'react-native';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { View, TouchableOpacity, Text, Platform } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {BlurView} from '@react-native-community/blur';
-import {Camera} from 'react-native-camera-kit';
+import { BlurView } from '@react-native-community/blur';
+import { Camera } from 'react-native-camera-kit';
 
-import {InventoryBagContext} from '../../context/Inventory/InventoryBagContext';
-import {SettingsContext} from '../../context/settings/SettingsContext';
-import {useTheme} from '../../context/ThemeContext';
+import { InventoryBagContext } from '../../context/Inventory/InventoryBagContext';
+import { SettingsContext } from '../../context/settings/SettingsContext';
+import { useTheme } from '../../context/ThemeContext';
 import ProductInterface from '../../interface/product';
-import {cameraStyles} from '../../theme/CameraCustumTheme';
-import {CameraPermission} from '../../components/screens/CameraPermission';
-import {getTypeOfMovementsName, useCameraSettings} from './cameraSettings';
-import {AppNavigationProp} from '../../interface/navigation';
-import {AuthContext} from '../../context/auth/AuthContext';
+import { cameraStyles } from '../../theme/CameraCustumTheme';
+import { CameraPermission } from '../../components/screens/CameraPermission';
+import { getTypeOfMovementsName, useCameraSettings } from './cameraSettings';
+import { AppNavigationProp } from '../../interface/navigation';
+import { AuthContext } from '../../context/auth/AuthContext';
 import { NUMBER_0 } from '../../utils/globalConstants';
 
 type PermissionStatus =
@@ -45,13 +45,12 @@ const EMPTY_PRODUCTS_FOUND = 0;
 const MORE_THAN_ONE_PRODUCTS_FOUND = 1;
 
 const CameraScreen: React.FC = () => {
-  const {bag} = useContext(InventoryBagContext);
-  const {handleCameraAvailable, limitProductsScanned, startScanning} =
-    useContext(SettingsContext);
-  const {user} = useContext(AuthContext);
-  const {theme, typeTheme} = useTheme();
-  const {navigate} = useNavigation<AppNavigationProp>();
-  const onTheLimitProductScanned = limitProductsScanned < bag?.length;
+  const { bag } = useContext(InventoryBagContext);
+  const { handleCameraAvailable, limitProductsScanned, startScanning } = useContext(SettingsContext);
+  const { user } = useContext(AuthContext);
+  const { theme, typeTheme } = useTheme();
+  const { navigate } = useNavigation<AppNavigationProp>();
+  const onTheLimitProductScanned = limitProductsScanned <= bag?.length;
 
   const [lightOn, setLightOn] = useState(false);
   const [cameraKey, setCameraKey] = useState(INITIAL_CAMERA_KEY);
@@ -91,13 +90,13 @@ const CameraScreen: React.FC = () => {
   } = useCameraSettings({
     handleOpenProductsFoundByCodebar: (response: ProductInterface[]): void => {
       if (response.length === MORE_THAN_ONE_PRODUCTS_FOUND) {
-        navigate('[Modal] - scannerResultScreen', {product: response[NUMBER_0]});
+        navigate('[Modal] - scannerResultScreen', { product: response[NUMBER_0] });
       } else if (response.length > EMPTY_PRODUCTS_FOUND) {
         navigate('[Modal] - productsFindByCodeBarModal', {
           products: response,
         });
       } else {
-        navigate('[Modal] - scannerResultScreen', {product: response[NUMBER_0]});
+        navigate('[Modal] - scannerResultScreen', { product: response[NUMBER_0] });
       }
       setProductsScanned(response);
     },
@@ -113,7 +112,7 @@ const CameraScreen: React.FC = () => {
   const handleReadCode = useCallback(
     (event: OnReadCodeData): void => {
       if (!cameraAvailableRef.current) return;
-      codeScanned({codes: event.nativeEvent.codeStringValue});
+      codeScanned({ codes: event.nativeEvent.codeStringValue });
     },
     [codeScanned],
   );
@@ -172,7 +171,7 @@ const CameraScreen: React.FC = () => {
         <View style={cameraStyles(theme).cog}>
           <TouchableOpacity
             onPress={() => navigate('typeOfMovementScreen')}
-            style={{transform: [{rotate: '90deg'}]}}>
+            style={{ transform: [{ rotate: '90deg' }] }}>
             <Icon name="swap-horizontal-outline" size={ICON_SIZE} color="white" />
           </TouchableOpacity>
         </View>
@@ -197,9 +196,12 @@ const CameraScreen: React.FC = () => {
                 ? 'Es necesario subir el inventario para seguir escaneando.'
                 : `Escanea un código de barras para agregarlo ${getTypeOfMovementsName()}`}
             </Text>
-            <Text style={cameraStyles(theme, typeTheme).textmessage}>
-              Almacen: {user?.AlmacenNombre}
-            </Text>
+            {
+              !onTheLimitProductScanned &&
+              <Text style={cameraStyles(theme, typeTheme).textmessage}>
+                Almacen: {user?.AlmacenNombre}
+              </Text>
+            }
           </>
         ) : (
           <Text style={cameraStyles(theme, typeTheme).textmessage}>

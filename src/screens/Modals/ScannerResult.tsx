@@ -16,8 +16,8 @@ import { AppNavigationProp } from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
 import { AuthContext } from '../../context/auth/AuthContext';
 import CustomText from '../../components/CustumText';
+import Toast from 'react-native-toast-message';
 
-// Constants to avoid magic numbers
 const ID_TIPO_MOVIMIENTO_2 = 2;
 const NO_EXISTENCE = 0;
 const MIN_COUNTER_VALUE = 1;
@@ -41,13 +41,12 @@ const ScannerResult = ({
 }: ScannerResultInterface): JSX.Element => {
   const { product, fromProductDetails } = route?.params || {};
   const { theme } = useTheme();
-  const { addProduct } = useContext(InventoryBagContext);
-  const { handleCameraAvailable, codeBar } = useContext(SettingsContext);
-  const {
-    user: { SalidaSinExistencias, Id_TipoMovInv },
-  } = useContext(AuthContext);
-  const showLimit =
-    Id_TipoMovInv?.Id_TipoMovInv === ID_TIPO_MOVIMIENTO_2 && SalidaSinExistencias === NO_EXISTENCE;
+  const { addProduct, bag } = useContext(InventoryBagContext);
+  const { handleCameraAvailable, codeBar, limitProductsScanned } = useContext(SettingsContext);
+  const { SalidaSinExistencias, Id_TipoMovInv } = useContext(AuthContext).user ?? {};
+  const onTheLimitProductScanned = limitProductsScanned <= bag?.length;
+
+  const showLimit = Id_TipoMovInv?.Id_TipoMovInv === ID_TIPO_MOVIMIENTO_2 && SalidaSinExistencias === NO_EXISTENCE;
   const doNotAllowProductOutputs = showLimit && (product?.Existencia ?? NO_EXISTENCE) < MIN_COUNTER_VALUE;
   const navigation = useNavigation<AppNavigationProp>();
 
@@ -56,6 +55,15 @@ const ScannerResult = ({
   const buttondisabled = loadingAddProduct || counterProduct < MIN_COUNTER_VALUE;
 
   const handleAddToInventory = (): void => {
+
+    if(onTheLimitProductScanned) {
+      Toast.show({
+        type: 'tomatoError',
+        text1: 'Es necesario subir el inventario para seguir escaneando.',
+      });
+      return
+    }
+
     setLoadingAddProduct(true);
     if (!product?.Codigo) return;
 

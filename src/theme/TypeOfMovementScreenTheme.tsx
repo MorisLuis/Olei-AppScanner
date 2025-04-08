@@ -1,13 +1,11 @@
 import {Dimensions, StyleSheet} from 'react-native';
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
 import {Theme, globalFont, globalStyles} from './appTheme';
 
-export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) =>
-  StyleSheet.create({
+export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) => StyleSheet.create({
     TypeOfMovementScreen: {
       flex: 1,
     },
@@ -18,12 +16,13 @@ export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) =>
     },
     header: {
       marginBottom: globalStyles().globalMarginBottom.marginBottom,
-      width: wp('80%'),
+      width: "100%"
     },
     title: {
-      paddingTop: globalStyles().globalPadding.padding,
       fontSize: globalFont.font_med,
+      textAlign: 'center',
       color: theme.text_color,
+      fontFamily: 'Rubik-Bold'
     },
     optionContainer: {
       padding: globalStyles().globalPadding.padding / 1.5,
