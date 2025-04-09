@@ -90,7 +90,12 @@ export const authReducer = (
         }
       }
 
-
+    case '[Auth] - SET_LOADING': {
+      return {
+        ...state,
+        isLoading: action.payload
+      }
+    }
 
     default:
       return state;

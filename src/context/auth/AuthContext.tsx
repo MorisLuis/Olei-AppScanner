@@ -11,6 +11,7 @@ interface ContextProps {
   user: UserInterface | null;
   token: string | null;
   tokenServer: string | null;
+  isLoading: boolean;
 
 
   getTypeOfMovementsName: () => string;

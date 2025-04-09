@@ -10,10 +10,9 @@ import { PersonalInformation } from '../screens/Profile/PersonalInformation';
 import { CustomHeader } from '../components/Ui/CustomHeader';
 
 export type AuthNavigationStackParamList = {
-    LoginPagelol: undefined;
+    LoginPage: undefined;
     LoginDatabaseScreen: undefined;
     'PersonalInformationScreen': {fromLogIn?: boolean};
-
 };
 
 const Stack = createNativeStackNavigator<AuthNavigationStackParamList>();
@@ -29,13 +28,13 @@ export const AuthNavigation = (): JSX.Element => {
         }
         // Si ya existe tokenServer pero no el token (del cliente), navega a LoginClient.
         else if (tokenServer && !token) {
-            navigation.navigate('LoginPagelol');
+            navigation.navigate('LoginPage');
         }
     }, [tokenServer, token, navigation]);
 
     return (
-        <Stack.Navigator initialRouteName={tokenServer ? 'LoginPagelol' : 'LoginDatabaseScreen'}>
-            <Stack.Screen name="LoginPagelol" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Navigator initialRouteName={tokenServer ? 'LoginPage' : 'LoginDatabaseScreen'}>
+            <Stack.Screen name="LoginPage" component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name="LoginDatabaseScreen" component={LoginDatabaseScreen} options={{ headerShown: false }} />
             <Stack.Screen
                 name="PersonalInformationScreen"
