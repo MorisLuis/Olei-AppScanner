@@ -1,9 +1,9 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import {Theme, globalFont, globalStyles} from './appTheme';
+import { Theme, globalFont, globalStyles } from './appTheme';
 
 export const InventoryScreenStyles = (theme: Theme) =>
   StyleSheet.create({

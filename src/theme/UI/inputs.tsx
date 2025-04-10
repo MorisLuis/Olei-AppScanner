@@ -88,7 +88,7 @@ export const selectStyles = (theme: Theme) =>
     },
 
 
-    toggleContainer_icon: {
+    toggle_icon: {
         position: 'absolute',
         zIndex: 2,
         left: isEnabled ? "52.5%" : "12.5%"

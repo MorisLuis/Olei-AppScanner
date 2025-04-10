@@ -2,7 +2,7 @@ import { useCallback, useContext } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { ERROR_MESSAGES, ErrorResponse } from '../interface/error';
-import { sendError } from '../services/errors';
+import { sendError, sendErrorInterface } from '../services/errors';
 import { ERROR_400, ERROR_401, ERROR_403, ERROR_404, ERROR_500 } from '../utils/globalConstants';
 import { AuthContext } from '../context/auth/AuthContext';
 
@@ -10,17 +10,22 @@ const useErrorHandler = (): {
   handleError: (_error: unknown, _avoidAPI?: boolean, _avoidToast?: boolean) => Promise<void>;
 } => {
 
+  const { user } = useContext(AuthContext)
+
   const handleError = useCallback(async (
     error: unknown,
-    save?: boolean,
+    avoidSave?: boolean,
     avoidToast?: boolean,
   ): Promise<void> => {
-
-    const { logOutClient } = useContext(AuthContext)
-
+  
     const err = error as ErrorResponse;
     const status = err.response?.status;
     const message = err.response?.data?.error
+    const method = err.response?.config?.method
+    const url = err.response?.config?.url
+
+    // eslint-disable-next-line no-console
+    console.log("Error capturado:", `${status}-${message}`);
 
     if (status) {
       switch (status) {
@@ -31,6 +36,7 @@ const useErrorHandler = (): {
           });
           break;
         case ERROR_401:
+          if (avoidToast) break
           Toast.show({
             type: 'tomatoError',
             text1: message ?? ERROR_MESSAGES[ERROR_401]
@@ -49,7 +55,6 @@ const useErrorHandler = (): {
             type: 'tomatoError',
             text1: message ?? ERROR_MESSAGES[ERROR_404],
           });
-          logOutClient()
           break;
         case ERROR_500:
           Toast.show({
@@ -72,11 +77,21 @@ const useErrorHandler = (): {
         type: 'tomatoError',
         text1: err.message || ERROR_MESSAGES.GENERIC
       });
-    }
-    // eslint-disable-next-line no-console
-    console.error("Error capturado:", error);
+    };
+    
 
-  }, []);
+    const erroBody: sendErrorInterface = {
+      From: url ?? "",
+      Message: message ?? "",
+      Id_Usuario: user?.Nombre ?? "Sin usuario",
+      Metodo: method ?? "",
+      code: status ?? ""
+    };
+
+    if(!avoidSave){
+      await sendError(erroBody)
+    }
+  }, [user?.Nombre]);
 
   return {
     handleError

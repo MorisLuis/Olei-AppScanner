@@ -137,8 +137,7 @@ export const SettingsScreen = (): JSX.Element => {
                     style={[
                       buttonStyles(theme).button_small,
                       {
-                        marginBottom:
-                          globalStyles().globalMarginBottom.marginBottom,
+                        marginBottom: globalStyles().globalMarginBottom.marginBottom,
                       },
                     ]}
                     onPress={onChangeLimitProducts}>

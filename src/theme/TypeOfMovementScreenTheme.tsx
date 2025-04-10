@@ -8,6 +8,7 @@ import {Theme, globalFont, globalStyles} from './appTheme';
 export const TypeOfMovementScreenStyles = (theme: Theme, typeTheme?: string) => StyleSheet.create({
     TypeOfMovementScreen: {
       flex: 1,
+      backgroundColor: theme.background_color
     },
     content: {
       height: '100%',

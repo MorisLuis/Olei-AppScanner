@@ -9,6 +9,7 @@ export const almacenStyles = (theme: Theme) =>
   StyleSheet.create({
     AlmacenScreen: {
       flex: 1,
+      backgroundColor: theme.background_color
     },
     content: {
       height: '100%',

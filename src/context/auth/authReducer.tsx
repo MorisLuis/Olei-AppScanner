@@ -6,7 +6,7 @@ type AuthAction =
   | { type: '[Auth] - LOGIN_SERVER'; payload: { tokenServer: string, user: UserInterface } }
   | { type: '[Auth] - LOGIN_CLIENT'; payload: { token: string, user: UserInterface } }
   | { type: '[Auth] - REFRESH'; payload: { token: string, user: UserInterface } }
-  | { type: '[Auth] - RESTORE'; payload: { tokenServer: string | null, token: string | null } }
+  | { type: '[Auth] - RESTORE'; payload: { tokenServer: string | null, token: string | null, user: UserInterface } }
   | { type: '[Auth] - LOGOUT_SERVER' }
   | { type: '[Auth] - LOGOUT_CLIENT', payload: { user: UserInterface } }
   | { type: '[Auth] - TYPE_OF_MOVEMENT', payload: { tipoMovimiento: ID_TIPO_MOVIMIENTO } }
@@ -49,7 +49,8 @@ export const authReducer = (
         ...state,
         tokenServer: action.payload.tokenServer,
         token: action.payload.token,
-        isLoading: false,
+        user: action.payload.user,
+        isLoading: false
       };
 
 

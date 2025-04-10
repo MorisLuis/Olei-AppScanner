@@ -64,19 +64,34 @@ const postRefreshToken = async ({
         token, 
         refreshToken
     }
-}
+};
 
-const postLogOutClient = async () : Promise<{ user: UserInterface }> => {
-    const { data: { user } } = await api.get<{ user: UserInterface }>('/api/auth/logoutUser');
+const postRefreshAuthServer = async () : Promise<{ user: UserInterface }> => {
+
+    const { data: { user } } = await api.post<{ user: UserInterface }>(
+        '/api/auth/refreshServer',
+        {},
+        { headers: { 'Content-Type': 'application/json' } }
+    );
+
     return {
         user
     }
 }
 
 
+const postLogOutClient = async () : Promise<{ user: UserInterface }> => {
+    const { data: { user } } = await api.get<{ user: UserInterface }>('/api/auth/logoutUser');
+    return {
+        user
+    }
+};
+
+
 export {
     postLoginServer,
     postLoginClient,
     postRefreshToken,
+    postRefreshAuthServer,
     postLogOutClient
 }

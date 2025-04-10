@@ -8,7 +8,9 @@ import {Theme, globalFont, globalStyles} from './appTheme';
 
 export const productDetailsStyles = (theme: Theme, typeTheme?: string) =>
   StyleSheet.create({
-    ProductDetailsPage: {},
+    ProductDetailsPage: {
+      backgroundColor: theme.background_color
+    },
     content: {
       padding: globalStyles().globalPadding.padding,
     },

@@ -31,9 +31,7 @@ type EditProductInBagInterface = {
 export const EditProductInBag = ({route}: EditProductInBagInterface): JSX.Element => {
   const {product} = route?.params ?? {};
   const {editProduct, removeProduct} = useContext(InventoryBagContext);
-  const {
-    user: {SalidaSinExistencias, Id_TipoMovInv},
-  } = useContext(AuthContext);
+  const { SalidaSinExistencias, Id_TipoMovInv } = useContext(AuthContext).user ?? {};
 
   // Se usa la constante para mostrar el límite
   const showLimit = Id_TipoMovInv?.Id_TipoMovInv === ID_TIPO_MOVIMIENTO_2 && SalidaSinExistencias === NO_EXISTENCIA_LIMIT;

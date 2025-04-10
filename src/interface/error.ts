@@ -5,6 +5,10 @@ export interface ErrorResponse {
     data?: {
       error?: string;
     };
+    config?: {
+      method?: string;
+      url?: string;
+    }
   };
   message: string;
 }

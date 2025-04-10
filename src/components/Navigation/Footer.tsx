@@ -33,8 +33,7 @@ const FooterScreen = ({
 
   return visible ? (
     <View style={uiNavigationStyles(theme, typeTheme).FooterScreen}>
-      <View
-        style={uiNavigationStyles(theme, typeTheme).FooterScreenContainer}>
+      <View style={uiNavigationStyles(theme, typeTheme).FooterScreenContainer}>
         <ButtonCustum
           title={buttonTitle}
           onPress={buttonOnPress}

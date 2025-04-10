@@ -26,7 +26,7 @@ export const errorResponseInterceptor = async (error: AxiosError): Promise<never
     // Verificamos el flag global para evitar loops
     if (getIsLoggingOut()) {
         return Promise.reject(error);
-    }
+    };
 
     if (status === HTTP_STATUS.FORBIDDEN && !originalRequest._retry) {
         originalRequest._retry = true;
@@ -38,7 +38,7 @@ export const errorResponseInterceptor = async (error: AxiosError): Promise<never
                 return Promise.reject(new Error('No hay refresh token'));
             }
 
-            const { data } = await axios.post(`http://192.168.1.16:5001/api/auth/refresh`, {
+            const { data } = await axios.post(`http://192.168.100.126:5001/api/auth/refresh`, {
                 refreshToken,
             });
 

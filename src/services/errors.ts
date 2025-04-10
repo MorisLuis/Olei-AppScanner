@@ -1,12 +1,12 @@
 import { AxiosResponse } from 'axios';
 import {api} from '../api/api';
 
-interface sendErrorInterface {
+export interface sendErrorInterface {
   From: string;
   Message: string;
   Id_Usuario: string;
   Metodo: string;
-  code: string;
+  code: string | number;
 }
 
 export const sendError = async ({

@@ -82,7 +82,10 @@ export const SearchCodebarWithInput = (): JSX.Element => {
     <ModalBottom visible={true} onClose={handleCloseModal}>
       <View style={modalRenderstyles(theme).SearchCodebarWithInput}>
         <Text style={modalRenderstyles(theme, typeTheme).SearchCodebarWithInput_title}>
-          Escribe el {typeOfSearch === 'code' ? 'Codigo' : 'Codigo de barras'}:
+          Escribe el {
+            typeOfSearch === 'code' ? 'Codigo' :
+              typeOfSearch === 'sku' ? 'SKU' : 'Codigo de barras'
+          }:
         </Text>
 
         <TextInput

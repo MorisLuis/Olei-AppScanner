@@ -34,7 +34,7 @@ export const ProductDetailsContent = React.memo(
   }: ProductDetailsContentInterface): JSX.Element => {
 
     const { theme, typeTheme } = useTheme();
-    const { user: { SalidaSinExistencias, Id_TipoMovInv } } = useContext(AuthContext);
+    const { SalidaSinExistencias, Id_TipoMovInv } = useContext(AuthContext).user ?? {};
     const showLimit = Id_TipoMovInv?.Id_TipoMovInv === ACCION_SALIDA && SalidaSinExistencias === NO_EXISTENCIA_LIMIT;
     const dontShowAddButton = showLimit && productDetailsData.Existencia <= EXSITENCIAS_EMPTY;
 
@@ -48,8 +48,7 @@ export const ProductDetailsContent = React.memo(
 
     return (
       <View style={globalStyles().flex}>
-        <ScrollView
-          contentContainerStyle={!hideActions && { paddingBottom: hp('20%') }}>
+        <ScrollView contentContainerStyle={!hideActions && { paddingBottom: hp('20%') }}>
           <View style={productDetailsStyles(theme).ProductDetailsPage}>
             <View style={productDetailsStyles(theme).content}>
               {/* Imagen del Producto */}

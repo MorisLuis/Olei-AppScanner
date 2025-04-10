@@ -8,10 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthNavigationProp } from '../interface/navigation';
 import { PersonalInformation } from '../screens/Profile/PersonalInformation';
 import { CustomHeader } from '../components/Ui/CustomHeader';
-import { StartupScreen } from '../screens/Onboarding/StartupScreen';
 
 export type AuthNavigationStackParamList = {
-    StartupScreen: undefined;
     LoginPage: undefined;
     LoginDatabaseScreen: undefined;
     'PersonalInformationScreen': { fromLogIn?: boolean };
@@ -48,7 +46,6 @@ export const AuthNavigation = (): JSX.Element => {
 
     return (
         <Stack.Navigator initialRouteName={handleInitialRouteName()}>
-            <Stack.Screen name="StartupScreen" component={StartupScreen} options={{ headerShown: false }} />
             <Stack.Screen name="LoginPage" component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name="LoginDatabaseScreen" component={LoginDatabaseScreen} options={{ headerShown: false }} />
             <Stack.Screen

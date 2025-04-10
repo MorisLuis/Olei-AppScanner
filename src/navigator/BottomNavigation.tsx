@@ -7,7 +7,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { ProfileNavigation } from './ProfileNavigation';
 import { ScannerNavigation } from './ScannerNavigation';
-import { globalFont } from '../theme/appTheme';
+import { Theme, globalFont } from '../theme/appTheme';
 import { useTheme } from '../context/ThemeContext';
 
 import {
@@ -89,7 +89,7 @@ export const BottomNavigation = (): JSX.Element => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
+      <SafeAreaView edges={['bottom']} style={styles(theme).safeArea}>
         <BottomTab.Navigator screenOptions={screenOptions}>
           <BottomTab.Screen
             name="BottomNavigation - Scanner"
@@ -107,8 +107,9 @@ export const BottomNavigation = (): JSX.Element => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (theme: Theme) : ReturnType<typeof StyleSheet.create> => ({
   safeArea: {
     flex: 1,
+    backgroundColor: theme.background_color
   },
 });

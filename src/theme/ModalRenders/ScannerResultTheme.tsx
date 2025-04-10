@@ -95,7 +95,6 @@ export const modalRenderstyles = (theme: Theme) =>
       gap: wp('5%'),
     },
     doNotAllowProductOutputs: {
-      backgroundColor: 'red',
       padding: globalStyles().globalPadding.padding,
     },
   });

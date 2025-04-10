@@ -18,9 +18,9 @@ export default interface UserInterface {
   Id_Almacen: number;
   AlmacenNombre?: string;
 
-  SalidaSinExistencias?: number;
+  SalidaSinExistencias: number;
 
-  Id_TipoMovInv?: ID_TIPO_MOVIMIENTO;
+  Id_TipoMovInv: ID_TIPO_MOVIMIENTO;
 
   Nombre?: string;
   Id_Usuario: string;

@@ -44,7 +44,7 @@ const Toggle = ({
                         name="checkmark-outline"
                         size={18}
                         color={iconColor}
-                        style={toggleStyles(theme, typeTheme, isEnabled).togglemessage}
+                        style={toggleStyles(theme, typeTheme, isEnabled).toggle_icon}
                     />
                 }
                 <Switch

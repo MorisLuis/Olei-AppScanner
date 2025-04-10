@@ -36,8 +36,6 @@ export type AppNavigationStackParamList = {
   BottomNavigation: BottomNavigationParams;
   CodebarUpdateNavigation: { Codigo: string; Id_Marca: number };
 
-  StartupScreen: undefined;
-
   // Screens
   '[ProductDetailsPage] - inventoryDetailsScreen': {
     selectedProduct: ProductInterface;

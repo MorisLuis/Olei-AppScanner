@@ -5,7 +5,7 @@ import UserInterface, { ID_TIPO_MOVIMIENTO } from '../../interface/user';
 import { authReducer } from './authReducer';
 import { AuthContext } from './AuthContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
-import { postLogOutClient, postLoginClient, postLoginClientInterface, postLoginServer, postLoginServerInterface, postRefreshToken } from '../../services/auth';
+import { postLogOutClient, postLoginClient, postLoginClientInterface, postLoginServer, postLoginServerInterface, postRefreshAuthServer, postRefreshToken } from '../../services/auth';
 import { setClientLogoutHandler, setUnauthorizedHandler } from '../../api/apiCallbacks';
 import { getIsLoggingOut, setIsLoggingOut } from './AuthService';
 
@@ -130,7 +130,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
     dispatch({ type: '[Auth] - SET_LOADING', payload: true })
 
     if (getIsLoggingOut()) return; // Previene loop
-    setIsLoggingOut(true); // Marca que estamos en proceso de logout
+    setIsLoggingOut(true);
 
     try {
       const token = await AsyncStorage.getItem('token');
@@ -147,6 +147,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
       handleError(error);
     } finally {
       dispatch({ type: '[Auth] - SET_LOADING', payload: false })
+      setIsLoggingOut(false);
     };
   }, [handleError]);
 
@@ -180,11 +181,13 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
       const tokenServer = await AsyncStorage.getItem('tokenServer');
       const token = await AsyncStorage.getItem('token');
 
-      dispatch({ type: '[Auth] - RESTORE', payload: { token: token, tokenServer } })
+      const { user } = await postRefreshAuthServer()
+
+      dispatch({ type: '[Auth] - RESTORE', payload: { token: token, tokenServer, user } })
 
       await refreshAuth()
     } catch (error) {
-      handleError(error);
+      handleError(error, true, true);
     } finally {
       setIsRestoringAuth(false)
     }
@@ -220,7 +223,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
   const updateUser = (user: Partial<UserInterface>): void => {
     dispatch({ type: '[Auth] - UPDATE_USER', payload: { user } });
   };
-
 
   useEffect(() => {
     if (!isStorageReady) {

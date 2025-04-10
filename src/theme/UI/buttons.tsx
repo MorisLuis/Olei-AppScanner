@@ -46,7 +46,7 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) =>
     // Button text
     buttonText: {
       color:
-        typeTheme === 'light' ? theme.text_color_secondary : theme.text_color,
+        typeTheme === 'light' ? theme.text_color_secondary : theme.text_color_secondary,
       fontSize: globalFont.font_normal,
       fontFamily: 'Rubik-Regular',
     },
