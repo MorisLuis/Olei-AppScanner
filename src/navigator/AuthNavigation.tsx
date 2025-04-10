@@ -8,11 +8,13 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthNavigationProp } from '../interface/navigation';
 import { PersonalInformation } from '../screens/Profile/PersonalInformation';
 import { CustomHeader } from '../components/Ui/CustomHeader';
+import { StartupScreen } from '../screens/Onboarding/StartupScreen';
 
 export type AuthNavigationStackParamList = {
+    StartupScreen: undefined;
     LoginPage: undefined;
     LoginDatabaseScreen: undefined;
-    'PersonalInformationScreen': {fromLogIn?: boolean};
+    'PersonalInformationScreen': { fromLogIn?: boolean };
 };
 
 const Stack = createNativeStackNavigator<AuthNavigationStackParamList>();
@@ -20,6 +22,18 @@ const Stack = createNativeStackNavigator<AuthNavigationStackParamList>();
 export const AuthNavigation = (): JSX.Element => {
     const { tokenServer, token } = useContext(AuthContext);
     const navigation = useNavigation<AuthNavigationProp>();
+
+    const handleInitialRouteName = (): keyof AuthNavigationStackParamList => {
+
+        let destination: keyof AuthNavigationStackParamList = 'LoginDatabaseScreen';
+        if (tokenServer) {
+            destination = 'LoginPage'
+        } else {
+            destination = 'LoginDatabaseScreen'
+        }
+
+        return destination
+    }
 
     useEffect(() => {
         // Si no existe tokenServer, manda a LoginServer
@@ -33,7 +47,8 @@ export const AuthNavigation = (): JSX.Element => {
     }, [tokenServer, token, navigation]);
 
     return (
-        <Stack.Navigator initialRouteName={tokenServer ? 'LoginPage' : 'LoginDatabaseScreen'}>
+        <Stack.Navigator initialRouteName={handleInitialRouteName()}>
+            <Stack.Screen name="StartupScreen" component={StartupScreen} options={{ headerShown: false }} />
             <Stack.Screen name="LoginPage" component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name="LoginDatabaseScreen" component={LoginDatabaseScreen} options={{ headerShown: false }} />
             <Stack.Screen

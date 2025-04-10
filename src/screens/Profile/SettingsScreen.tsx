@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 
 import { globalStyles } from '../../theme/appTheme';
 import {
-  Id_TipoMovInvInterface,
   getTypeOfMovements,
 } from '../../services/typeOfMovement';
 import { AuthContext } from '../../context/auth/AuthContext';
@@ -16,6 +15,7 @@ import { buttonStyles } from '../../theme/UI/buttons';
 import { SettingsScreenStyles } from '../../theme/SettingsScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
+import { ID_TIPO_MOVIMIENTO } from '../../interface/user';
 
 const TYPE_MOVEMENT_EMPTY = 0;
 
@@ -33,7 +33,7 @@ export const SettingsScreen = (): JSX.Element => {
   } = useContext(SettingsContext);
   const [typeSelected, setTypeSelected] = useState<number>();
 
-  const [typeOfMovement, setTypeOfMovement] = useState<Id_TipoMovInvInterface[]>([]);
+  const [typeOfMovement, setTypeOfMovement] = useState<ID_TIPO_MOVIMIENTO[]>([]);
   const { user } = useContext(AuthContext);
 
   const [editingLimitProducts, setEditingLimitProducts] = useState(false);
@@ -57,11 +57,10 @@ export const SettingsScreen = (): JSX.Element => {
 
   const handleGetTypeOfMovements = useCallback(async (): Promise<void> => {
     try {
-      const { error, TiposMovimiento } = await getTypeOfMovements();
-      if (error) return handleError(error);
+      const { TiposMovimiento } = await getTypeOfMovements();
       setTypeOfMovement(TiposMovimiento);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     }
   }, [handleError]);
 

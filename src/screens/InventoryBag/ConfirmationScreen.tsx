@@ -9,7 +9,6 @@ import { ConfirmationScreenStyles } from '../../theme/ConfirmationScreenTheme';
 import { useTheme } from '../../context/ThemeContext';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { ProductInterfaceBag } from '../../interface/product';
-import { useProtectPage } from '../../hooks/useProtectPage';
 import { CombineNavigationProp } from '../../interface/navigation';
 import FooterScreen from '../../components/Navigation/Footer';
 import { NUMBER_0 } from '../../utils/globalConstants';
@@ -25,7 +24,7 @@ export const ConfirmationScreen = (): JSX.Element => {
   const { typeTheme, theme } = useTheme();
   const { getTypeOfMovementsName, user } = useContext(AuthContext);
   const { bag, cleanBag, numberOfItems, postInventory } = useContext(InventoryBagContext);
-  const { navigate } = useNavigation<CombineNavigationProp>();
+  const { navigate, reset } = useNavigation<CombineNavigationProp>();
 
   const iconColor = theme.color_tertiary;
   const [createInventaryLoading, setCreateInventaryLoading] = useState(false);
@@ -56,10 +55,12 @@ export const ConfirmationScreen = (): JSX.Element => {
     setTimeout(() => {
       cleanBag();
       setCreateInventaryLoading(false);
-      navigate('BottomNavigation - Scanner');
-      navigate('succesMessageScreen');
+      reset({
+        index: 0,
+        routes: [{ name: 'succesMessageScreen' }]
+      });      
     }, TIMEOUT_DELAY);
-  }, [bag, postInventory, cleanBag, navigate]);
+  }, [bag, postInventory, cleanBag, reset]);
 
   const handleLoadMore = (): void => {
     if (filteredBag.length >= numberOfItems) return;
@@ -67,11 +68,6 @@ export const ConfirmationScreen = (): JSX.Element => {
   };
 
   const protectThisPage = numberOfItems <= ITEMS_EMPTY && !createInventaryLoading;
-
-  useProtectPage({
-    condition: protectThisPage,
-    navigatePage: 'BottomNavigation',
-  });
 
   return !protectThisPage ? (
     <View style={ConfirmationScreenStyles(theme, typeTheme).ConfirmationScreen}>
@@ -114,7 +110,7 @@ export const ConfirmationScreen = (): JSX.Element => {
                 </Text>
                 {getTypeOfMovementsName() === 'Traspaso' && (
                   <Text style={[ConfirmationScreenStyles(theme, typeTheme).confirmationText, { color: theme.color_green }]}>
-                    Almacen Destino: {user.Id_TipoMovInv?.Id_AlmDest}
+                    Almacen Destino: {user?.Id_TipoMovInv?.Id_AlmDest}
                   </Text>
                 )}
               </View>

@@ -36,6 +36,7 @@ import {useTheme} from '../context/ThemeContext';
 import useErrorHandler from '../hooks/useErrorHandler';
 import {AppNavigationProp} from '../interface/navigation';
 import {updateCodbar} from '../services/costos';
+import { ErrorResponse } from '../interface/error';
 
 type SearchProductScreenInterface = {
   route?: {
@@ -57,7 +58,7 @@ export const SearchProductScreen = ({route}: SearchProductScreenInterface) : JSX
   const {modal, isModal, withCodebar = true} = route?.params ?? {};
   const {handleCodebarScannedProcces, codeBar} = useContext(SettingsContext);
   const {theme, typeTheme} = useTheme();
-  const {handleError, handleErrorCustum} = useErrorHandler();
+  const {handleError} = useErrorHandler();
 
   const navigation = useNavigation<AppNavigationProp>();
   const [productsInInventory, setProductsInInventory] = useState<ProductInterface[]>([]);
@@ -74,11 +75,9 @@ export const SearchProductScreen = ({route}: SearchProductScreenInterface) : JSX
       } else {
         response = await getSearchProductInStockWithoutCodebar( searchTerm ? searchTerm : '' );
       }
-
-      if (response.error) return handleError(response.error);
       setProductsInInventory(response.products);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       setSearchingProducts(false);
     }
@@ -128,18 +127,22 @@ export const SearchProductScreen = ({route}: SearchProductScreenInterface) : JSX
   const updateCodebar = async (item: ProductInterface): Promise<void> => {
     try {
       if (!item.Codigo || !item.Id_Marca) {
-        handleErrorCustum({
-          status: 400,
-          Message:
-            'Codigo, Id_Marca  neccesary in hanldeUpdateCodebarWithCodeFound',
-          Metodo: 'B-PUT',
-        });
+        const error: ErrorResponse = {
+          response: {
+            status: 400,
+            data: {
+              message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+            }
+          },
+          message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+        }
+        handleError(error);
         return;
       }
 
       handleCodebarScannedProcces(true);
 
-      const {error} = await updateCodbar({
+      await updateCodbar({
         codigoProps: item.Codigo,
         Id_Marca: item.Id_Marca,
         body: {
@@ -149,9 +152,8 @@ export const SearchProductScreen = ({route}: SearchProductScreenInterface) : JSX
 
       navigation.goBack();
 
-      if (error) return handleError(error);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       handleCodebarScannedProcces(false);
     }

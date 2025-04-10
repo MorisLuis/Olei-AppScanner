@@ -46,7 +46,7 @@ export const useLoadMoreData = <TData, TFilters = unknown>({
         setTotal(total);
       }
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +69,7 @@ export const useLoadMoreData = <TData, TFilters = unknown>({
       setData((prevData) => [...prevData, ...moreData]);
       setPage((prevPage) => prevPage + PAGE_INITIAL); // Actualizar página de forma segura
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       setButtonIsLoading(false);
     }

@@ -42,11 +42,10 @@ export default function AlmacenScreen({ route }: AlmacenScreenInterface): JSX.El
 
   const handleGetAlmacenes = useCallback(async (): Promise<void> => {
     try {
-      const { almacenes, error } = await getAlmacenes();
+      const { almacenes } = await getAlmacenes();
       setAlmacenes(almacenes);
-      if (error) return handleError(error);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     }
   }, [handleError]);
 

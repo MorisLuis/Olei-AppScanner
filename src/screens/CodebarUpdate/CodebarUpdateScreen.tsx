@@ -16,6 +16,7 @@ import {CodebarUpdateOptionCard} from '../../components/Cards/CodebarUpdateOptio
 import useErrorHandler from '../../hooks/useErrorHandler';
 import {CodebarUpdateNavigationProp} from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
+import { ErrorResponse } from '../../interface/error';
 
 interface CodebarUpdateScreenInterface {
   Codigo: string;
@@ -42,7 +43,7 @@ export const CodebarUpdateScreen = ({
     codeBar,
   } = useContext(SettingsContext);
   const {theme} = useTheme();
-  const {handleError, handleErrorCustum} = useErrorHandler();
+  const {handleError} = useErrorHandler();
 
   const [openModalCamera, setOpenModalCamera] = useState(false);
   const [codebartypeSelected, setCodebartypeSelected] = useState<number>();
@@ -81,18 +82,21 @@ export const CodebarUpdateScreen = ({
   const hanldeUpdateCodebarWithCodeFound = async (): Promise<void> => {
     try {
       if (!Codigo || !Id_Marca) {
-        handleErrorCustum({
-          status: 400,
-          Message:
-            'Codigo, Id_Marca  neccesary in hanldeUpdateCodebarWithCodeFound',
-          Metodo: 'B-PUT',
-        });
-        return;
+        const error: ErrorResponse = {
+          response: {
+            status: 400,
+            data: {
+              message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+            }
+          },
+          message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+        }
+        handleError(error);
       }
 
       handleCodebarScannedProcces(true);
 
-      const { error } = await updateCodbar({
+      await updateCodbar({
         codigoProps: Codigo,
         Id_Marca: Id_Marca,
         body: {
@@ -102,9 +106,8 @@ export const CodebarUpdateScreen = ({
 
       navigation.goBack();
 
-      if (error) return handleError(error);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       handleCodebarScannedProcces(false);
     }
@@ -113,17 +116,20 @@ export const CodebarUpdateScreen = ({
   const hanldeUpdateCodebarWithCodeRandom = async (): Promise<void> => {
     try {
       if (!Codigo || !Id_Marca) {
-        handleErrorCustum({
-          status: 400,
-          Message:
-            'productDetails neccesary in hanldeUpdateCodebarWithCodeRandom',
-          Metodo: 'B-PUT',
-        });
-        return;
+        const error: ErrorResponse = {
+          response: {
+            status: 400,
+            data: {
+              message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+            }
+          },
+          message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+        }
+        handleError(error);
       }
 
       handleCodebarScannedProcces(true);
-      const response = await updateCodbar({
+      await updateCodbar({
         codigoProps: Codigo,
         Id_Marca: Id_Marca,
         body: {
@@ -132,7 +138,6 @@ export const CodebarUpdateScreen = ({
       });
 
       navigation.goBack();
-      if (response.error) return handleError(response.error);
     } catch (error) {
       handleError(error, true);
     } finally {

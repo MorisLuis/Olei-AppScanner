@@ -23,7 +23,6 @@ import { SessionExpiredScreen } from '../screens/SessionExpired';
 import AlmacenScreen from '../screens/Camera/AlmacenScreen';
 import { BottomNavigationParams } from '../interface/navigation';
 import { DELAY_HALF_A_SECOND } from '../utils/globalConstants';
-import { StartupScreen } from '../screens/Onboarding/StartupScreen';
 
 type OptionsScreen = {
   headerBackTitle: 'Atrás';
@@ -203,12 +202,6 @@ export const AppNavigation = (): JSX.Element => {
       </>
     );
   }, [updateCodeBarProvider, getTypeOfMovementsName]);
-
-  if (user?.ServidorSQL === '') {
-    return (
-      <Stack.Screen name="StartupScreen" component={StartupScreen} options={{ headerShown: false }} />
-    )
-  }
 
   return (
     <Stack.Navigator initialRouteName={user?.TodosAlmacenes === TODOS_ALMACENES_ON ? 'almacenScreen' : 'typeOfMovementScreen'}>

@@ -14,6 +14,7 @@ import useErrorHandler from '../../../hooks/useErrorHandler';
 import { AppNavigationProp } from '../../../interface/navigation';
 import { OnReadCodeData } from '../../../screens/Camera/CameraScreen';
 import ButtonCustum from '../../Ui/ButtonCustum';
+import { ErrorResponse } from '../../../interface/error';
 
 // Constants para evitar magic numbers
 const VIBRATION_DURATION_MS = 500;
@@ -32,7 +33,7 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface): JSX.E
   const { vibration, updateCodeBarProvider, codebarType, codeBar } = useContext(SettingsContext);
   const navigation = useNavigation<AppNavigationProp>();
   const { theme, typeTheme } = useTheme();
-  const { handleError, handleErrorCustum } = useErrorHandler();
+  const { handleError } = useErrorHandler();
 
   const [isScanningAllowed, setIsScanningAllowed] = useState(true);
   const [codeIsScanning, setCodeIsScanning] = useState(false);
@@ -60,14 +61,12 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface): JSX.E
       if (!codeValue) return;
 
       try {
-        const { products, error} = await getProductByCodeBar({ codeBar: codeValue });
-        if (error) return handleError(error);
-
+        const { products } = await getProductByCodeBar({ codeBar: codeValue });
         handleVibrate();
         updateCodeBarProvider(codeValue);
         if (products.length > PRODUCTS_LENGTH_EMPTY) setProductExistent(true);
       } catch (error) {
-        handleError(error, true);
+        handleError(error);
       } finally {
         setCodebarTest(true);
         setTimeout(() => {
@@ -81,26 +80,29 @@ const CameraModal = ({ Codigo, Id_Marca, onClose }: CameraModalInterface): JSX.E
 
   const handleUpdateCodebar = async (): Promise<void> => {
     if (!Codigo || !Id_Marca) {
-      handleErrorCustum({
-        status: 400,
-        Message: 'productDetails neccesary in handleUpdateCodebar',
-        Metodo: 'B-PUT',
-      });
+      const error: ErrorResponse = {
+        response: {
+          status: 400,
+          data: {
+            message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+          }
+        },
+        message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+      }
+      handleError(error);
       return;
     }
 
     try {
-      const { error } = await updateCodbar({
+      await updateCodbar({
         codigoProps: Codigo,
         Id_Marca: Id_Marca,
         body: {
           CodBar: codeBar,
         },
       });
-
-      if (error) return handleError(error);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       onClose();
       navigation.goBack();

@@ -12,6 +12,7 @@ import {useTheme} from '../../context/ThemeContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
 import {CodebarUpdateNavigationProp} from '../../interface/navigation';
 import ButtonCustum from '../../components/Ui/ButtonCustum';
+import { ErrorResponse } from '../../interface/error';
 
 interface CodebarUpdateWithInputScreenInterface {
   Codigo: string;
@@ -26,7 +27,7 @@ export const CodebarUpdateWithInputScreen = ({
   const navigation = useNavigation<CodebarUpdateNavigationProp>();
   const {codebarType} = useContext(SettingsContext);
   const {theme} = useTheme();
-  const {handleError, handleErrorCustum} = useErrorHandler();
+  const {handleError} = useErrorHandler();
 
   const currentType = codebartypes.barcodes.find(
     (code) => code.id === codebarType,
@@ -36,24 +37,26 @@ export const CodebarUpdateWithInputScreen = ({
   const hanldeUpdateCodebarWithCodeRandom = async () : Promise<void> => {
     try {
       if (!Codigo || !Id_Marca) {
-        handleErrorCustum({
-          status: 400,
-          Message:
-            'Codigo, Id_Marca  neccesary in hanldeUpdateCodebarWithCodeRandom/CodebarUpdateWithInputScreen',
-          Metodo: 'B-PUT',
-        });
-        return;
+        const error: ErrorResponse = {
+          response: {
+            status: 400,
+            data: {
+              message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+            }
+          },
+          message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+        }
+        handleError(error);
       }
 
       if (!regex.test(text)) return;
 
-      const response = await updateCodbar({
+      await updateCodbar({
         codigoProps: Codigo,
         Id_Marca: Id_Marca,
         body: {CodBar: text},
       });
 
-      if (response.error) return handleError(response.error);
     } catch (error) {
       handleError(error, true);
     } finally {

@@ -75,7 +75,7 @@ export const authReducer = (
         ...state,
         user: {
           ...state.user,
-          Id_TipoMovInv: action.payload.tipoMovimiento
+          Id_TipoMovInv: action.payload.tipoMovimiento,
         }
       };
 
@@ -86,7 +86,7 @@ export const authReducer = (
         ...state,
         user: {
           ...state.user,
-          ...action.payload
+          ...action.payload.user
         }
       }
 
@@ -96,6 +96,7 @@ export const authReducer = (
         isLoading: action.payload
       }
     }
+
 
     default:
       return state;

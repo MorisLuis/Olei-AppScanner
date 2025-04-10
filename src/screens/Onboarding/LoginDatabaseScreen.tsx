@@ -37,7 +37,7 @@ export const LoginDatabaseScreen = () : JSX.Element => {
       Keyboard.dismiss();
       loginServer({ usuario: user, password: password });
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       setLoadingLogin(false);
     }

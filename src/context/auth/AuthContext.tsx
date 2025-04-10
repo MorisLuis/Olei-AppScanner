@@ -12,6 +12,7 @@ interface ContextProps {
   token: string | null;
   tokenServer: string | null;
   isLoading: boolean;
+  isRestoringAuth: boolean;
 
 
   getTypeOfMovementsName: () => string;

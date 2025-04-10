@@ -40,21 +40,18 @@ export const SearchCodebarWithInput = (): JSX.Element => {
     try {
       if (typeOfSearch === 'code') {
         response = await getProductByCodeBar({ codigo: Barcode });
-        if (response.error) handleError(response.error);
         handleNavigatoToProduct(response.products);
       } else if (typeOfSearch === 'sku') {
         updateCodeBarProvider(Barcode);
         response = await getProductByCodeBar({ sku: Barcode });
-        if (response.error) handleError(response.error);
         handleNavigatoToProduct(response.products);
       } else {
         updateCodeBarProvider(Barcode);
         response = await getProductByCodeBar({ codeBar: Barcode });
-        if (response.error) handleError(response.error);
         handleNavigatoToProduct(response.products);
       }
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       setLoadingSearch(false);
     }

@@ -6,12 +6,11 @@ import { ThemeProvider } from './src/context/ThemeContext';
 import { SettingsProvider } from './src/context/settings/SettingsProvider';
 import { InventoryProvider } from './src/context/Inventory/InventoryBagProvider';
 import { ShowToastMessage } from './src/components/ToastMesage';
-import { navigationRef } from './src/hooks/useResetToLogin';
 import { MainNavigator } from './src/navigator/MainNavigation';
 
 const App = (): JSX.Element => {
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer>
       <AppState>
         <MainNavigator />
       </AppState>

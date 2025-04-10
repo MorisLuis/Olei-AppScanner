@@ -8,7 +8,7 @@ import { responseInterceptor, errorResponseInterceptor } from './responseInterce
 
 // Configuración básica de la conexión a la API.
 export const api = axios.create({
-  baseURL: 'http://192.168.100.157:5001',
+  baseURL: 'http://192.168.1.16:5001',
   headers: {
     'Content-Type': 'application/json',
   },

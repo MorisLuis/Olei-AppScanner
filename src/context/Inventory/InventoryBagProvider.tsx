@@ -66,7 +66,7 @@ export const InventoryProvider = ({children}: {children: ReactNode}): JSX.Elemen
 
       setProductAdded(true);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       timeoutRef.current = setTimeout(() => {
         setProductAdded(false);
@@ -108,7 +108,7 @@ export const InventoryProvider = ({children}: {children: ReactNode}): JSX.Elemen
       });
       setInventoryCreated(true);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       timeoutRef.current = setTimeout(() => {
         setInventoryCreated(false);

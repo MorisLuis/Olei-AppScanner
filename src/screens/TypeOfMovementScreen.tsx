@@ -53,7 +53,7 @@ export const TypeOfMovementScreen = (): JSX.Element => {
       if (typeSelected === undefined || typeSelected === null) return;
       updateTypeOfMovements(typeSelected);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       navigate('BottomNavigation');
     }
@@ -70,11 +70,10 @@ export const TypeOfMovementScreen = (): JSX.Element => {
   const handleGetTypeOfMovements = useCallback(async (): Promise<void> => {
     try {
       setIsLoading(true);
-      const { error, TiposMovimiento } = await getTypeOfMovements();
-      if (error) return handleError(error);
+      const { TiposMovimiento } = await getTypeOfMovements();
       setTypeOfMovement(TiposMovimiento);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }

@@ -1,8 +1,9 @@
 // responseInterceptors.ts
-
 import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { triggerClientLogout, triggerUnauthorized } from './apiCallbacks';
+import { getIsLoggingOut } from '../context/auth/AuthService';
+// Importamos el servicio global o módulo donde tenés el flag
 
 const HTTP_STATUS = {
     UNAUTHORIZED: 401,
@@ -15,24 +16,29 @@ export const responseInterceptor = (response: AxiosResponse): AxiosResponse => {
 
 export const errorResponseInterceptor = async (error: AxiosError): Promise<never> => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
+    const status = error?.response?.status;
 
-    if (error?.response?.status === HTTP_STATUS.UNAUTHORIZED) {
+    if (status === HTTP_STATUS.UNAUTHORIZED) {
         triggerUnauthorized();
         return Promise.reject(error);
     }
 
-    if (error.response?.status === HTTP_STATUS.FORBIDDEN && !originalRequest._retry) {
+    // Verificamos el flag global para evitar loops
+    if (getIsLoggingOut()) {
+        return Promise.reject(error);
+    }
+
+    if (status === HTTP_STATUS.FORBIDDEN && !originalRequest._retry) {
         originalRequest._retry = true;
 
         try {
             const refreshToken = await AsyncStorage.getItem('refreshToken');
-
             if (!refreshToken) {
                 triggerClientLogout();
                 return Promise.reject(new Error('No hay refresh token'));
             }
 
-            const { data } = await axios.post(`http://192.168.100.157:5001/api/auth/refresh`, {
+            const { data } = await axios.post(`http://192.168.1.16:5001/api/auth/refresh`, {
                 refreshToken,
             });
 
@@ -50,7 +56,6 @@ export const errorResponseInterceptor = async (error: AxiosError): Promise<never
 
     return Promise.reject(error);
 };
-
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
     _retry?: boolean;

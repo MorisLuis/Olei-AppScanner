@@ -1,117 +1,85 @@
 import { useCallback, useContext } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { AuthContext } from '../context/auth/AuthContext';
+import { ERROR_MESSAGES, ErrorResponse } from '../interface/error';
 import { sendError } from '../services/errors';
-import { CustomAxiosError, ErrorCustum } from '../interface/error';
-
-const isAxiosError = (error: unknown): error is CustomAxiosError => {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'isAxiosError' in error &&
-    (error as { isAxiosError: boolean }).isAxiosError === true
-  );
-};
-
-// Constantes para evitar "magic numbers"
-const UNAUTHORIZED_STATUS = 401;
-const SERVER_ERROR_STATUS = 500;
+import { ERROR_400, ERROR_401, ERROR_403, ERROR_404, ERROR_500 } from '../utils/globalConstants';
+import { AuthContext } from '../context/auth/AuthContext';
 
 const useErrorHandler = (): {
   handleError: (_error: unknown, _avoidAPI?: boolean, _avoidToast?: boolean) => Promise<void>;
-  handleErrorCustum: (_error: ErrorCustum) => Promise<void>;
 } => {
 
-  const { user, logOutServer } = useContext(AuthContext);
-
-  /**
-   * Procesa errores recibidos, principalmente de llamadas Axios.
-   * Envía logs, muestra notificaciones y maneja acciones de logout o redirección según corresponda.
-   *
-   * @param error - Error recibido (puede ser de Axios o cualquier otro).
-   * @param avoidAPI - Si es true, evita enviar el error a la API.
-   * @param avoidToast - Si es true, evita mostrar la notificación (Toast).
-   */
   const handleError = useCallback(async (
     error: unknown,
     save?: boolean,
     avoidToast?: boolean,
   ): Promise<void> => {
-    console.log({error})
 
-/*     if (isAxiosError(error)) {
-      // Extrae información relevante del error de Axios.
-      const status = error.response?.status;
-      const method = error.response?.config?.method;
-      const message =
-        error.response?.data?.error ??
-        error.response?.data?.message ??
-        'Error desconocido';
+    const { logOutClient } = useContext(AuthContext)
 
-      console.log(`${status}-${method}-${message}`);
+    const err = error as ErrorResponse;
+    const status = err.response?.status;
+    const message = err.response?.data?.error
 
-      if (status === UNAUTHORIZED_STATUS) {
-        logOutServer?.();
+    if (status) {
+      switch (status) {
+        case ERROR_400:
+          Toast.show({
+            type: 'tomatoError',
+            text1: message ?? ERROR_MESSAGES[ERROR_400]
+          });
+          break;
+        case ERROR_401:
+          Toast.show({
+            type: 'tomatoError',
+            text1: message ?? ERROR_MESSAGES[ERROR_401]
+          });
+          // Lógica de refrescar el token o cerrar sesión:
+          // Ej.: authContext.logout();
+          break;
+        case ERROR_403:
+          Toast.show({
+            type: 'tomatoError',
+            text1: message ?? ERROR_MESSAGES[ERROR_403],
+          });
+          break;
+        case ERROR_404:
+          Toast.show({
+            type: 'tomatoError',
+            text1: message ?? ERROR_MESSAGES[ERROR_404],
+          });
+          logOutClient()
+          break;
+        case ERROR_500:
+          Toast.show({
+            type: 'tomatoError',
+            text1: message ?? ERROR_MESSAGES[ERROR_500],
+          });
+          // Opcional: Si la petición es idempotente, podés implementar
+          // lógica para reintentar con backoff exponencial.
+          break;
+        default:
+          Toast.show({
+            type: 'tomatoError',
+            text1: ERROR_MESSAGES.GENERIC,
+          });
+          break;
       }
-
-      if (save) {
-        await sendError({
-          From: `mobil/${user?.Id_Usuario?.trim()}`,
-          Message: message,
-          Id_Usuario: user?.Id_Usuario?.trim(),
-          Metodo: method || '',
-          code: status ? status.toString() : '500',
-        });
-      }
-
-      if (!avoidToast) {
-        Toast.show({
-          type: 'tomatoError',
-          text1: message,
-        });
-      }
-
-      if (status === SERVER_ERROR_STATUS) {
-        logOutServer?.();
-        return;
-      }
-    } */
-  }, [logOutServer, user?.Id_Usuario]);
-
-  const handleErrorCustum = async (error: ErrorCustum): Promise<void> => {
-    const { status, Message, Metodo } = error ?? {};
-
-    // eslint-disable-next-line no-console
-    console.log({ handleErrorCustum: true, status, Metodo, Message });
-
-/*     if (status === UNAUTHORIZED_STATUS) {
-      logOutServer?.();
+    } else {
+      // Errores sin status, como problemas de red o errores en la configuración
+      Toast.show({
+        type: 'tomatoError',
+        text1: err.message || ERROR_MESSAGES.GENERIC
+      });
     }
+    // eslint-disable-next-line no-console
+    console.error("Error capturado:", error);
 
-    await sendError({
-      From: `mobil/${user?.Id_Usuario?.trim()}`,
-      Message: Message || Message,
-      Id_Usuario: user?.Id_Usuario?.trim(),
-      Metodo: Metodo || '',
-      code: status.toString(),
-    });
-
-    Toast.show({
-      type: 'tomatoError',
-      text1: Message,
-    });
-
-    if (status === SERVER_ERROR_STATUS) {
-      logOutServer?.();
-      return;
-    } */
-  };
-
+  }, []);
 
   return {
-    handleError,
-    handleErrorCustum
+    handleError
   };
 };
 

@@ -7,12 +7,14 @@ import { AuthContext } from './AuthContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
 import { postLogOutClient, postLoginClient, postLoginClientInterface, postLoginServer, postLoginServerInterface, postRefreshToken } from '../../services/auth';
 import { setClientLogoutHandler, setUnauthorizedHandler } from '../../api/apiCallbacks';
+import { getIsLoggingOut, setIsLoggingOut } from './AuthService';
 
 export interface AuthState {
   tokenServer: string | null;
   token: string | null;
   user: UserInterface | null;
   isLoading: boolean;
+  isLoggingOut: boolean;
   status: 'checking' | 'authenticated' | 'not-authenticated';
 
   errorMessage: string;
@@ -29,6 +31,7 @@ export const AUTH_INITIAL_STATE: AuthState = {
   tokenServer: null,
   token: null,
   isLoading: false,
+  isLoggingOut: false,
   user: {
     ServidorSQL: '',
     BaseSQL: '',
@@ -73,6 +76,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
 
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
   const [isStorageReady, setIsStorageReady] = useState(false);
+  const [isRestoringAuth, setIsRestoringAuth] = useState(true);
+
   const { handleError } = useErrorHandler();
 
   const loginServer = async ({ usuario, password }: postLoginServerInterface): Promise<void> => {
@@ -82,7 +87,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
       await AsyncStorage.setItem('tokenServer', tokenServer);
       dispatch({ type: '[Auth] - LOGIN_SERVER', payload: { user, tokenServer } })
     } catch (error) {
-      handleError(`Login server failed: ${error}`);
+      handleError(error);
     } finally {
       dispatch({ type: '[Auth] - SET_LOADING', payload: false });
     }
@@ -99,7 +104,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
 
       dispatch({ type: '[Auth] - LOGIN_CLIENT', payload: { user, token } })
     } catch (error) {
-      handleError(`Login client failed: ${error}`);
+      handleError(error);
     } finally {
       dispatch({ type: '[Auth] - SET_LOADING', payload: false });
     }
@@ -115,7 +120,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
 
       dispatch({ type: '[Auth] - LOGOUT_SERVER' })
     } catch (error) {
-      handleError(`Logout Server failed: ${error}`);
+      handleError(error);
     } finally {
       dispatch({ type: '[Auth] - SET_LOADING', payload: false })
     };
@@ -123,6 +128,9 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
 
   const logOutClient = useCallback(async (): Promise<void> => {
     dispatch({ type: '[Auth] - SET_LOADING', payload: true })
+
+    if (getIsLoggingOut()) return; // Previene loop
+    setIsLoggingOut(true); // Marca que estamos en proceso de logout
 
     try {
       const token = await AsyncStorage.getItem('token');
@@ -132,18 +140,18 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
       };
 
       const { user } = await postLogOutClient()
-
       AsyncStorage.removeItem('token');
 
       dispatch({ type: '[Auth] - LOGOUT_CLIENT', payload: { user } })
     } catch (error) {
-      handleError(`Logout Client failed: ${error}`);
+      handleError(error);
     } finally {
       dispatch({ type: '[Auth] - SET_LOADING', payload: false })
     };
   }, [handleError]);
 
   const refreshAuth = useCallback(async (): Promise<void | null> => {
+
     dispatch({ type: '[Auth] - SET_LOADING', payload: true })
 
     try {
@@ -160,13 +168,14 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
       dispatch({ type: '[Auth] - REFRESH', payload: { token, user } })
 
     } catch (error) {
-      handleError(`Refresh Auth failed: ${error}`);
+      handleError(error);
     } finally {
       dispatch({ type: '[Auth] - SET_LOADING', payload: false });
     }
   }, [handleError, logOutClient])
 
   const restoreAuth = useCallback(async (): Promise<void> => {
+    setIsRestoringAuth(true)
     try {
       const tokenServer = await AsyncStorage.getItem('tokenServer');
       const token = await AsyncStorage.getItem('token');
@@ -175,7 +184,9 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
 
       await refreshAuth()
     } catch (error) {
-      handleError(`Restore Auth failed: ${error}`);
+      handleError(error);
+    } finally {
+      setIsRestoringAuth(false)
     }
   }, [handleError, refreshAuth])
 
@@ -202,13 +213,14 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
     try {
       dispatch({ type: '[Auth] - TYPE_OF_MOVEMENT', payload: { tipoMovimiento: value } })
     } catch (error) {
-      handleError(`Update type movement failed: ${error}`);
+      handleError(error);
     }
   };
 
   const updateUser = (user: Partial<UserInterface>): void => {
     dispatch({ type: '[Auth] - UPDATE_USER', payload: { user } });
   };
+
 
   useEffect(() => {
     if (!isStorageReady) {
@@ -219,8 +231,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
   }, [restoreAuth, isStorageReady]);
 
   useEffect(() => {
-    setClientLogoutHandler(() => {
-      logOutClient();
+    setClientLogoutHandler(async () => {
+      await logOutClient();
     });
   }, [logOutClient]);
 
@@ -242,7 +254,9 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
 
         getTypeOfMovementsName,
         updateTypeOfMovements,
-        updateUser
+        updateUser,
+
+        isRestoringAuth
       }}>
       {children}
     </AuthContext.Provider>

@@ -15,7 +15,6 @@ const postLoginServer = async ({
         IdUsuarioOLEI: usuario,
         PasswordOLEI: password,
     });
-    
 
     return {
         tokenServer,

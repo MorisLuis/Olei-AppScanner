@@ -1,33 +1,39 @@
-import React, {useContext} from 'react';
-import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
+import React, { useContext } from 'react';
+import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-import {InventoryBagContext} from '../context/Inventory/InventoryBagContext';
-import {SuccesMessageScreenStyles} from '../theme/SuccesMessageScreenTheme';
-import {useTheme} from '../context/ThemeContext';
-import {AppNavigationProp} from '../interface/navigation';
-import {AuthContext} from '../context/auth/AuthContext';
+import { InventoryBagContext } from '../context/Inventory/InventoryBagContext';
+import { SuccesMessageScreenStyles } from '../theme/SuccesMessageScreenTheme';
+import { useTheme } from '../context/ThemeContext';
+import { AppNavigationProp } from '../interface/navigation';
+import { AuthContext } from '../context/auth/AuthContext';
 
 const TODOS_ALMACENES_ON = 1;
 
-export const SuccesMessage = () : JSX.Element => {
-  const {user} = useContext(AuthContext);
-  const {navigate} = useNavigation<AppNavigationProp>();
-  const {inventoryData} = useContext(InventoryBagContext);
-  const {theme, typeTheme} = useTheme();
+export const SuccesMessage = (): JSX.Element => {
+  const { user } = useContext(AuthContext);
+  const { reset } = useNavigation<AppNavigationProp>();
+  const { inventoryData } = useContext(InventoryBagContext);
+  const { theme, typeTheme } = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 
-  const handleNavigate = () : void => {
+  const handleNavigate = (): void => {
     if (user?.TodosAlmacenes === TODOS_ALMACENES_ON) {
-      navigate('almacenScreen');
+      reset({
+        index: 0,
+        routes: [{ name: 'almacenScreen' }]
+      });
     } else {
-      navigate('typeOfMovementScreen');
+      reset({
+        index: 0,
+        routes: [{ name: 'typeOfMovementScreen' }]
+      });
     }
   };
 
   return (
-    <SafeAreaView style={{backgroundColor: theme.background_color}}>
+    <SafeAreaView style={{ backgroundColor: theme.background_color }}>
       <View style={[SuccesMessageScreenStyles(theme).SuccesMessage]}>
         <TouchableOpacity
           style={[SuccesMessageScreenStyles(theme).header]}

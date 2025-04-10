@@ -107,14 +107,12 @@ export const useCameraSettings = ({
       const codeValue = codes;
 
       try {
-        const { error, products} = await getProductByCodeBar({ codeBar: codeValue.trim() });
-
-        if (error) return handleError(error);
+        const { products } = await getProductByCodeBar({ codeBar: codeValue.trim() });
         handleOpenProductsFoundByCodebar(products);
         handleVibrate();
         updateCodeBarProvider(codeValue);
       } catch (error) {
-        handleError(error, true);
+        handleError(error);
       } finally {
         handleStartScanning(false);
         setCodeDetected(false);

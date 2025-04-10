@@ -46,12 +46,11 @@ export const ProductDetailsPage = ({route}: ProductDetailsPageInterface) : JSX.E
   const handleGetProductDetails = useCallback(async () : Promise<void> => {
     try {
       setIsLoading(true);
-      const { product, error} = await getProductDetails(Codigo, Marca);
-      if (error) return handleError(error);
+      const { product } = await getProductDetails(Codigo, Marca);
       if (!product) return handleError('No hay producto');
       setProductDetailsData(product);
     } catch (error) {
-      handleError(error, true);
+      handleError(error);
     } finally {
       setIsLoading(false);
     }
