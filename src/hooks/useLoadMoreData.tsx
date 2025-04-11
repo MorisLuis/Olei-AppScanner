@@ -25,9 +25,11 @@ export const useLoadMoreData = <TData, TFilters = unknown>({
   total: number | null,
   handleResetData: () => Promise<void>,
   handleLoadMore: () => Promise<void>,
+  hasError: boolean
 } => {
 
   const [data, setData] = useState<TData[]>([]);
+  const [hasError, setHasError] = useState(false);
   const [page, setPage] = useState(PAGE_INITIAL);
   const [isLoading, setIsLoading] = useState(true);
   const [isButtonLoading, setButtonIsLoading] = useState(false);
@@ -36,6 +38,8 @@ export const useLoadMoreData = <TData, TFilters = unknown>({
 
   const handleResetData = useCallback(async (): Promise<void> => {
     setIsLoading(true);
+    setHasError(false);
+
     try {
       const initialData = await fetchInitialData(filters);
       setData(initialData);
@@ -46,6 +50,7 @@ export const useLoadMoreData = <TData, TFilters = unknown>({
         setTotal(total);
       }
     } catch (error) {
+      setHasError(true);
       handleError(error);
     } finally {
       setIsLoading(false);
@@ -55,25 +60,25 @@ export const useLoadMoreData = <TData, TFilters = unknown>({
   const handleLoadMore = useCallback(async (): Promise<void> => {
     // Evitar múltiples llamadas simultáneas
     if (isButtonLoading) return;
+    setHasError(false);
 
-    // Calcular nueva página
-    const nextPage = page + PAGE_INITIAL;
 
     // Verificar si se alcanzó el total de elementos
-    if (total !== null && data.length >= total) return;
+    if (total !== null && data?.length >= total) return;
 
     setButtonIsLoading(true);
 
     try {
-      const moreData = await fetchPaginatedData(filters, nextPage);
+      const moreData = await fetchPaginatedData(filters, page);
       setData((prevData) => [...prevData, ...moreData]);
       setPage((prevPage) => prevPage + PAGE_INITIAL); // Actualizar página de forma segura
     } catch (error) {
+      setHasError(true);
       handleError(error);
     } finally {
       setButtonIsLoading(false);
     }
-  }, [handleError, fetchPaginatedData, filters, isButtonLoading, data.length, total, page]);
+  }, [handleError, fetchPaginatedData, filters, isButtonLoading, data?.length, total, page]);
 
   return {
     data,
@@ -82,5 +87,6 @@ export const useLoadMoreData = <TData, TFilters = unknown>({
     total,
     handleResetData,
     handleLoadMore,
+    hasError
   };
 };

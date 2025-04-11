@@ -36,9 +36,18 @@ const getTotalProductsByStock = async (): Promise<{ total?: number }> => {
 
 };
 
+
+const getIntentionError = async (): Promise<any> => {
+  const data = await api.get('/api/auth/error-test');
+  return data
+};
+
+
+
 export {
   getProductByCodeBar,
   getProductsByStock,
   getTotalProductsByStock,
   getProductDetails,
+  getIntentionError
 };

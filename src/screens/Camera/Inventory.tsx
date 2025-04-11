@@ -16,6 +16,7 @@ import { InventoryScreenStyles } from '../../theme/InventoryScreenTheme';
 import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
 import { AppNavigationProp } from '../../interface/navigation';
 import { useLoadMoreData } from '../../hooks/useLoadMoreData';
+import { ErroScreen } from '../ErrorScreen';
 
 const PAGE_NUMBER_INITIAL = 1;
 const TOTAL_PRODUCTS_EMPTY = 0;
@@ -25,6 +26,7 @@ export const Inventory: React.FC = () => {
   const { navigate } = useNavigation<AppNavigationProp>();
   const { theme, typeTheme } = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
+
 
   const fetchInitialData = useCallback(async (): Promise<ProductInterface[]> => {
     const { products } = await getProductsByStock(PAGE_NUMBER_INITIAL);
@@ -39,8 +41,7 @@ export const Inventory: React.FC = () => {
   const fetchTotalCount = useCallback(async (): Promise<number> => {
     const { total } = await getTotalProductsByStock()
     return total ?? TOTAL_PRODUCTS_EMPTY;
-  }, [])
-
+  }, []);
 
   const {
     data,
@@ -49,6 +50,7 @@ export const Inventory: React.FC = () => {
     isLoading,
     isButtonLoading,
     total,
+    hasError
   } = useLoadMoreData({
     fetchInitialData,
     fetchPaginatedData,
@@ -99,7 +101,7 @@ export const Inventory: React.FC = () => {
   );
 
   const renderFooter = (): JSX.Element | null => {
-    const visible = !isLoading && data.length >= (total ?? TOTAL_PRODUCTS_EMPTY);
+    const visible = !isLoading && data?.length >= (total ?? TOTAL_PRODUCTS_EMPTY);
 
     if (isButtonLoading) {
       return (
@@ -136,6 +138,15 @@ export const Inventory: React.FC = () => {
         </View>
       </SafeAreaView>
     );
+  }
+
+  if (hasError) {
+    return (
+      <ErroScreen
+        onRetry={handleResetData}
+        title={"No pudimos cargar los productos."}
+      />
+    )
   }
 
   return (

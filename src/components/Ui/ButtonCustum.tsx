@@ -1,12 +1,12 @@
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {StyleProp, TouchableOpacity, ViewStyle} from 'react-native';
+import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import {useTheme} from '../../context/ThemeContext';
-import {Theme, globalFont} from '../../theme/appTheme';
+import { useTheme } from '../../context/ThemeContext';
+import { Theme, globalFont } from '../../theme/appTheme';
 import DotLoader from '../Ui/DotLaoder';
 import CustomText from '../CustumText';
-import {buttonStyles} from '../../theme/UI/buttons';
+import { buttonStyles } from '../../theme/UI/buttons';
 
 interface ButtonCustomProps {
   onPress: () => void;
@@ -36,15 +36,15 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
   butonSecondary,
   buttonSmall,
 }) => {
-  const {theme, typeTheme} = useTheme();
+  const { theme, typeTheme } = useTheme();
 
   // Memoiza los estilos para evitar recalculaciones innecesarias
   const buttonStyle = useMemo(
     () => [
       buttonStyles(theme, typeTheme).button,
-      disabled && {opacity: 0.6},
+      disabled && { opacity: 0.6 },
       extraStyles,
-      buttonColor ? {backgroundColor: theme[buttonColor]} : {},
+      buttonColor ? { backgroundColor: theme[buttonColor] } : {},
 
       // button secondary
       butonSecondary && buttonStyles(theme, typeTheme).button_secondary,
@@ -56,7 +56,7 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
   const textStyle = useMemo(
     () => [
       buttonStyles(theme, typeTheme).buttonText,
-      textColor ? {color: theme[textColor]} : {},
+      textColor ? { color: theme[textColor] } : {},
 
       // button secondary
       butonSecondary && buttonStyles(theme, typeTheme).buttonTextSecondary,

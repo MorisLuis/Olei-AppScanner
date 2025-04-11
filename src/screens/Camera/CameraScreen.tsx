@@ -111,10 +111,10 @@ const CameraScreen: React.FC = () => {
 
   const handleReadCode = useCallback(
     (event: OnReadCodeData): void => {
-      if (!cameraAvailableRef.current) return;
+      if (!cameraAvailableRef.current || onTheLimitProductScanned) return;
       codeScanned({ codes: event.nativeEvent.codeStringValue });
     },
-    [codeScanned],
+    [codeScanned, onTheLimitProductScanned],
   );
 
   if (cameraPermission === null) {
