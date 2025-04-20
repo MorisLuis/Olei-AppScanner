@@ -15,7 +15,7 @@ export interface ErrorResponse {
 
 export const ERROR_MESSAGES: Record<number | 'GENERIC', string> = {
   400: "Solicitud incorrecta. Por favor, revisa los datos ingresados.",
-  401: "No autorizado. Tu sesión ha expirado, por favor inicia sesión nuevamente.",
+  401: "Tu sesión ha expirado, por favor inicia sesión nuevamente.",
   403: "Prohibido. No tienes permisos para realizar esta acción.",
   404: "Recurso no encontrado.",
   500: "Error interno del servidor. Intenta de nuevo más tarde.",

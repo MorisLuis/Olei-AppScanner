@@ -17,7 +17,7 @@ const useErrorHandler = (): {
     avoidSave?: boolean,
     avoidToast?: boolean,
   ): Promise<void> => {
-  
+
     const err = error as ErrorResponse;
     const status = err.response?.status;
     const message = err.response?.data?.error
@@ -39,10 +39,9 @@ const useErrorHandler = (): {
           if (avoidToast) break
           Toast.show({
             type: 'tomatoError',
-            text1: message ?? ERROR_MESSAGES[ERROR_401]
+            text1: ERROR_MESSAGES[ERROR_401],
+            visibilityTime: 7000
           });
-          // Lógica de refrescar el token o cerrar sesión:
-          // Ej.: authContext.logout();
           break;
         case ERROR_403:
           Toast.show({
@@ -57,10 +56,6 @@ const useErrorHandler = (): {
           });
           break;
         case ERROR_500:
-          Toast.show({
-            type: 'tomatoError',
-            text1: message ?? ERROR_MESSAGES[ERROR_500],
-          });
           // Opcional: Si la petición es idempotente, podés implementar
           // lógica para reintentar con backoff exponencial.
           break;
@@ -78,7 +73,7 @@ const useErrorHandler = (): {
         text1: err.message || ERROR_MESSAGES.GENERIC
       });
     };
-    
+
 
     const erroBody: sendErrorInterface = {
       From: url ?? "",
@@ -88,7 +83,7 @@ const useErrorHandler = (): {
       code: status ?? ""
     };
 
-    if(!avoidSave){
+    if (!avoidSave) {
       await sendError(erroBody)
     }
   }, [user?.Nombre]);

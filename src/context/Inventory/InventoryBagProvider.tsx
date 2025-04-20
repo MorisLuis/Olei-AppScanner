@@ -8,11 +8,11 @@ import React, {
 } from 'react';
 import Toast from 'react-native-toast-message';
 
-import {ProductInterfaceBag} from '../../interface/product';
-import {InventoryBagContext} from './InventoryBagContext';
-import {innventoryBagReducer} from './InventoryBagReducer';
-import {api} from '../../api/api';
-import {AuthContext} from '../auth/AuthContext';
+import { ProductInterfaceBag } from '../../interface/product';
+import { InventoryBagContext } from './InventoryBagContext';
+import { innventoryBagReducer } from './InventoryBagReducer';
+import { api } from '../../api/api';
+import { AuthContext } from '../auth/AuthContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
 import { NUMBER_0 } from '../../utils/globalConstants';
 
@@ -39,18 +39,18 @@ export const InventoryBagInitialState: InventoryBagInterface = {
   },
 };
 
-export const InventoryProvider = ({children}: {children: ReactNode}): JSX.Element => {
+export const InventoryProvider = ({ children }: { children: ReactNode }): JSX.Element => {
 
   const [state, dispatch] = useReducer(
     innventoryBagReducer,
     InventoryBagInitialState,
   );
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const [inventoryCreated, setInventoryCreated] = useState<boolean>(false);
   const [productAdded, setProductAdded] = useState<boolean>(false);
   const [keyNumber, setKeyNumber] = useState<number>(NUMBER_0);
-  const {handleError} = useErrorHandler();
+  const { handleError } = useErrorHandler();
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -61,7 +61,7 @@ export const InventoryProvider = ({children}: {children: ReactNode}): JSX.Elemen
 
       dispatch({
         type: '[InventoryBag] - Add Product',
-        payload: {...product, key: newKey},
+        payload: { ...product, key: newKey },
       });
 
       setProductAdded(true);
@@ -75,11 +75,11 @@ export const InventoryProvider = ({children}: {children: ReactNode}): JSX.Elemen
   };
 
   const removeProduct = (product: ProductInterfaceBag): void => {
-    dispatch({type: '[InventoryBag] - Remove Product', payload: product});
+    dispatch({ type: '[InventoryBag] - Remove Product', payload: product });
   };
 
   const editProduct = (product: ProductInterfaceBag): void => {
-    dispatch({type: '[InventoryBag] - Edit Product', payload: product});
+    dispatch({ type: '[InventoryBag] - Edit Product', payload: product });
     Toast.show({
       type: 'tomatoToast',
       text1:
@@ -90,30 +90,25 @@ export const InventoryProvider = ({children}: {children: ReactNode}): JSX.Elemen
   };
 
   const cleanBag = (): void => {
-    dispatch({type: '[InventoryBag] - Clear Bag', payload: []});
+    dispatch({ type: '[InventoryBag] - Clear Bag', payload: [] });
   };
 
   const postInventory = async (inventoryDetails: ProductInterfaceBag[]): Promise<void> => {
-    try {
-      const tipoMovInvId = user?.Id_TipoMovInv;
 
-      const inventorybody = {
-        inventoryDetails,
-        typeOfMovement: tipoMovInvId,
-      };
-      const inventory = await api.post(`/api/inventory`, inventorybody);
-      dispatch({
-        type: '[InventoryBag] - Post Inventory',
-        payload: inventory.data,
-      });
-      setInventoryCreated(true);
-    } catch (error) {
-      handleError(error);
-    } finally {
-      timeoutRef.current = setTimeout(() => {
-        setInventoryCreated(false);
-      }, DEFAULT_TIMEOUT_MS);
-    }
+    const tipoMovInvId = user?.Id_TipoMovInv;
+
+    const inventorybody = {
+      inventoryDetails,
+      typeOfMovement: tipoMovInvId,
+    };
+    const inventory = await api.post(`/api/inventory`, inventorybody);
+    dispatch({
+      type: '[InventoryBag] - Post Inventory',
+      payload: inventory.data,
+    });
+    setInventoryCreated(true);
+    setInventoryCreated(false);
+
   };
 
   useEffect((): (() => void) => {
@@ -130,7 +125,7 @@ export const InventoryProvider = ({children}: {children: ReactNode}): JSX.Elemen
       numberOfItems,
     };
 
-    dispatch({type: '[InventoryBag] - Update Summary', payload: orderSummary});
+    dispatch({ type: '[InventoryBag] - Update Summary', payload: orderSummary });
   }, [state.bag]);
 
   return (

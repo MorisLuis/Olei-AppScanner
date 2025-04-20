@@ -5,11 +5,11 @@ import { requestInterceptor } from './requestInterceptors';
 import { responseInterceptor, errorResponseInterceptor } from './responseInterceptors';
 
 /* https://seahorse-app-spuvc.ondigitalocean.app */
-/* http://192.168.100.126:5001 */
+/* http://192.168.1.77:5001 */
 
 // Configuración básica de la conexión a la API.
 export const api = axios.create({
-  baseURL: 'https://seahorse-app-spuvc.ondigitalocean.app',
+  baseURL: 'http://192.168.100.237:5001',
   headers: {
     'Content-Type': 'application/json',
   },

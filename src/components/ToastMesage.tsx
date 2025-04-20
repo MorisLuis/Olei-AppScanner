@@ -45,9 +45,18 @@ const toastConfig = {
                 {text1}
             </CustomText>
         </View>
-    )
-};
+    ),
 
+    // Agregado tipo "warning"
+    warning: (props: BaseToastProps): JSX.Element => (
+        <BaseToast
+            {...props}
+            style={[styles.BaseToast_style]}
+            contentContainerStyle={styles.BaseToast_container}
+            text1Style={[styles.BaseToast_text]}
+        />
+    ),
+};
 
 export const ShowToastMessage = (): JSX.Element => {
     return <Toast config={toastConfig} />

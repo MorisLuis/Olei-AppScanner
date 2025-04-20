@@ -6,7 +6,7 @@ import ButtonCustom from '../components/Ui/ButtonCustum';
 import { globalStyles } from '../theme/appTheme';
 
 
-interface ErroScreen {
+interface ErroScreenInterface {
     onRetry: () => void;
     title: string;
 }
@@ -14,7 +14,7 @@ interface ErroScreen {
 export const ErroScreen = ({
     onRetry,
     title
-}: ErroScreen): JSX.Element => {
+}: ErroScreenInterface): JSX.Element => {
 
     const { theme } = useTheme();
 

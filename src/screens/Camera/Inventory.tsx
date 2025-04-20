@@ -1,45 +1,49 @@
-import React, { useCallback, useContext, useEffect } from 'react';
-import { FlatList, SafeAreaView, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useCallback, useContext, useEffect} from 'react';
+import {FlatList, SafeAreaView, Text, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {
   getProductsByStock,
   getTotalProductsByStock,
 } from '../../services/products';
-import { ProductInventoryCardComponent } from '../../components/Cards/ProductInventoryCard';
+import {ProductInventoryCardComponent} from '../../components/Cards/ProductInventoryCard';
 import ProductInterface from '../../interface/product';
-import { ProductInventoryCardSkeleton } from '../../components/Skeletons/ProductInventoryCardSkeleton';
-import { SettingsContext } from '../../context/settings/SettingsContext';
-import { useTheme } from '../../context/ThemeContext';
-import { InventoryScreenStyles } from '../../theme/InventoryScreenTheme';
-import { EmptyMessageCard } from '../../components/Cards/EmptyMessageCard';
-import { AppNavigationProp } from '../../interface/navigation';
-import { useLoadMoreData } from '../../hooks/useLoadMoreData';
-import { ErroScreen } from '../ErrorScreen';
+import {ProductInventoryCardSkeleton} from '../../components/Skeletons/ProductInventoryCardSkeleton';
+import {SettingsContext} from '../../context/settings/SettingsContext';
+import {useTheme} from '../../context/ThemeContext';
+import {InventoryScreenStyles} from '../../theme/InventoryScreenTheme';
+import {EmptyMessageCard} from '../../components/Cards/EmptyMessageCard';
+import {AppNavigationProp} from '../../interface/navigation';
+import {useLoadMoreData} from '../../hooks/useLoadMoreData';
+import {ErroScreen} from '../ErrorScreen';
 
 const PAGE_NUMBER_INITIAL = 1;
 const TOTAL_PRODUCTS_EMPTY = 0;
 
 export const Inventory: React.FC = () => {
-  const { handleCodebarScannedProcces } = useContext(SettingsContext);
-  const { navigate } = useNavigation<AppNavigationProp>();
-  const { theme, typeTheme } = useTheme();
+  const {handleCodebarScannedProcces} = useContext(SettingsContext);
+  const {navigate} = useNavigation<AppNavigationProp>();
+  const {theme, typeTheme} = useTheme();
   const iconColor = typeTheme === 'dark' ? 'white' : 'black';
 
-
-  const fetchInitialData = useCallback(async (): Promise<ProductInterface[]> => {
-    const { products } = await getProductsByStock(PAGE_NUMBER_INITIAL);
+  const fetchInitialData = useCallback(async (): Promise<
+    ProductInterface[]
+  > => {
+    const {products} = await getProductsByStock(PAGE_NUMBER_INITIAL);
     return products;
   }, []);
 
-  const fetchPaginatedData = useCallback(async (_: unknown, page?: number): Promise<ProductInterface[]> => {
-    const { products } = await getProductsByStock(page as number);
-    return products;
-  }, []);
+  const fetchPaginatedData = useCallback(
+    async (_: unknown, page?: number): Promise<ProductInterface[]> => {
+      const {products} = await getProductsByStock(page as number);
+      return products;
+    },
+    [],
+  );
 
   const fetchTotalCount = useCallback(async (): Promise<number> => {
-    const { total } = await getTotalProductsByStock()
+    const {total} = await getTotalProductsByStock();
     return total ?? TOTAL_PRODUCTS_EMPTY;
   }, []);
 
@@ -50,7 +54,7 @@ export const Inventory: React.FC = () => {
     isLoading,
     isButtonLoading,
     total,
-    hasError
+    hasError,
   } = useLoadMoreData({
     fetchInitialData,
     fetchPaginatedData,
@@ -66,7 +70,7 @@ export const Inventory: React.FC = () => {
         selectedProduct,
       });
     },
-    [handleCodebarScannedProcces, navigate]
+    [handleCodebarScannedProcces, navigate],
   );
 
   const renderHeader = (): JSX.Element => {
@@ -89,7 +93,7 @@ export const Inventory: React.FC = () => {
   };
 
   const renderItem = useCallback(
-    ({ item }: { item: ProductInterface }) => {
+    ({item}: {item: ProductInterface}) => {
       return (
         <ProductInventoryCardComponent
           product={item}
@@ -97,11 +101,12 @@ export const Inventory: React.FC = () => {
         />
       );
     },
-    [handlePressProduct]
+    [handlePressProduct],
   );
 
   const renderFooter = (): JSX.Element | null => {
-    const visible = !isLoading && data?.length >= (total ?? TOTAL_PRODUCTS_EMPTY);
+    const visible =
+      !isLoading && data?.length >= (total ?? TOTAL_PRODUCTS_EMPTY);
 
     if (isButtonLoading) {
       return (
@@ -111,16 +116,14 @@ export const Inventory: React.FC = () => {
       );
     }
 
-    return (
-      visible ? (
-        <View style={InventoryScreenStyles(theme).footerContent}>
-          <Text style={InventoryScreenStyles(theme).footerMessage}>
-            Estos son todos los productos que tienes. ({total})
-          </Text>
-          {/* {renderLoader()} */}
-        </View>
-      ) : null
-    );
+    return visible ? (
+      <View style={InventoryScreenStyles(theme).footerContent}>
+        <Text style={InventoryScreenStyles(theme).footerMessage}>
+          Estos son todos los productos que tienes. ({total})
+        </Text>
+        {/* {renderLoader()} */}
+      </View>
+    ) : null;
   };
 
   useEffect(() => {
@@ -132,7 +135,7 @@ export const Inventory: React.FC = () => {
       <SafeAreaView style={InventoryScreenStyles(theme).Inventory}>
         <View style={InventoryScreenStyles(theme).content}>
           {renderHeader()}
-          {Array.from({ length: 10 }).map((_, index) => (
+          {Array.from({length: 10}).map((_, index) => (
             <ProductInventoryCardSkeleton key={index} />
           ))}
         </View>
@@ -144,9 +147,9 @@ export const Inventory: React.FC = () => {
     return (
       <ErroScreen
         onRetry={handleResetData}
-        title={"No pudimos cargar los productos."}
+        title={'No pudimos cargar los productos.'}
       />
-    )
+    );
   }
 
   return (

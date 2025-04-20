@@ -34,6 +34,8 @@ export const AuthNavigation = (): JSX.Element => {
     }
 
     useEffect(() => {
+
+        
         // Si no existe tokenServer, manda a LoginServer
         if (!tokenServer) {
             navigation.navigate('LoginDatabaseScreen');

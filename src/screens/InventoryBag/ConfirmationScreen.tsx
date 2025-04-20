@@ -13,10 +13,11 @@ import { CombineNavigationProp } from '../../interface/navigation';
 import FooterScreen from '../../components/Navigation/Footer';
 import { NUMBER_0 } from '../../utils/globalConstants';
 import { globalStyles } from '../../theme/appTheme';
+import { useApiMutation } from '../../hooks/useApiMutation';
+import Toast from 'react-native-toast-message';
 
 const INITIAL_PAGE = 1;
 const PAGE_SIZE = 5;
-const TIMEOUT_DELAY = 500;
 const END_REACHED_THRESHOLD = 0.5;
 const ITEMS_EMPTY = 0;
 
@@ -25,6 +26,28 @@ export const ConfirmationScreen = (): JSX.Element => {
   const { getTypeOfMovementsName, user } = useContext(AuthContext);
   const { bag, cleanBag, numberOfItems, postInventory } = useContext(InventoryBagContext);
   const { navigate, reset } = useNavigation<CombineNavigationProp>();
+  const [errorFound, setErrorFound] = useState<boolean>(false)
+
+  const { mutate, isPending } = useApiMutation(postInventory, {
+    onSuccess: () => {
+      cleanBag();
+      setCreateInventaryLoading(false);
+      reset({
+        index: 0,
+        routes: [{ name: 'succesMessageScreen' }]
+      });
+    },
+    onError: (error) => {
+      const errorMessage = (error?.response?.data as { message: string })?.message || 'Error con inventario - 500';
+      setCreateInventaryLoading(false);
+      setErrorFound(true);
+      Toast.show({
+        type: 'tomatoError',
+        text1: errorMessage,
+      });
+    }
+
+  });
 
   const iconColor = theme.color_tertiary;
   const [createInventaryLoading, setCreateInventaryLoading] = useState(false);
@@ -50,17 +73,8 @@ export const ConfirmationScreen = (): JSX.Element => {
 
   const onPostInventary = useCallback(async (): Promise<void> => {
     setCreateInventaryLoading(true);
-    await postInventory(bag);
-
-    setTimeout(() => {
-      cleanBag();
-      setCreateInventaryLoading(false);
-      reset({
-        index: 0,
-        routes: [{ name: 'succesMessageScreen' }]
-      });      
-    }, TIMEOUT_DELAY);
-  }, [bag, postInventory, cleanBag, reset]);
+    await mutate(bag);
+  }, [bag, mutate]);
 
   const handleLoadMore = (): void => {
     if (filteredBag.length >= numberOfItems) return;
@@ -125,10 +139,10 @@ export const ConfirmationScreen = (): JSX.Element => {
       </View>
 
       <FooterScreen
-        buttonTitle="Confirmar"
+        buttonTitle={errorFound ? "Volver a intentar" : "Confirmar"}
         buttonOnPress={onPostInventary}
         buttonDisabled={createInventaryLoading}
-        buttonLoading={createInventaryLoading}
+        buttonLoading={isPending}
       />
     </View>
   ) : (

@@ -8,10 +8,10 @@ import { AuthContext } from '../context/auth/AuthContext';
 
 export const SessionExpiredScreen = (): JSX.Element => {
   const { theme } = useTheme();
-  const { logOutUser } = useContext(AuthContext);
+  const { logOutClient } = useContext(AuthContext);
 
   const handleBack = (): void => {
-    logOutUser?.();
+    logOutClient?.();
   };
 
   return (

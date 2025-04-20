@@ -7,15 +7,26 @@ import { SettingsProvider } from './src/context/settings/SettingsProvider';
 import { InventoryProvider } from './src/context/Inventory/InventoryBagProvider';
 import { ShowToastMessage } from './src/components/ToastMesage';
 import { MainNavigator } from './src/navigator/MainNavigation';
+import * as Sentry from '@sentry/react-native';
+import { initSentry } from './src/utils/sentryConfig';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+initSentry();
+
+const queryClient = new QueryClient();
+
 
 const App = (): JSX.Element => {
+
   return (
-    <NavigationContainer>
-      <AppState>
-        <MainNavigator />
-      </AppState>
-      <ShowToastMessage />
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <AppState>
+          <MainNavigator />
+        </AppState>
+        <ShowToastMessage />
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 };
 
@@ -35,4 +46,4 @@ const AppState: React.FC<AppStateProps> = ({ children }) => {
   );
 };
 
-export default App;
+export default Sentry.wrap(App);

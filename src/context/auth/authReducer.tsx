@@ -8,7 +8,7 @@ type AuthAction =
   | { type: '[Auth] - REFRESH'; payload: { token: string, user: UserInterface } }
   | { type: '[Auth] - RESTORE'; payload: { tokenServer: string | null, token: string | null, user: UserInterface } }
   | { type: '[Auth] - LOGOUT_SERVER' }
-  | { type: '[Auth] - LOGOUT_CLIENT', payload: { user: UserInterface } }
+  | { type: '[Auth] - LOGOUT_CLIENT', payload: { user: UserInterface | null } }
   | { type: '[Auth] - TYPE_OF_MOVEMENT', payload: { tipoMovimiento: ID_TIPO_MOVIMIENTO } }
   | { type: '[Auth] - UPDATE_USER', payload: { user: Partial<UserInterface> } }
 

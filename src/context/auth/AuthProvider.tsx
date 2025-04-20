@@ -5,9 +5,20 @@ import UserInterface, { ID_TIPO_MOVIMIENTO } from '../../interface/user';
 import { authReducer } from './authReducer';
 import { AuthContext } from './AuthContext';
 import useErrorHandler from '../../hooks/useErrorHandler';
-import { postLogOutClient, postLoginClient, postLoginClientInterface, postLoginServer, postLoginServerInterface, postRefreshAuthServer, postRefreshToken } from '../../services/auth';
-import { setClientLogoutHandler, setUnauthorizedHandler } from '../../api/apiCallbacks';
-import { getIsLoggingOut, setIsLoggingOut } from './AuthService';
+import {
+  postLogOutClient,
+  postLoginClient,
+  postLoginClientInterface,
+  postLoginServer,
+  postLoginServerInterface,
+  postRefreshAuthServer,
+  postRefreshToken,
+} from '../../services/auth';
+import {
+  setClientLogoutHandler,
+  setUnauthorizedHandler,
+} from '../../api/apiCallbacks';
+import { getIsLogginOutClient, getIsLoggingOut, setIsLoggingOut, setIsLoggingOutClient } from './AuthService';
 
 export interface AuthState {
   tokenServer: string | null;
@@ -72,7 +83,11 @@ const ID_MOVEMENT_0 = 0;
 const ID_MOVEMENT_1 = 1;
 const ID_MOVEMENT_2 = 2;
 
-export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Element => {
+export const AuthProvider = ({
+  children,
+}: {
+  children: JSX.Element;
+}): JSX.Element => {
 
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
   const [isStorageReady, setIsStorageReady] = useState(false);
@@ -80,12 +95,16 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
 
   const { handleError } = useErrorHandler();
 
-  const loginServer = async ({ usuario, password }: postLoginServerInterface): Promise<void> => {
-    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
+  const loginServer = async ({
+    usuario,
+    password,
+  }: postLoginServerInterface): Promise<void> => {
+
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true });
     try {
       const { user, tokenServer } = await postLoginServer({ usuario, password });
       await AsyncStorage.setItem('tokenServer', tokenServer);
-      dispatch({ type: '[Auth] - LOGIN_SERVER', payload: { user, tokenServer } })
+      dispatch({ type: '[Auth] - LOGIN_SERVER', payload: { user, tokenServer } });
     } catch (error) {
       handleError(error);
     } finally {
@@ -93,106 +112,117 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
     }
   };
 
-  const loginClient = async ({ Id_Usuario, password }: postLoginClientInterface): Promise<void> => {
-    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
+  const loginClient = async ({
+    Id_Usuario,
+    password,
+  }: postLoginClientInterface): Promise<void> => {
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true });
 
     try {
-      const { user, token, refreshToken } = await postLoginClient({ Id_Usuario, password });
+      const { user, token, refreshToken } = await postLoginClient({
+        Id_Usuario,
+        password,
+      });
 
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('refreshToken', refreshToken);
 
-      dispatch({ type: '[Auth] - LOGIN_CLIENT', payload: { user, token } })
+      dispatch({ type: '[Auth] - LOGIN_CLIENT', payload: { user, token } });
     } catch (error) {
       handleError(error);
     } finally {
       dispatch({ type: '[Auth] - SET_LOADING', payload: false });
     }
-  }
+  };
 
-  const logOutServer = useCallback(async (): Promise<void> => {
-    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
+  const logOutServer = useCallback((): void => {
+
+    if (getIsLogginOutClient() || getIsLoggingOut()) return; // Previene loop
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true });
+    setIsLoggingOut(true);
 
     try {
-      AsyncStorage.removeItem('token');
       AsyncStorage.removeItem('tokenServer');
+      AsyncStorage.removeItem('token');
       AsyncStorage.removeItem('refreshToken');
 
-      dispatch({ type: '[Auth] - LOGOUT_SERVER' })
+      dispatch({ type: '[Auth] - LOGOUT_SERVER' });
+
     } catch (error) {
       handleError(error);
     } finally {
-      dispatch({ type: '[Auth] - SET_LOADING', payload: false })
-    };
+      dispatch({ type: '[Auth] - SET_LOADING', payload: false });
+      setIsLoggingOut(false);
+    }
   }, [handleError]);
 
   const logOutClient = useCallback(async (): Promise<void> => {
-    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
-
-    if (getIsLoggingOut()) return; // Previene loop
-    setIsLoggingOut(true);
+  
+    if (getIsLogginOutClient() || getIsLoggingOut()) return;
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true });
+    setIsLoggingOutClient(true);
 
     try {
       const token = await AsyncStorage.getItem('token');
       if (!token) {
-        return
-        //return dispatch({ type: '[Auth] - LOGOUT_SERVER' })
-      };
-
-      const { user } = await postLogOutClient()
+        dispatch({ type: '[Auth] - LOGOUT_CLIENT', payload: { user: null } });
+      } else {
+        const { user } = await postLogOutClient();
+        dispatch({ type: '[Auth] - LOGOUT_CLIENT', payload: { user: user } });
+      }
       AsyncStorage.removeItem('token');
-
-      dispatch({ type: '[Auth] - LOGOUT_CLIENT', payload: { user } })
     } catch (error) {
       handleError(error);
     } finally {
-      dispatch({ type: '[Auth] - SET_LOADING', payload: false })
-      setIsLoggingOut(false);
-    };
+      dispatch({ type: '[Auth] - SET_LOADING', payload: false });
+      setIsLoggingOutClient(false);
+    }
   }, [handleError]);
 
   const refreshAuth = useCallback(async (): Promise<void | null> => {
-
-    dispatch({ type: '[Auth] - SET_LOADING', payload: true })
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true });
 
     try {
       const refreshToken_prop = await AsyncStorage.getItem('refreshToken');
       if (!refreshToken_prop) {
         return logOutClient();
-      };
+      }
 
-      const { token, refreshToken, user } = await postRefreshToken({ refreshToken_prop });
+      const { token, refreshToken, user } = await postRefreshToken({
+        refreshToken_prop,
+      });
 
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('refreshToken', refreshToken);
 
-      dispatch({ type: '[Auth] - REFRESH', payload: { token, user } })
-
+      dispatch({ type: '[Auth] - REFRESH', payload: { token, user } });
     } catch (error) {
       handleError(error);
     } finally {
       dispatch({ type: '[Auth] - SET_LOADING', payload: false });
     }
-  }, [handleError, logOutClient])
+  }, [handleError, logOutClient]);
 
   const restoreAuth = useCallback(async (): Promise<void> => {
-    setIsRestoringAuth(true)
+    setIsRestoringAuth(true);
     try {
       const tokenServer = await AsyncStorage.getItem('tokenServer');
       const token = await AsyncStorage.getItem('token');
 
-      const { user } = await postRefreshAuthServer()
+      const { user } = await postRefreshAuthServer();
 
-      dispatch({ type: '[Auth] - RESTORE', payload: { token: token, tokenServer, user } })
+      dispatch({
+        type: '[Auth] - RESTORE',
+        payload: { token: token, tokenServer, user },
+      });
 
-      await refreshAuth()
+      await refreshAuth();
     } catch (error) {
       handleError(error, true, true);
     } finally {
-      setIsRestoringAuth(false)
+      setIsRestoringAuth(false);
     }
-  }, [handleError, refreshAuth])
-
+  }, [handleError, refreshAuth]);
 
   const getTypeOfMovementsName = useCallback((): string => {
     let name;
@@ -210,11 +240,19 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
       name = 'Traspaso';
     }
     return name;
-  }, [state.user?.Id_TipoMovInv?.Accion, state.user?.Id_TipoMovInv?.Id_TipoMovInv]);
+  }, [
+    state.user?.Id_TipoMovInv?.Accion,
+    state.user?.Id_TipoMovInv?.Id_TipoMovInv,
+  ]);
 
-  const updateTypeOfMovements = async (value: ID_TIPO_MOVIMIENTO): Promise<void> => {
+  const updateTypeOfMovements = async (
+    value: ID_TIPO_MOVIMIENTO,
+  ): Promise<void> => {
     try {
-      dispatch({ type: '[Auth] - TYPE_OF_MOVEMENT', payload: { tipoMovimiento: value } })
+      dispatch({
+        type: '[Auth] - TYPE_OF_MOVEMENT',
+        payload: { tipoMovimiento: value },
+      });
     } catch (error) {
       handleError(error);
     }
@@ -226,10 +264,10 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
 
   useEffect(() => {
     if (!isStorageReady) {
-      setIsStorageReady(true)
-      return
+      setIsStorageReady(true);
+      return;
     }
-    restoreAuth()
+    restoreAuth();
   }, [restoreAuth, isStorageReady]);
 
   useEffect(() => {
@@ -239,11 +277,10 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
   }, [logOutClient]);
 
   useEffect(() => {
-    setUnauthorizedHandler(() => {
+    setUnauthorizedHandler(async () => {
       logOutServer();
     });
   }, [logOutServer]);
-
 
   return (
     <AuthContext.Provider
@@ -258,8 +295,9 @@ export const AuthProvider = ({ children }: { children: JSX.Element }): JSX.Eleme
         updateTypeOfMovements,
         updateUser,
 
-        isRestoringAuth
-      }}>
+        isRestoringAuth,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

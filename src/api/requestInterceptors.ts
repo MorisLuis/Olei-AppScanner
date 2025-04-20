@@ -1,24 +1,31 @@
-// requestInterceptors.ts
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { InternalAxiosRequestConfig } from 'axios';
+import { trackApiRequest } from '../utils/sentryConfig';
 
 export const requestInterceptor = async (
-    config: InternalAxiosRequestConfig
+  config: InternalAxiosRequestConfig,
 ): Promise<InternalAxiosRequestConfig> => {
-    const token = await AsyncStorage.getItem('token');
-    const tokenServer = await AsyncStorage.getItem('tokenServer');
 
-    // Asegurarse que headers existe
-    config.headers = config.headers || {};
+  const { method, url } = config;
+  trackApiRequest(config)
 
-    if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-    }
+  if (__DEV__) {
+    // eslint-disable-next-line no-console
+    console.log('[📡 API REQUEST]', method?.toUpperCase(), url);
+  };
 
-    if (tokenServer) {
-        config.headers['X-Server-Token'] = `Bearer ${tokenServer}`;
-    }
+  const token = await AsyncStorage.getItem('token');
+  const tokenServer = await AsyncStorage.getItem('tokenServer');
 
-    return config;
+  config.headers = config.headers || {};
+
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  if (tokenServer) {
+    config.headers['X-Server-Token'] = `Bearer ${tokenServer}`;
+  }
+
+  return config;
 };
