@@ -20,7 +20,7 @@ import { AuthContext } from '../context/auth/AuthContext';
 import { ConfirmationScreen } from '../screens/InventoryBag/ConfirmationScreen';
 import { EditProductInBag } from '../screens/Modals/EditProductInBag';
 import { SessionExpiredScreen } from '../screens/SessionExpired';
-import AlmacenScreen from '../screens/Camera/AlmacenScreen';
+import AlmacenScreen from '../screens/Onboarding/AlmacenScreen';
 import { BottomNavigationParams } from '../interface/navigation';
 import { DELAY_HALF_A_SECOND } from '../utils/globalConstants';
 

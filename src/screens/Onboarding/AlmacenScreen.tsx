@@ -1,5 +1,5 @@
 import { View, SafeAreaView, FlatList } from 'react-native';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import CustomText from '../../components/CustumText';
@@ -14,14 +14,16 @@ import { AppNavigationProp } from '../../interface/navigation';
 import useErrorHandler from '../../hooks/useErrorHandler';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { globalStyles } from '../../theme/appTheme';
+import { useApiQueryWithService } from '../../hooks/useApiQueryWithService';
+import { ErroScreen } from '../ErrorScreen';
 
 interface AlmacenScreenInterface {
   route: {
     params: {
       valueDefault?: number
-    }
+    };
   };
-}
+};
 
 export default function AlmacenScreen({ route }: AlmacenScreenInterface): JSX.Element {
 
@@ -32,27 +34,23 @@ export default function AlmacenScreen({ route }: AlmacenScreenInterface): JSX.El
 
   const [value, setValue] = useState<AlmacenInterface>();
   const [valueDefaultLocal, setValueDefaultLocal] = useState<number>();
-  const [almacenes, setAlmacenes] = useState<AlmacenInterface[]>();
   const buttondisabled = !value && !valueDefault ? true : false;
   const { handleError } = useErrorHandler();
 
-  const handleSelectOption = (value: AlmacenInterface): void => {
+  const { isError, data, isLoading, refetch } = useApiQueryWithService({
+    queryKey: 'almacenes',
+    service: getAlmacenes,
+  });
+  const almacenes = data?.items;
+
+  const handleSelectAlmacen = (value: AlmacenInterface): void => {
     setValue(value);
   };
 
-  const handleGetAlmacenes = useCallback(async (): Promise<void> => {
-    try {
-      const { almacenes } = await getAlmacenes();
-      setAlmacenes(almacenes);
-    } catch (error) {
-      handleError(error);
-    }
-  }, [handleError]);
-
-  const renderItem = ({ item }: { item: AlmacenInterface }): JSX.Element => {
+  const renderAlmacenItem = ({ item }: { item: AlmacenInterface }): JSX.Element => {
     return (
       <CardSelect
-        onPress={() => handleSelectOption(item)}
+        onPress={() => handleSelectAlmacen(item)}
         message={item.Nombre}
         sameValue={
           value
@@ -63,7 +61,7 @@ export default function AlmacenScreen({ route }: AlmacenScreenInterface): JSX.El
     );
   };
 
-  const handleSave = async (): Promise<void> => {
+  const handleSaveAlmacen = async (): Promise<void> => {
     if (!value?.Id_Almacen) return;
     const { almacen } = await updateCurrentAlmacen(value?.Id_Almacen);
     if (!almacen) return handleError("No se encontro almacen actualizado");
@@ -77,7 +75,7 @@ export default function AlmacenScreen({ route }: AlmacenScreenInterface): JSX.El
   };
 
   const renderLoader = (): React.ReactElement[] | null => {
-    return !almacenes ?
+    return isLoading ?
       Array.from({ length: 10 }).map((_, index) => (
         <TypeOfMovementSkeleton key={index} />
       ))
@@ -85,12 +83,18 @@ export default function AlmacenScreen({ route }: AlmacenScreenInterface): JSX.El
   };
 
   useEffect(() => {
-    handleGetAlmacenes();
-  }, [handleGetAlmacenes]);
-
-  useEffect(() => {
     if (valueDefault) setValueDefaultLocal(valueDefault);
   }, [valueDefault]);
+
+
+  if (isError) {
+    return (
+      <ErroScreen
+        onRetry={() => refetch()}
+        title={'No pudimos cargar los almacenes.'}
+      />
+    );
+  };
 
   return (
     <View style={almacenStyles(theme).AlmacenScreen}>
@@ -103,7 +107,7 @@ export default function AlmacenScreen({ route }: AlmacenScreenInterface): JSX.El
 
         <FlatList
           data={almacenes}
-          renderItem={renderItem}
+          renderItem={renderAlmacenItem}
           keyExtractor={(product) => `${product.Id_Almacen}`}
           onEndReachedThreshold={0}
           ListFooterComponent={renderLoader}
@@ -113,7 +117,7 @@ export default function AlmacenScreen({ route }: AlmacenScreenInterface): JSX.El
 
       <FooterScreen
         buttonTitle="Cambiar almacen"
-        buttonOnPress={handleSave}
+        buttonOnPress={handleSaveAlmacen}
         buttonDisabled={buttondisabled}
       />
     </View>

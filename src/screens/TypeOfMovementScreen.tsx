@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -20,6 +20,8 @@ import { TypeOfMovementScreenStyles } from '../theme/TypeOfMovementScreenTheme';
 import { globalStyles } from '../theme/appTheme';
 import { ID_TIPO_MOVIMIENTO } from '../interface/user';
 import CardSelect from '../components/Cards/CardSelect';
+import { ErroScreen } from './ErrorScreen';
+import { useApiQueryWithService } from '../hooks/useApiQueryWithService';
 
 const ID_TIPO_MOVIMIENTO_0 = 0;
 
@@ -29,19 +31,22 @@ export const TypeOfMovementScreen = (): JSX.Element => {
   const { theme, typeTheme } = useTheme();
   const { navigate } = useNavigation<AppNavigationProp>();
   const { handleError } = useErrorHandler();
-
-  const [typeOfMovement, setTypeOfMovement] = useState<ID_TIPO_MOVIMIENTO[]>([]);
   const [typeSelected, setTypeSelected] = useState<ID_TIPO_MOVIMIENTO>();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleOptionSelect = (option: ID_TIPO_MOVIMIENTO): void => {
+  const { isError, data, isLoading, refetch } = useApiQueryWithService({
+    queryKey: 'typeOfMovement',
+    service: getTypeOfMovements,
+  });
+  const typeOfMovement = data?.items;
+
+  const handleSelectMovement = (option: ID_TIPO_MOVIMIENTO): void => {
     setTypeSelected(option);
   };
 
-  const renderOption = ({ item }: { item: ID_TIPO_MOVIMIENTO }): JSX.Element => {
+  const renderItemMovement = ({ item }: { item: ID_TIPO_MOVIMIENTO }): JSX.Element => {
     return (
       <CardSelect
-        onPress={() => handleOptionSelect(item)}
+        onPress={() => handleSelectMovement(item)}
         message={item.Descripcion}
         sameValue={typeSelected?.Id_TipoMovInv === item.Id_TipoMovInv}
       />
@@ -67,21 +72,14 @@ export const TypeOfMovementScreen = (): JSX.Element => {
       : null;
   };
 
-  const handleGetTypeOfMovements = useCallback(async (): Promise<void> => {
-    try {
-      setIsLoading(true);
-      const { TiposMovimiento } = await getTypeOfMovements();
-      setTypeOfMovement(TiposMovimiento);
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [handleError]);
-
-  useEffect(() => {
-    handleGetTypeOfMovements();
-  }, [handleGetTypeOfMovements]);
+  if (isError) {
+    return (
+      <ErroScreen
+        onRetry={() => refetch()}
+        title={'No pudimos cargar los movimientos.'}
+      />
+    );
+  };
 
   return (
     <View style={TypeOfMovementScreenStyles(theme).TypeOfMovementScreen}>
@@ -94,7 +92,7 @@ export const TypeOfMovementScreen = (): JSX.Element => {
 
         <FlatList
           data={typeOfMovement}
-          renderItem={renderOption}
+          renderItem={renderItemMovement}
           keyExtractor={(typeOfMovement) => `${typeOfMovement.Id_TipoMovInv}`}
           ListFooterComponent={renderLoader}
           onEndReachedThreshold={0}

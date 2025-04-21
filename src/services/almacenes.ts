@@ -1,9 +1,9 @@
 import { api } from '../api/api';
 import { AlmacenInterface } from '../interface/almacen';
 
-const getAlmacenes = async (): Promise<{ almacenes: AlmacenInterface[] }> => {
+const getAlmacenes = async (): Promise<{ items: AlmacenInterface[] }> => {
   const { data: { almacenes } } = await api.get<{ almacenes: AlmacenInterface[] }>(`/api/almacenes`);
-  return { almacenes };
+  return {items: almacenes};
 };
 
 const updateCurrentAlmacen = async (Id_Almacen: number): Promise<{ almacen?: AlmacenInterface }> => {

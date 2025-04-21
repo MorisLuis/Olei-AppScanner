@@ -90,7 +90,6 @@ export const SearchProductScreen = ({route}: SearchProductScreenInterface) : JSX
   [getSearchData]
 );
 
-
   const renderItem = ({item}: {item: ProductInterface}): JSX.Element => (
     <ProductItemSearch
       fromModal={modal ?? false}
@@ -131,7 +130,7 @@ export const SearchProductScreen = ({route}: SearchProductScreenInterface) : JSX
           response: {
             status: 400,
             data: {
-              message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
+              error: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'
             }
           },
           message: 'Codigo and Id_Marca neccesary in handleUpdateCodebar'

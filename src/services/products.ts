@@ -33,14 +33,14 @@ const getProductByCodeBar = async ({
 };
 
 const getProductsByStock = async (
-  PageNumber: number,
-): Promise<{products: ProductInterface[]}> => {
+  page: number,
+): Promise<{items: ProductInterface[]}> => {
   const {
     data: {products},
   } = await api.get<{products: ProductInterface[]}>(
-    `/api/product/byStock?PageNumber=${PageNumber}&PageSize=10`,
+    `/api/product/byStock?PageNumber=${page}&PageSize=10`,
   );
-  return {products};
+  return {items: products};
 };
 
 const getTotalProductsByStock = async (): Promise<{total?: number}> => {

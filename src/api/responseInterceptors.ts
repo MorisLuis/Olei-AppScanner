@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { triggerClientLogout, triggerUnauthorized } from './apiCallbacks';
 import { getIsLoggingOut } from '../context/auth/AuthService';
 import { trackApiResponse } from '../utils/sentryConfig';
-import { api } from './api';
+import { api, domain } from './api';
 import { ERROR_500 } from '../utils/globalConstants';
 
 export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
@@ -104,7 +104,7 @@ export const errorResponseInterceptor = async (error: AxiosError): Promise<never
                     return Promise.reject(error);
                 }
 
-                const { data } = await axios.post(`http://192.168.100.237:5001/api/auth/refresh`, { refreshToken });
+                const { data } = await axios.post(`${domain}/api/auth/refresh`, { refreshToken });
 
                 if (!data.token) {
                     triggerClientLogout();
