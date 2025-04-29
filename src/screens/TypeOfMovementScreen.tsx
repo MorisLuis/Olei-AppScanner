@@ -34,7 +34,7 @@ export const TypeOfMovementScreen = (): JSX.Element => {
   const [typeSelected, setTypeSelected] = useState<ID_TIPO_MOVIMIENTO>();
 
   const { isError, data, isLoading, refetch } = useApiQueryWithService({
-    queryKey: 'typeOfMovement',
+    queryKey: 'typeOfMovements',
     service: getTypeOfMovements,
   });
   const typeOfMovement = data?.items;

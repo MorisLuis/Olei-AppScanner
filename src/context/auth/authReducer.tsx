@@ -6,7 +6,7 @@ type AuthAction =
   | { type: '[Auth] - LOGIN_SERVER'; payload: { tokenServer: string, user: UserInterface } }
   | { type: '[Auth] - LOGIN_CLIENT'; payload: { token: string, user: UserInterface } }
   | { type: '[Auth] - REFRESH'; payload: { token: string, user: UserInterface } }
-  | { type: '[Auth] - RESTORE'; payload: { tokenServer: string | null, token: string | null, user: UserInterface } }
+  | { type: '[Auth] - RESTORE'; payload: { tokenServer: string | null, token: string | null, user: UserInterface | null } }
   | { type: '[Auth] - LOGOUT_SERVER' }
   | { type: '[Auth] - LOGOUT_CLIENT', payload: { user: UserInterface | null } }
   | { type: '[Auth] - TYPE_OF_MOVEMENT', payload: { tipoMovimiento: ID_TIPO_MOVIMIENTO } }

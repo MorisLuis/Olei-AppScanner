@@ -6,9 +6,9 @@ import { responseInterceptor, errorResponseInterceptor } from './responseInterce
 
 
 /* https://seahorse-app-spuvc.ondigitalocean.app */
-/* http://192.168.1.77:5001 */
+/* http://192.168.100.193:5001 */
 
-export const domain = 'https://seahorse-app-spuvc.ondigitalocean.app'
+export const domain = 'http://192.168.100.193:5001'
 
 // Configuración básica de la conexión a la API.
 export const api = axios.create({

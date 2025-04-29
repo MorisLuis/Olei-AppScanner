@@ -56,6 +56,7 @@ export const useCameraSettings = ({
     vibration,
     updateCodeBarProvider,
     handleStartScanning,
+    startScanning
   } = useContext(SettingsContext);
   const [codeDetected, setCodeDetected] = useState(false);
   const { handleError } = useErrorHandler();
@@ -97,6 +98,8 @@ export const useCameraSettings = ({
   };
 
   const codeScanned = async ({ codes }: { codes: string }): Promise<void> => {
+
+    if(startScanning) return;
     handleStartScanning(true);
     handleCameraAvailable(false);
     setProductsScanned(undefined);

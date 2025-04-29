@@ -1,10 +1,10 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import {Theme, globalFont, globalStyles} from './appTheme';
+import { Theme, globalFont, globalStyles } from './appTheme';
 
 export const cameraStyles = (theme: Theme, typeTheme?: string) =>
   StyleSheet.create({
@@ -89,12 +89,35 @@ export const cameraStyles = (theme: Theme, typeTheme?: string) =>
       textAlign: 'center',
       fontSize: globalFont.font_normal,
     },
+    scan: {
+      backgroundColor: theme.color_yellow,
+      height: 75,
+      width: 75,
+      borderRadius: 75 / 2,
+      alignItems: 'center',
+      justifyContent: 'center',
+      elevation: 8,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
+      position: 'absolute',
+      bottom: 50,
+      left: wp('50%') - 37.5,
+      zIndex: 999999999,
+    },
+    scan_text: {
+      color: theme.text_color,
+      fontWeight: 'bold',
+      fontSize: globalFont.font_normal,
+      marginTop: 4,
+    },    
     actions: {
       position: 'absolute',
       right: wp('5%'),
       top: hp('50%'),
       zIndex: 2,
-      transform: [{translateY: hp('-15%')}],
+      transform: [{ translateY: hp('-15%') }],
     },
     flash: {
       marginBottom: 20,

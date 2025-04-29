@@ -13,7 +13,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 initSentry();
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 
 const App = (): JSX.Element => {

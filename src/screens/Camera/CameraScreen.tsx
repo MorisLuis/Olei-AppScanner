@@ -22,6 +22,7 @@ import { getTypeOfMovementsName, useCameraSettings } from './cameraSettings';
 import { AppNavigationProp } from '../../interface/navigation';
 import { AuthContext } from '../../context/auth/AuthContext';
 import { NUMBER_0 } from '../../utils/globalConstants';
+import { ScanButton } from '../../components/Ui/ScanButton';
 
 type PermissionStatus =
   | 'unavailable'
@@ -43,6 +44,7 @@ const CAMERA_BLUR_AMOUNT = 5;
 const ICON_SIZE = 28;
 const EMPTY_PRODUCTS_FOUND = 0;
 const MORE_THAN_ONE_PRODUCTS_FOUND = 1;
+const DELAY_300_SECOND = 300
 
 const CameraScreen: React.FC = () => {
   const { bag } = useContext(InventoryBagContext);
@@ -51,10 +53,12 @@ const CameraScreen: React.FC = () => {
   const { theme, typeTheme } = useTheme();
   const { navigate } = useNavigation<AppNavigationProp>();
   const onTheLimitProductScanned = limitProductsScanned <= bag?.length;
+  const [isScanningEnabled, setIsScanningEnabled] = useState(false);
 
   const [lightOn, setLightOn] = useState(false);
   const [cameraKey, setCameraKey] = useState(INITIAL_CAMERA_KEY);
   const [productsScanned, setProductsScanned] = useState<ProductInterface[]>();
+
   const [cameraPermission, setCameraPermission] =
     useState<PermissionStatus | null>(null);
 
@@ -111,11 +115,20 @@ const CameraScreen: React.FC = () => {
 
   const handleReadCode = useCallback(
     (event: OnReadCodeData): void => {
+      if (!isScanningEnabled) return;
+
       if (!cameraAvailableRef.current || onTheLimitProductScanned) return;
       codeScanned({ codes: event.nativeEvent.codeStringValue });
     },
-    [codeScanned, onTheLimitProductScanned],
+    [codeScanned, onTheLimitProductScanned, isScanningEnabled],
   );
+
+  const handleScanPress = () : void => {
+    setIsScanningEnabled(true)
+    setTimeout(() => {
+      setIsScanningEnabled(false)
+    }, DELAY_300_SECOND);
+  };
 
   if (cameraPermission === null) {
     return (
@@ -155,6 +168,11 @@ const CameraScreen: React.FC = () => {
         onReadCode={handleReadCode}
         style={cameraStyles(theme).camera}
         torchMode={lightOn ? 'on' : 'off'}
+      />
+
+
+      <ScanButton
+        onPress={handleScanPress}
       />
 
       <View style={cameraStyles(theme).actions}>

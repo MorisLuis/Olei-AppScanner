@@ -19,6 +19,7 @@ import {
   setUnauthorizedHandler,
 } from '../../api/apiCallbacks';
 import { getIsLogginOutClient, getIsLoggingOut, setIsLoggingOut, setIsLoggingOutClient } from './AuthService';
+import { queryClient } from '../../../App';
 
 export interface AuthState {
   tokenServer: string | null;
@@ -38,6 +39,13 @@ export interface LoginData {
   password: string;
 }
 
+export const AUTH_INITIAL_USER_STATE = {
+  TodosAlmacenes: 0,
+  SalidaSinExistencias: 0,
+  Id_Almacen: 0,
+  AlmacenNombre: '',
+}
+
 export const AUTH_INITIAL_STATE: AuthState = {
   tokenServer: null,
   token: null,
@@ -54,12 +62,7 @@ export const AUTH_INITIAL_STATE: AuthState = {
     SwImagenes: '',
     Vigencia: '',
     from: 'mobil',
-
-    TodosAlmacenes: 0,
-    Id_Almacen: 0,
-    AlmacenNombre: '',
-
-    SalidaSinExistencias: 0,
+    Id_Usuario: '',
 
     Id_TipoMovInv: {
       Id_TipoMovInv: 0,
@@ -68,9 +71,10 @@ export const AUTH_INITIAL_STATE: AuthState = {
       Id_AlmDest: 0,
     },
 
-    Id_Usuario: '',
     serverConected: false,
     userConected: false,
+
+    ...AUTH_INITIAL_USER_STATE
   },
   status: 'checking',
 
@@ -94,6 +98,23 @@ export const AuthProvider = ({
   const [isRestoringAuth, setIsRestoringAuth] = useState(true);
 
   const { handleError } = useErrorHandler();
+
+  const restoreAuthServer = useCallback(async (): Promise<void> => {
+    try {
+      const tokenServer = await AsyncStorage.getItem('tokenServer');
+      const token = await AsyncStorage.getItem('token');
+
+      const { user } = await postRefreshAuthServer();
+
+      dispatch({
+        type: '[Auth] - RESTORE',
+        payload: { token, tokenServer, user },
+      });
+
+    } catch (error) {
+      handleError(error, true, true);
+    }
+  }, [handleError]);
 
   const loginServer = async ({
     usuario,
@@ -135,6 +156,30 @@ export const AuthProvider = ({
     }
   };
 
+  const logOutClient = useCallback(async (): Promise<void> => {
+    if (getIsLogginOutClient() || getIsLoggingOut()) return;
+    dispatch({ type: '[Auth] - SET_LOADING', payload: true });
+    setIsLoggingOutClient(true);
+
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        await restoreAuthServer()
+      } else {
+        const { user } = await postLogOutClient();
+        dispatch({ type: '[Auth] - LOGOUT_CLIENT', payload: { user: user } });
+      }
+      
+      AsyncStorage.removeItem('token');
+    } catch (error) {
+      handleError(error);
+    } finally {
+      queryClient.clear() 
+      dispatch({ type: '[Auth] - SET_LOADING', payload: false });
+      setIsLoggingOutClient(false);
+    }
+  }, [handleError, restoreAuthServer]);
+
   const logOutServer = useCallback((): void => {
 
     if (getIsLogginOutClient() || getIsLoggingOut()) return; // Previene loop
@@ -151,39 +196,23 @@ export const AuthProvider = ({
     } catch (error) {
       handleError(error);
     } finally {
+      queryClient.clear()
       dispatch({ type: '[Auth] - SET_LOADING', payload: false });
       setIsLoggingOut(false);
     }
   }, [handleError]);
 
-  const logOutClient = useCallback(async (): Promise<void> => {
-  
-    if (getIsLogginOutClient() || getIsLoggingOut()) return;
-    dispatch({ type: '[Auth] - SET_LOADING', payload: true });
-    setIsLoggingOutClient(true);
+  const refreshAuthToken = useCallback(async (): Promise<void | null> => {
 
-    try {
-      const token = await AsyncStorage.getItem('token');
-      if (!token) {
-        dispatch({ type: '[Auth] - LOGOUT_CLIENT', payload: { user: null } });
-      } else {
-        const { user } = await postLogOutClient();
-        dispatch({ type: '[Auth] - LOGOUT_CLIENT', payload: { user: user } });
-      }
-      AsyncStorage.removeItem('token');
-    } catch (error) {
-      handleError(error);
-    } finally {
-      dispatch({ type: '[Auth] - SET_LOADING', payload: false });
-      setIsLoggingOutClient(false);
-    }
-  }, [handleError]);
-
-  const refreshAuth = useCallback(async (): Promise<void | null> => {
+    setIsRestoringAuth(true);
     dispatch({ type: '[Auth] - SET_LOADING', payload: true });
 
     try {
       const refreshToken_prop = await AsyncStorage.getItem('refreshToken');
+      const tokenServer = await AsyncStorage.getItem('tokenServer');
+
+      dispatch({ type: '[Auth] - RESTORE', payload: { token: null, tokenServer, user: null } });
+
       if (!refreshToken_prop) {
         return logOutClient();
       }
@@ -200,29 +229,9 @@ export const AuthProvider = ({
       handleError(error);
     } finally {
       dispatch({ type: '[Auth] - SET_LOADING', payload: false });
-    }
-  }, [handleError, logOutClient]);
-
-  const restoreAuth = useCallback(async (): Promise<void> => {
-    setIsRestoringAuth(true);
-    try {
-      const tokenServer = await AsyncStorage.getItem('tokenServer');
-      const token = await AsyncStorage.getItem('token');
-
-      const { user } = await postRefreshAuthServer();
-
-      dispatch({
-        type: '[Auth] - RESTORE',
-        payload: { token: token, tokenServer, user },
-      });
-
-      await refreshAuth();
-    } catch (error) {
-      handleError(error, true, true);
-    } finally {
       setIsRestoringAuth(false);
     }
-  }, [handleError, refreshAuth]);
+  }, [handleError, logOutClient]);
 
   const getTypeOfMovementsName = useCallback((): string => {
     let name;
@@ -266,9 +275,10 @@ export const AuthProvider = ({
     if (!isStorageReady) {
       setIsStorageReady(true);
       return;
-    }
-    restoreAuth();
-  }, [restoreAuth, isStorageReady]);
+    };
+
+    refreshAuthToken();
+  }, [refreshAuthToken, isStorageReady]);
 
   useEffect(() => {
     setClientLogoutHandler(async () => {

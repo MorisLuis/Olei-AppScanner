@@ -1,9 +1,9 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import {Theme, globalFont, globalStyles} from '../appTheme';
+import { Theme, globalFont, globalStyles } from '../appTheme';
 
 export const buttonStyles = (theme: Theme, typeTheme?: string) =>
   StyleSheet.create({
@@ -140,3 +140,30 @@ export const buttonStyles = (theme: Theme, typeTheme?: string) =>
       borderWidth: 0,
     },
   });
+
+export const scanButtonStyles = (theme: Theme) => StyleSheet.create({
+  scanButton: {
+    backgroundColor: theme.color_yellow,
+    height: 75,
+    width: 75,
+    borderRadius: 75 / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    position: 'absolute',
+    bottom: 50,
+    left: '50%',
+    marginLeft: -37.5,
+    zIndex: 9999,
+  },
+  scanButton_touch: {
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
+})
